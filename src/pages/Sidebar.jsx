@@ -1,31 +1,45 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-// Import các icon từ MUI
-import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
-import CelebrationOutlinedIcon from '@mui/icons-material/CelebrationOutlined';
-import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined';
-import HandshakeOutlinedIcon from '@mui/icons-material/HandshakeOutlined';
-import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
-import HomeRepairServiceOutlinedIcon from '@mui/icons-material/HomeRepairServiceOutlined';
-import RecordVoiceOverOutlinedIcon from '@mui/icons-material/RecordVoiceOverOutlined';
-import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
-import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
-import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { useState } from "react";
+import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
+import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Link } from "react-router-dom";
+import "react-pro-sidebar/dist/css/styles.css";
+import { tokens } from "../theme";
+import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
+import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
+import CelebrationOutlinedIcon from "@mui/icons-material/CelebrationOutlined";
+import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
+import HandshakeOutlinedIcon from "@mui/icons-material/HandshakeOutlined";
+import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
+import HomeRepairServiceOutlinedIcon from "@mui/icons-material/HomeRepairServiceOutlined";
+import RecordVoiceOverOutlinedIcon from "@mui/icons-material/RecordVoiceOverOutlined";
+import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
+import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
+import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
+import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 
-import './Sidebar.css';
+const Item = ({ title, to, icon, selected, setSelected }) => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  return (
+    <MenuItem
+      active={selected === title}
+      style={{
+        color: colors.grey[100],
+      }}
+      onClick={() => setSelected(title)}
+      icon={icon}
+    >
+      <Typography>{title}</Typography>
+      <Link to={to} />
+    </MenuItem>
+  );
+};
 
 const Sidebar = () => {
-  const location = useLocation();
-  const [openMenus, setOpenMenus] = useState({});
-
-  const toggleMenu = (menuName) => {
-    setOpenMenus(prev => ({
-      ...prev,
-      [menuName]: !prev[menuName]
-    }));
-  };
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [selected, setSelected] = useState("Dashboard");
 
   const menuItems = [
     {
@@ -116,50 +130,93 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="sidebar">
-      <div className="sidebar-header">
-        <h2>Event Management</h2>
-      </div>
-      <nav className="sidebar-nav">
-        {menuItems.map((item, index) => (
-          <div key={index} className="menu-item">
-            {!item.submenu ? (
-              <Link 
-                to={item.path} 
-                className={`menu-title ${location.pathname === item.path ? 'active' : ''}`}
+    <Box
+      sx={{
+        "& .pro-sidebar-inner": {
+          background: `${colors.primary[400]} !important`,
+        },
+        "& .pro-icon-wrapper": {
+          backgroundColor: "transparent !important",
+        },
+        "& .pro-inner-item": {
+          padding: "5px 35px 5px 20px !important",
+        },
+        "& .pro-inner-item:hover": {
+          color: "#868dfb !important",
+        },
+        "& .pro-menu-item.active": {
+          color: "#6870fa !important",
+        },
+      }}
+    >
+      <ProSidebar collapsed={isCollapsed}>
+        <Menu iconShape="square">
+          {/* LOGO AND MENU ICON */}
+          <MenuItem
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+            style={{
+              margin: "10px 0 20px 0",
+              color: colors.grey[100],
+            }}
+          >
+            {!isCollapsed && (
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                ml="15px"
               >
-                <span className="menu-icon">{item.icon}</span>
-                {item.title}
-              </Link>
-            ) : (
-              <>
-                <div 
-                  className="menu-title"
-                  onClick={() => toggleMenu(item.title)}
-                >
-                  <span className="menu-icon">{item.icon}</span>
-                  {item.title}
-                  <KeyboardArrowDownIcon 
-                    className={`arrow ${openMenus[item.title] ? 'open' : ''}`}
-                  />
-                </div>
-                <div className={`submenu ${openMenus[item.title] ? 'open' : ''}`}>
-                  {item.submenu.map((subItem, subIndex) => (
-                    <Link 
-                      key={subIndex}
-                      to={subItem.path}
-                      className={`submenu-item ${location.pathname === subItem.path ? 'active' : ''}`}
-                    >
-                      {subItem.title}
-                    </Link>
-                  ))}
-                </div>
-              </>
+                <Typography variant="h3" color={colors.grey[100]}>
+                  EVENT 
+                </Typography>
+                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+                  <MenuOutlinedIcon />
+                </IconButton>
+              </Box>
             )}
-          </div>
-        ))}
-      </nav>
-    </div>
+          </MenuItem>
+
+          
+
+          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+            {menuItems.map((item, index) => (
+              <div key={index}>
+                {!item.submenu ? (
+                  <Item
+                    title={item.title}
+                    to={item.path}
+                    icon={item.icon}
+                    selected={selected}
+                    setSelected={setSelected}
+                  />
+                ) : (
+                  <Box>
+                    <Typography
+                      variant="h6"
+                      color={colors.grey[300]}
+                      sx={{ m: "15px 0 5px 20px" }}
+                    >
+                      {item.title}
+                    </Typography>
+                    {item.submenu.map((subItem, subIndex) => (
+                      <Item
+                        key={subIndex}
+                        title={subItem.title}
+                        to={subItem.path}
+                        icon={item.icon}
+                        selected={selected}
+                        setSelected={setSelected}
+                      />
+                    ))}
+                  </Box>
+                )}
+              </div>
+            ))}
+          </Box>
+        </Menu>
+      </ProSidebar>
+    </Box>
   );
 };
 
