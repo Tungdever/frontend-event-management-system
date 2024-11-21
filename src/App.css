@@ -36,3 +36,25 @@
     transform: rotate(360deg);
   }
 }
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 280px;
+  padding: 20px;
+  background-color: #f5f6fa;
+  min-height: 100vh;
+  width: calc(100% - 280px);
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+}

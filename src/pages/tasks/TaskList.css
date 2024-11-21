@@ -1,0 +1,81 @@
+.kanban-container {
+  padding: 20px;
+}
+
+.kanban-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.kanban-board {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 20px;
+}
+
+.kanban-column {
+  min-width: 300px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.column-title {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.task-list {
+  min-height: 100px;
+  background: #f5f5f5;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.task-list.dragging-over {
+  background: #e3e3e3;
+}
+
+.task-card {
+  margin-bottom: 8px;
+  padding: 12px;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.task-card.dragging {
+  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
+
+.priority-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  border-radius: 4px 0 0 4px;
+}
+
+.priority-high { background-color: #f44336; }
+.priority-medium { background-color: #ff9800; }
+.priority-low { background-color: #4caf50; }
+
+.task-content {
+  padding-left: 8px;
+  margin-bottom: 8px;
+}
+
+.task-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+} 

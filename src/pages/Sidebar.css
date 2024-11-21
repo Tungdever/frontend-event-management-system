@@ -1,0 +1,157 @@
+.sidebar {
+  width: 280px;
+  height: 100vh;
+  background: linear-gradient(180deg, #8495B9 0%, #6A7A9E 100%);
+  color: white;
+  position: fixed;
+  left: 0;
+  top: 0;
+  overflow-y: auto;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+/* Thanh cuộn tùy chỉnh */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.sidebar-header {
+  padding: 20px;
+  text-align: center;
+  background: rgba(106, 122, 158, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.sidebar-nav {
+  padding: 15px 0;
+}
+
+.menu-item {
+  margin: 5px 0;
+}
+
+.menu-title {
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #FFFFFF;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+}
+
+.menu-title:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-left: 4px solid #FFFFFF;
+}
+
+.menu-icon {
+  margin-right: 12px;
+  width: 20px;
+  text-align: center;
+}
+
+.arrow {
+  margin-left: auto;
+  font-size: 12px;
+  transition: transform 0.3s;
+  opacity: 0.7;
+}
+
+.arrow.open {
+  transform: rotate(180deg);
+}
+
+.submenu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  background: rgba(106, 122, 158, 0.3);
+}
+
+.submenu.open {
+  max-height: 500px;
+}
+
+.submenu-item {
+  padding: 10px 20px 10px 56px;
+  display: block;
+  color: #FFFFFF;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.submenu-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 1;
+}
+
+/* Active state styles */
+.menu-title.active {
+  background: rgba(255, 255, 255, 0.1);
+  border-left: 4px solid #FFFFFF;
+}
+
+.submenu-item.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+}
+
+/* Animation cho submenu */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.submenu.open .submenu-item {
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+  .sidebar {
+    width: 240px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .menu-title {
+    padding: 10px 15px;
+  }
+
+  .submenu-item {
+    padding: 8px 15px 8px 45px;
+  }
+} 
