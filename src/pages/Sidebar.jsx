@@ -44,7 +44,7 @@ const Sidebar = () => {
   const menuItems = [
     {
       title: 'Dashboard',
-      path: '/dashboard',
+      path: '/dashboard/Dashboard',
       icon: <DashboardOutlinedIcon />
     },
     {
@@ -52,71 +52,71 @@ const Sidebar = () => {
       icon: <CalendarMonthOutlinedIcon />,
       submenu: [
         { title: 'Xem lịch', path: '/calendar' },
-        { title: 'Thêm lịch', path: '/calendar/add' },
+        { title: 'Thêm lịch', path: '/calendar/CalendarAdd' },
       ]
     },
     {
       title: 'Events',
       icon: <CelebrationOutlinedIcon />,
       submenu: [
-        { title: 'Danh sách sự kiện', path: '/events' },
-        { title: 'Thêm sự kiện', path: '/events/add' },
+        { title: 'Danh sách sự kiện', path: '/events/EventList' },
+        { title: 'Thêm sự kiện', path: '/events/EventAdd' },
       ]
     },
     {
       title: 'Sponsors',
       icon: <BusinessOutlinedIcon />,
       submenu: [
-        { title: 'Danh sách nhà tài trợ', path: '/sponsors' },
-        { title: 'Thêm nhà tài trợ', path: '/sponsors/add' },
+        { title: 'Danh sách nhà tài trợ', path: '/sponsors/SponsorList' },
+        { title: 'Thêm nhà tài trợ', path: '/sponsors/SponsorAdd' },
       ]
     },
     {
       title: 'Sponsorships',
       icon: <HandshakeOutlinedIcon />,
       submenu: [
-        { title: 'Danh sách tài trợ', path: '/sponsorships' },
-        { title: 'Thêm tài trợ', path: '/sponsorships/add' },
+        { title: 'Danh sách tài trợ', path: '/sponsorships/SponsorshipList' },
+        { title: 'Thêm tài trợ', path: '/sponsorships/SponsorshipAdd' },
       ]
     },
     {
       title: 'Providers',
       icon: <StorefrontOutlinedIcon />,
       submenu: [
-        { title: 'Danh sách nhà cung cấp', path: '/providers' },
-        { title: 'Thêm nhà cung cấp', path: '/providers/add' },
+        { title: 'Danh sách nhà cung cấp', path: '/providers/ProviderList' },
+        { title: 'Thêm nhà cung cấp', path: '/providers/ProviderAdd' },
       ]
     },
     {
       title: 'Provider Services',
       icon: <HomeRepairServiceOutlinedIcon />,
       submenu: [
-        { title: 'Danh sách dịch vụ', path: '/provider-services' },
-        { title: 'Thêm dịch vụ', path: '/provider-services/add' },
+        { title: 'Danh sách dịch vụ', path: '/provider-services/ProviderServiceList' },
+        { title: 'Thêm dịch vụ', path: '/provider-services/ProviderServiceAdd' },
       ]
     },
     {
       title: 'Speakers',
       icon: <RecordVoiceOverOutlinedIcon />,
       submenu: [
-        { title: 'Danh sách diễn giả', path: '/speakers' },
-        { title: 'Thêm diễn giả', path: '/speakers/add' },
+        { title: 'Danh sách diễn giả', path: '/speakers/SpeakerList' },
+        { title: 'Thêm diễn giả', path: '/speakers/SpeakerAdd' },
       ]
     },
     {
       title: 'MCs',
       icon: <CampaignOutlinedIcon />,
       submenu: [
-        { title: 'Danh sách MC', path: '/mcs' },
-        { title: 'Thêm MC', path: '/mcs/add' },
+        { title: 'Danh sách MC', path: '/mcs/MCList' },
+        { title: 'Thêm MC', path: '/mcs/MCAdd' },
       ]
     },
     {
       title: 'Teams',
       icon: <GroupsOutlinedIcon />,
       submenu: [
-        { title: 'Danh sách nhóm', path: '/teams' },
-        { title: 'Thêm nhóm', path: '/teams/add' },
+        { title: 'Danh sách nhóm', path: '/teams/TeamList' },
+        { title: 'Thêm nhóm', path: '/teams/TeamAdd' },
       ]
     },
     {
@@ -124,7 +124,7 @@ const Sidebar = () => {
       icon: <AssignmentOutlinedIcon />,
       submenu: [
         { title: 'Danh sách công việc', path: '/tasks' },
-        { title: 'Thêm công việc', path: '/tasks/add' },
+        { title: 'Thêm công việc', path: '/tasks/TaskAdd' },
       ]
     },
   ];
@@ -152,16 +152,7 @@ const Sidebar = () => {
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
           {/* LOGO AND MENU ICON */}
-          <MenuItem
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-            style={{
-              margin: "10px 0 20px 0",
-              color: colors.grey[100],
-            }}
-          >
-            {!isCollapsed && (
-              <Box
+          <Box
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
@@ -170,12 +161,8 @@ const Sidebar = () => {
                 <Typography variant="h3" color={colors.grey[100]}>
                   EVENT 
                 </Typography>
-                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                  <MenuOutlinedIcon />
-                </IconButton>
+                
               </Box>
-            )}
-          </MenuItem>
 
           
 
