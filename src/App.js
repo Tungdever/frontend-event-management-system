@@ -14,8 +14,11 @@ import SponsorshipList from './pages/sponsorships/SponsorshipList';
 import SponsorshipAdd from './pages/sponsorships/SponsorshipAdd';
 import ProviderList from './pages/providers/ProviderList';
 import ProviderAdd from './pages/providers/ProviderAdd';
-import ProviderServiceList from './pages/provider-services/ProviderServiceList';
+import ProviderEdit from './pages/providers/ProviderEdit'
+import ProviderDetail from './pages/providers/ProviderDetail';
+
 import ProviderServiceAdd from './pages/provider-services/ProviderServiceAdd';
+import ProviderServiceDetail from './pages/provider-services/ProviderServiceDetail'
 import SpeakerList from './pages/speakers/SpeakerList';
 import SpeakerAdd from './pages/speakers/SpeakerAdd';
 import MCList from './pages/mcs/MCList';
@@ -42,24 +45,27 @@ function App() {
               <main className="main-content">
                 <Routes>
                   <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/calendar" element={<CalendarList />} />
+                  <Route path="/calendar/CalendarList" element={<CalendarList />} />
                   <Route path="/calendar/add" element={<CalendarAdd />} />
                   <Route path="/events" element={<EventList />} />
                   <Route path="/events/add" element={<EventAdd />} />
-                  <Route path="/sponsors" element={<SponsorList />} />
+                  <Route path="/sponsors/SponsorList" element={<SponsorList />} />
                   <Route path="/sponsors/add" element={<SponsorAdd />} />
-                  <Route path="/sponsorships" element={<SponsorshipList />} />
+                  <Route path="/sponsorships/" element={<SponsorshipList />} />
                   <Route path="/sponsorships/add" element={<SponsorshipAdd />} />
-                  <Route path="/providers" element={<ProviderList />} />
-                  <Route path="/providers/add" element={<ProviderAdd />} />
-                  <Route path="/provider-services" element={<ProviderServiceList />} />
-                  <Route path="/provider-services/add" element={<ProviderServiceAdd />} />
+                  <Route path="/providers/:providerId" element={<ProviderDetail />} />
+                  <Route path="/providers/:providerId/edit" element={<ProviderEdit />} />
+                  <Route path="/providers/ProviderList" element={<ProviderList />} />
+                  <Route path="/providers/ProviderAdd" element={<ProviderAdd />} />
+                
+                  <Route path="/provider-services/ProviderServiceAdd" element={<ProviderServiceAdd />} />
+                  <Route path="/provider/service/:serviceId" element={<ProviderServiceDetail />} />
                   <Route path="/speakers" element={<SpeakerList />} />
-                  <Route path="/speakers/add" element={<SpeakerAdd />} />
+                  <Route path="/speakers/SpeakerAdd" element={<SpeakerAdd />} />
                   <Route path="/mcs" element={<MCList />} />
                   <Route path="/mcs/add" element={<MCAdd />} />
-                  <Route path="/teams" element={<TeamList />} />
-                  <Route path="/teams/add" element={<TeamAdd />} />
+                  <Route path="/teams/TeamList" element={<TeamList />} />
+                  <Route path="/teams/TeamAdd" element={<TeamAdd />} />
                   <Route path="/tasks" element={<TaskList />} />
                   <Route path="/tasks/add" element={<TaskAdd />} />
                 </Routes>

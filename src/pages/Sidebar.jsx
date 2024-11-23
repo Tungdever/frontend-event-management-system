@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Box,  Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../theme";
@@ -15,7 +15,7 @@ import RecordVoiceOverOutlinedIcon from "@mui/icons-material/RecordVoiceOverOutl
 import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
-import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -51,24 +51,24 @@ const Sidebar = () => {
       title: 'Calendar',
       icon: <CalendarMonthOutlinedIcon />,
       submenu: [
-        { title: 'Xem lịch', path: '/calendar' },
-        { title: 'Thêm lịch', path: '/calendar/CalendarAdd' },
+        { title: 'Xem lịch', path: '/calendar/CalendarList' },
+        // { title: 'Thêm lịch', path: '/calendar/CalendarAdd' },
       ]
     },
-    {
-      title: 'Events',
-      icon: <CelebrationOutlinedIcon />,
-      submenu: [
-        { title: 'Danh sách sự kiện', path: '/events/EventList' },
-        { title: 'Thêm sự kiện', path: '/events/EventAdd' },
-      ]
-    },
+    // {
+    //   title: 'Events',
+    //   icon: <CelebrationOutlinedIcon />,
+    //   submenu: [
+    //     // { title: 'Danh sách sự kiện', path: '/events/EventList' },
+    //     // { title: 'Thêm sự kiện', path: '/events/EventAdd' },
+    //   ]
+    // },
     {
       title: 'Sponsors',
       icon: <BusinessOutlinedIcon />,
       submenu: [
         { title: 'Danh sách nhà tài trợ', path: '/sponsors/SponsorList' },
-        { title: 'Thêm nhà tài trợ', path: '/sponsors/SponsorAdd' },
+        // { title: 'Thêm nhà tài trợ', path: '/sponsors/SponsorAdd' },
       ]
     },
     {
@@ -76,7 +76,7 @@ const Sidebar = () => {
       icon: <HandshakeOutlinedIcon />,
       submenu: [
         { title: 'Danh sách tài trợ', path: '/sponsorships/SponsorshipList' },
-        { title: 'Thêm tài trợ', path: '/sponsorships/SponsorshipAdd' },
+        // { title: 'Thêm tài trợ', path: '/sponsorships/SponsorshipAdd' },
       ]
     },
     {
@@ -87,14 +87,14 @@ const Sidebar = () => {
         { title: 'Thêm nhà cung cấp', path: '/providers/ProviderAdd' },
       ]
     },
-    {
-      title: 'Provider Services',
-      icon: <HomeRepairServiceOutlinedIcon />,
-      submenu: [
-        { title: 'Danh sách dịch vụ', path: '/provider-services/ProviderServiceList' },
-        { title: 'Thêm dịch vụ', path: '/provider-services/ProviderServiceAdd' },
-      ]
-    },
+    // {
+    //   title: 'Provider Services',
+    //   icon: <HomeRepairServiceOutlinedIcon />,
+    //   submenu: [
+    //     { title: 'Danh sách dịch vụ', path: '/provider-services/ProviderServiceList' },
+    //     { title: 'Thêm dịch vụ', path: '/provider-services/ProviderServiceAdd' },
+    //   ]
+    // },
     {
       title: 'Speakers',
       icon: <RecordVoiceOverOutlinedIcon />,
@@ -108,7 +108,7 @@ const Sidebar = () => {
       icon: <CampaignOutlinedIcon />,
       submenu: [
         { title: 'Danh sách MC', path: '/mcs/MCList' },
-        { title: 'Thêm MC', path: '/mcs/MCAdd' },
+        // { title: 'Thêm MC', path: '/mcs/MCAdd' },
       ]
     },
     {
@@ -116,7 +116,7 @@ const Sidebar = () => {
       icon: <GroupsOutlinedIcon />,
       submenu: [
         { title: 'Danh sách nhóm', path: '/teams/TeamList' },
-        { title: 'Thêm nhóm', path: '/teams/TeamAdd' },
+        // { title: 'Thêm nhóm', path: '/teams/TeamAdd' },
       ]
     },
     {
@@ -124,7 +124,7 @@ const Sidebar = () => {
       icon: <AssignmentOutlinedIcon />,
       submenu: [
         { title: 'Danh sách công việc', path: '/tasks' },
-        { title: 'Thêm công việc', path: '/tasks/TaskAdd' },
+        // { title: 'Thêm công việc', path: '/tasks/add' },
       ]
     },
   ];
