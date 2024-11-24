@@ -35,6 +35,7 @@ const ProviderDetail = () => {
         console.log("Fetching providerId from URL:", providerId);
 
         const response = await axiosInstance.get(`/${providerId}`)
+        console.log(response.data);
         setProvider(response.data);
       } catch (err) {
         console.error("Error fetching provider detail:", err);

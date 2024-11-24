@@ -10,6 +10,7 @@ import EventList from './pages/events/EventList';
 import EventAdd from './pages/events/EventAdd';
 import SponsorList from './pages/sponsors/SponsorList';
 import SponsorAdd from './pages/sponsors/SponsorAdd';
+import SponsorDetail from './pages/sponsors/SponsorDetail';
 import SponsorshipList from './pages/sponsorships/SponsorshipList';
 import SponsorshipAdd from './pages/sponsorships/SponsorshipAdd';
 import ProviderList from './pages/providers/ProviderList';
@@ -45,14 +46,20 @@ function App() {
               <main className="main-content">
                 <Routes>
                   <Route path="/dashboard" element={<Dashboard />} />
+
                   <Route path="/calendar/CalendarList" element={<CalendarList />} />
                   <Route path="/calendar/add" element={<CalendarAdd />} />
+
                   <Route path="/events" element={<EventList />} />
                   <Route path="/events/add" element={<EventAdd />} />
+
                   <Route path="/sponsors/SponsorList" element={<SponsorList />} />
-                  <Route path="/sponsors/add" element={<SponsorAdd />} />
+                  <Route path="/sponsors/SponsorAdd" element={<SponsorAdd />} />
+                  <Route path="/sponsors/:sponsorId" element={<SponsorDetail />} />
+
                   <Route path="/sponsorships/" element={<SponsorshipList />} />
                   <Route path="/sponsorships/add" element={<SponsorshipAdd />} />
+
                   <Route path="/providers/:providerId" element={<ProviderDetail />} />
                   <Route path="/providers/:providerId/edit" element={<ProviderEdit />} />
                   <Route path="/providers/ProviderList" element={<ProviderList />} />
@@ -60,12 +67,16 @@ function App() {
                 
                   <Route path="/provider/:providerId/service" element={<ProviderServiceAdd />} />
                   <Route path="/provider/service/:serviceId" element={<ProviderServiceDetail />} />
+
                   <Route path="/speakers" element={<SpeakerList />} />
                   <Route path="/speakers/SpeakerAdd" element={<SpeakerAdd />} />
+
                   <Route path="/mcs" element={<MCList />} />
                   <Route path="/mcs/add" element={<MCAdd />} />
+
                   <Route path="/teams/TeamList" element={<TeamList />} />
                   <Route path="/teams/TeamAdd" element={<TeamAdd />} />
+
                   <Route path="/tasks" element={<TaskList />} />
                   <Route path="/tasks/add" element={<TaskAdd />} />
                 </Routes>

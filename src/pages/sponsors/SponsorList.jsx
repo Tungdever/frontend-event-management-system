@@ -4,17 +4,19 @@ import { IconButton, Menu, MenuItem } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Box, Button, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 
 // Lấy token từ localStorage
 const getToken = () => {
-  return "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw"; 
+  return "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw";
 };
 
 // Tạo instance Axios
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:8080/man/sponsor', // Base URL của Spring Boot (đổi thành sponsor)
   headers: {
-    Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`, 
+    Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
   },
 });
 
@@ -26,16 +28,16 @@ const SponsorList = () => {
 
   useEffect(() => {
     const fetchSponsors = async () => {
-      const token = getToken(); 
+      const token = getToken();
       try {
         const response = await axiosInstance.get();
         console.log("Response Data:", response.data);
-        
+
         // Giả sử API trả về một đối tượng với mảng nhà tài trợ trong thuộc tính "data"
-        if (Array.isArray(response.data)) {
-          setSponsors(response.data); // Đảm bảo rằng data là mảng
+        if (Array.isArray(response.data.data)) {
+          setSponsors(response.data.data); // Gán đúng mảng sponsors
         } else {
-          console.error("Dữ liệu không phải là mảng!");
+          console.error("Dữ liệu không phải là mảng hoặc cấu trúc không đúng!");
         }
       } catch (error) {
         console.error("Error fetching sponsors:", error);
@@ -97,6 +99,28 @@ const SponsorList = () => {
 
   return (
     <div style={{ height: 500, width: "100%" }}>
+      <Typography
+        variant="h4"
+        style={{
+          fontWeight: "bold",
+          color: "#333",
+          textAlign: "left",
+          marginBottom: "20px",
+          fontSize: "32px",
+          marginRight: "auto"
+        }}
+      >
+        LIST SPONSOR
+      </Typography>
+      <Box display="flex" justifyContent="end" mt="20px" marginBottom="20px" marginRight="10px">
+
+      <Link to={`/sponsors/SponsorAdd`} style={{ textDecoration: 'none', pointerEvents: 'auto' }}>
+          <Button type="submit" color="secondary" variant="contained">
+            Add Sponsor
+          </Button>
+        </Link>
+
+      </Box>
       {/* Đảm bảo rằng sponsors là mảng */}
       <DataGrid rows={sponsors} columns={columns} />
       <Menu
