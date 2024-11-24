@@ -58,7 +58,7 @@ function App() {
                   <Route path="/providers/ProviderList" element={<ProviderList />} />
                   <Route path="/providers/ProviderAdd" element={<ProviderAdd />} />
                 
-                  <Route path="/provider-services/ProviderServiceAdd" element={<ProviderServiceAdd />} />
+                  <Route path="/provider/:providerId/service" element={<ProviderServiceAdd />} />
                   <Route path="/provider/service/:serviceId" element={<ProviderServiceDetail />} />
                   <Route path="/speakers" element={<SpeakerList />} />
                   <Route path="/speakers/SpeakerAdd" element={<SpeakerAdd />} />

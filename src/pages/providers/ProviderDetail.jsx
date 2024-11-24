@@ -146,6 +146,18 @@ const ProviderDetail = () => {
       >
         Provider Services
       </Typography>
+      <CardActions>
+        <Link to={`/provider/${provider.id}/service`} style={{ textDecoration: 'none' }}>
+          <Button
+            size="large"
+            color="primary"
+            variant="contained"
+            style={{ fontWeight: "bold" }}
+          >
+            Add service
+          </Button>
+        </Link>
+      </CardActions>
 
 
       {provider.listProviderServices && provider.listProviderServices.length > 0 ? (

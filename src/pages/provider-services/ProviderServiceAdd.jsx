@@ -1,27 +1,35 @@
-import { Box, Button, TextField, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
+import React from "react";
+import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import axios from "axios";
+import { useParams } from "react-router-dom"; // Để lấy providerId từ URL
 
-const ProviderServiceAddForm = () => {
+const ServiceAddForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-
-  // Giả sử bạn có một danh sách các nhà cung cấp để hiển thị trong dropdown
-  const providerOptions = [
-    { id: 101, name: "Provider 1" },
-    { id: 102, name: "Provider 2" },
-    { id: 103, name: "Provider 3" },
-  ];
+  const { providerId } = useParams(); // Lấy providerId từ URL
 
   const handleFormSubmit = async (values, { resetForm }) => {
     try {
-      const response = await axios.post("http://localhost:8080/man/proService/add", values, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      // Chuẩn bị dữ liệu gửi đi đúng định dạng DTO
+      const serviceDTO = {
+        ...values,
+        providerId: parseInt(providerId), // Lấy providerId từ URL
+      };
+
+      const response = await axios.post(
+        "http://localhost:8080/man/proService",
+        serviceDTO,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`, // Thêm JWT token từ localStorage
+          },
+        }
+      );
+
       alert("Service added successfully!");
       console.log("Response:", response.data);
       resetForm(); // Reset form fields after successful submission
@@ -33,7 +41,7 @@ const ProviderServiceAddForm = () => {
 
   return (
     <Box m="20px">
-      <Header title="ADD PROVIDER SERVICE" subtitle="Add a New Service for Provider" />
+      <Header title="ADD SERVICE" subtitle="Add a New Service for Provider" />
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -99,7 +107,7 @@ const ProviderServiceAddForm = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                type="number"
+                type="text"
                 label="Price"
                 onBlur={handleBlur}
                 onChange={handleChange}
@@ -107,7 +115,7 @@ const ProviderServiceAddForm = () => {
                 name="price"
                 error={!!touched.price && !!errors.price}
                 helperText={touched.price && errors.price}
-                sx={{ gridColumn: "span 4" }}
+                sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
@@ -120,30 +128,8 @@ const ProviderServiceAddForm = () => {
                 name="duration"
                 error={!!touched.duration && !!errors.duration}
                 helperText={touched.duration && errors.duration}
-                sx={{ gridColumn: "span 4" }}
+                sx={{ gridColumn: "span 2" }}
               />
-              
-              {/* Dropdown menu for Provider ID */}
-              <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 4" }}>
-                <InputLabel>Provider ID</InputLabel>
-                <Select
-                  label="Provider ID"
-                  name="providerId"
-                  value={values.providerId}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={!!touched.providerId && !!errors.providerId}
-                >
-                  {providerOptions.map((provider) => (
-                    <MenuItem key={provider.id} value={provider.id}>
-                      {provider.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {touched.providerId && errors.providerId && (
-                  <div style={{ color: 'red' }}>{errors.providerId}</div>
-                )}
-              </FormControl>
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
@@ -161,9 +147,8 @@ const validationSchema = yup.object().shape({
   serviceType: yup.string().required("Service type is required"),
   serviceName: yup.string().required("Service name is required"),
   serviceDesc: yup.string().required("Service description is required"),
-  price: yup.number().required("Price is required").positive("Price must be a positive number"),
+  price: yup.string().required("Price is required"),
   duration: yup.string().required("Duration is required"),
-  providerId: yup.number().required("Provider ID is required").positive("Provider ID must be a positive number"),
 });
 
 const initialValues = {
@@ -172,7 +157,6 @@ const initialValues = {
   serviceDesc: "",
   price: "",
   duration: "",
-  providerId: "",
 };
 
-export default ProviderServiceAddForm;
+export default ServiceAddForm;

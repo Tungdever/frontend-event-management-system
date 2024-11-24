@@ -10,9 +10,21 @@ const ProviderAddForm = () => {
 
   const handleFormSubmit = async (values, { resetForm }) => {
     try {
-      const response = await axios.post("http://localhost:8080/man/provider/add", values, {
+      // Chuyển đổi các giá trị từ form thành đúng định dạng DTO
+      const providerDTO = {
+        
+        name: values.name,
+        contact: values.contact, // Đổi từ contactPerson sang contact
+        email: values.email,
+        phone: values.phone,
+        address: values.address,
+        website: values.website,
+      };
+
+      const response = await axios.post("http://localhost:8080/man/provider", providerDTO, {
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`, // Thêm JWT token từ localStorage
         },
       });
       alert("Provider added successfully!");
@@ -67,13 +79,13 @@ const ProviderAddForm = () => {
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Contact Person"
+                label="Contact"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.contactPerson}
-                name="contactPerson"
-                error={!!touched.contactPerson && !!errors.contactPerson}
-                helperText={touched.contactPerson && errors.contactPerson}
+                value={values.contact}
+                name="contact"
+                error={!!touched.contact && !!errors.contact}
+                helperText={touched.contact && errors.contact}
                 sx={{ gridColumn: "span 4" }}
               />
               <TextField
@@ -146,7 +158,7 @@ const phoneRegExp =
 
 const validationSchema = yup.object().shape({
   name: yup.string().required("Provider name is required"),
-  contactPerson: yup.string().required("Contact person is required"),
+  contact: yup.string().required("Contact is required"), // Đổi từ contactPerson thành contact
   email: yup.string().email("Invalid email").required("Email is required"),
   phone: yup
     .string()
@@ -158,7 +170,7 @@ const validationSchema = yup.object().shape({
 
 const initialValues = {
   name: "",
-  contactPerson: "",
+  contact: "", // Đổi từ contactPerson thành contact
   email: "",
   phone: "",
   address: "",

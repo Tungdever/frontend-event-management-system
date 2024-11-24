@@ -84,7 +84,7 @@ const Sidebar = () => {
       icon: <StorefrontOutlinedIcon />,
       submenu: [
         { title: 'Danh sách nhà cung cấp', path: '/providers/ProviderList' },
-        { title: 'Thêm nhà cung cấp', path: '/providers/ProviderAdd' },
+        // { title: 'Thêm nhà cung cấp', path: '/providers/ProviderAdd' },
       ]
     },
     // {
@@ -100,7 +100,7 @@ const Sidebar = () => {
       icon: <RecordVoiceOverOutlinedIcon />,
       submenu: [
         { title: 'Danh sách diễn giả', path: '/speakers/SpeakerList' },
-        { title: 'Thêm diễn giả', path: '/speakers/SpeakerAdd' },
+        // { title: 'Thêm diễn giả', path: '/speakers/SpeakerAdd' },
       ]
     },
     {
