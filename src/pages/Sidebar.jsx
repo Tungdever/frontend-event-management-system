@@ -75,7 +75,7 @@ const Sidebar = () => {
       title: 'Sponsorships',
       icon: <HandshakeOutlinedIcon />,
       submenu: [
-        { title: 'Danh sách tài trợ', path: '/sponsorships/SponsorshipList' },
+        { title: 'Mức độ nhà tài trợ', path: '/sponsorships/' },
         // { title: 'Thêm tài trợ', path: '/sponsorships/SponsorshipAdd' },
       ]
     },
@@ -99,7 +99,7 @@ const Sidebar = () => {
       title: 'Speakers',
       icon: <RecordVoiceOverOutlinedIcon />,
       submenu: [
-        { title: 'Danh sách diễn giả', path: '/speakers/SpeakerList' },
+        { title: 'Danh sách diễn giả', path: '/speakers' },
         // { title: 'Thêm diễn giả', path: '/speakers/SpeakerAdd' },
       ]
     },
@@ -107,7 +107,7 @@ const Sidebar = () => {
       title: 'MCs',
       icon: <CampaignOutlinedIcon />,
       submenu: [
-        { title: 'Danh sách MC', path: '/mcs/MCList' },
+        { title: 'Danh sách MC', path: '/mcs' },
         // { title: 'Thêm MC', path: '/mcs/MCAdd' },
       ]
     },

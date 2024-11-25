@@ -22,8 +22,9 @@ import ProviderServiceAdd from './pages/provider-services/ProviderServiceAdd';
 import ProviderServiceDetail from './pages/provider-services/ProviderServiceDetail'
 import SpeakerList from './pages/speakers/SpeakerList';
 import SpeakerAdd from './pages/speakers/SpeakerAdd';
+import SpeakerDetail from './pages/speakers/SpeakerDetail';
 import MCList from './pages/mcs/MCList';
-import MCAdd from './pages/mcs/MCAdd';
+import MCAdd from './pages/mcs/MCAdd'
 import TeamList from './pages/teams/TeamList';
 import TeamAdd from './pages/teams/TeamAdd';
 import TaskList from './pages/tasks/TaskList';
@@ -69,10 +70,11 @@ function App() {
                   <Route path="/provider/service/:serviceId" element={<ProviderServiceDetail />} />
 
                   <Route path="/speakers" element={<SpeakerList />} />
-                  <Route path="/speakers/SpeakerAdd" element={<SpeakerAdd />} />
+                  <Route path="/speakers/add" element={<SpeakerAdd />} />
+                  <Route path="/speakers/:speakerId/detail" element={<SpeakerDetail />} />
 
                   <Route path="/mcs" element={<MCList />} />
-                  <Route path="/mcs/add" element={<MCAdd />} />
+                  <Route path="/mcs/addMc" element={<MCAdd />} />
 
                   <Route path="/teams/TeamList" element={<TeamList />} />
                   <Route path="/teams/TeamAdd" element={<TeamAdd />} />

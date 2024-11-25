@@ -1,168 +1,181 @@
-import { Box, Button, TextField } from "@mui/material";
-import { Formik } from "formik";
-import * as yup from "yup";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import Header from "../../components/Header";
-import axios from "axios";
+import React, { useState } from 'react';
+import { TextField, Button, Grid, Typography, Card, CardMedia, CircularProgress } from '@mui/material';
+import axios from 'axios';
 
-const SpeakerAddForm = () => {
-  const isNonMobile = useMediaQuery("(min-width:600px)");
+const SpeakerAdd = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [title, setTitle] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [description, setDescription] = useState('');
+  const [image, setImage] = useState(null);
+  const [imageName, setImageName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
 
-  const handleFormSubmit = async (values, { resetForm }) => {
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setImage(file);
+      setImageName(file.name);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!name || !email || !title || !phone || !address || !description || !image) {
+      alert('Vui lòng điền đầy đủ thông tin.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('title', title);
+    formData.append('phone', phone);
+    formData.append('address', address);
+    formData.append('description', description);
+    formData.append('imageSpeaker', image);
+    formData.append('image', imageName);
+
+    setLoading(true);
     try {
-      const response = await axios.post("http://localhost:8080/man/speaker/add", values, {
+      console.log(formData)
+      const response = await axios.post('http://localhost:8080/man/speaker', formData, {
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`, // Token authorization
+
         },
       });
-      alert("Speaker added successfully!");
-      console.log("Response:", response.data);
-      resetForm(); // Reset form fields after successful submission
+      console.log('API Response:', response);
+      alert('Thêm diễn giả thành công!');
+      setName('');
+      setEmail('');
+      setTitle('');
+      setPhone('');
+      setAddress('');
+      setDescription('');
+      setImage(null);
+      setImagePreview(null);
     } catch (error) {
-      console.error("Error adding speaker:", error);
-      alert("Failed to add speaker. Please try again.");
+      console.error('Lỗi khi thêm diễn giả:', error);
+      alert('Có lỗi xảy ra, vui lòng thử lại.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Box m="20px">
-      <Header title="ADD SPEAKER" subtitle="Add a New Speaker" />
-
-      <Formik
-        onSubmit={handleFormSubmit}
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-      >
-        {({
-          values,
-          errors,
-          touched,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-        }) => (
-          <form onSubmit={handleSubmit}>
-            <Box
-              display="grid"
-              gap="30px"
-              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              sx={{
-                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-              }}
-            >
+    <div style={{ padding: '20px' }}>
+      <Typography variant="h5" gutterBottom>
+        Thêm Diễn Giả Mới
+      </Typography>
+      <Card style={{ padding: '20px' }}>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
               <TextField
+                label="Tên Diễn Giả"
+                variant="outlined"
                 fullWidth
-                variant="filled"
-                type="text"
-                label="Speaker Name"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.name}
-                name="name"
-                error={!!touched.name && !!errors.name}
-                helperText={touched.name && errors.name}
-                sx={{ gridColumn: "span 4" }}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <TextField
-                fullWidth
-                variant="filled"
-                type="email"
                 label="Email"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.email}
-                name="email"
-                error={!!touched.email && !!errors.email}
-                helperText={touched.email && errors.email}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
+                variant="outlined"
                 fullWidth
-                variant="filled"
-                type="text"
-                label="Title"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.title}
-                name="title"
-                error={!!touched.title && !!errors.title}
-                helperText={touched.title && errors.title}
-                sx={{ gridColumn: "span 4" }}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <TextField
+                label="Chức Danh"
+                variant="outlined"
                 fullWidth
-                variant="filled"
-                type="text"
-                label="Phone"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.phone}
-                name="phone"
-                error={!!touched.phone && !!errors.phone}
-                helperText={touched.phone && errors.phone}
-                sx={{ gridColumn: "span 4" }}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
               />
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <TextField
+                label="Số Điện Thoại"
+                variant="outlined"
                 fullWidth
-                variant="filled"
-                type="text"
-                label="Address"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.address}
-                name="address"
-                error={!!touched.address && !!errors.address}
-                helperText={touched.address && errors.address}
-                sx={{ gridColumn: "span 4" }}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
               />
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <TextField
+                label="Địa Chỉ"
+                variant="outlined"
                 fullWidth
-                variant="filled"
-                type="text"
-                label="Description"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.description}
-                name="description"
-                error={!!touched.description && !!errors.description}
-                helperText={touched.description && errors.description}
-                sx={{ gridColumn: "span 4" }}
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
               />
-            </Box>
-            <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                Add Speaker
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Mô Tả"
+                variant="outlined"
+                fullWidth
+                multiline
+                rows={4}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: 'none' }}
+                id="image-upload"
+              />
+              <label htmlFor="image-upload">
+                <Button variant="contained" component="span" fullWidth>
+                  Chọn Ảnh
+                </Button>
+              </label>
+              {imagePreview && (
+                <>
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={imagePreview}
+                    alt="Diễn Giả Image Preview"
+                  />
+                  <Typography variant="body2" align="center">
+                    {imageName}
+                  </Typography>
+                </>
+              )}
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                disabled={loading}
+              >
+                {loading ? <CircularProgress size={24} /> : 'Thêm Diễn Giả'}
               </Button>
-            </Box>
-          </form>
-        )}
-      </Formik>
-    </Box>
+            </Grid>
+          </Grid>
+        </form>
+      </Card>
+    </div>
   );
 };
 
-const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-
-const validationSchema = yup.object().shape({
-  name: yup.string().required("Speaker name is required"),
-  email: yup.string().email("Invalid email").required("Email is required"),
-  title: yup.string().required("Title is required"),
-  phone: yup
-    .string()
-    .matches(phoneRegExp, "Phone number is not valid")
-    .required("Phone is required"),
-  address: yup.string().required("Address is required"),
-  description: yup.string().required("Description is required"),
-});
-
-const initialValues = {
-  name: "",
-  email: "",
-  title: "",
-  phone: "",
-  address: "",
-  description: "",
-};
-
-export default SpeakerAddForm;
+export default SpeakerAdd;
