@@ -8,7 +8,7 @@ const McList = () => {
     const [loading, setLoading] = useState(true);
     const [imageUrls, setImageUrls] = useState({}); // URL ảnh tải về
     const defaultImage = 'path/to/default/image.jpg'; // Ảnh mặc định
-
+    
     useEffect(() => {
         const fetchMcList = async () => {
             try {

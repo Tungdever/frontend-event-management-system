@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { ColorModeContext, useMode } from './theme';
@@ -34,7 +34,7 @@ import './App.css';
 
 function App() {
   const [theme, colorMode] = useMode();
-
+  const [selectedEvent, setSelectedEvent] = useState(null);
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
@@ -46,7 +46,7 @@ function App() {
               <Topbar />
               <main className="main-content">
                 <Routes>
-                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/dashboard" element={<EventList />} />
 
                   <Route path="/calendar/CalendarList" element={<CalendarList />} />
                   <Route path="/calendar/add" element={<CalendarAdd />} />

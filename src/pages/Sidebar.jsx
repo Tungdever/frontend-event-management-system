@@ -1,21 +1,18 @@
 import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box,  Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../theme";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
-import CelebrationOutlinedIcon from "@mui/icons-material/CelebrationOutlined";
 import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
 import HandshakeOutlinedIcon from "@mui/icons-material/HandshakeOutlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
-import HomeRepairServiceOutlinedIcon from "@mui/icons-material/HomeRepairServiceOutlined";
 import RecordVoiceOverOutlinedIcon from "@mui/icons-material/RecordVoiceOverOutlined";
 import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
-
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -35,16 +32,17 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
-const Sidebar = () => {
+const Sidebar = ({ selectedEvent }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
 
-  const menuItems = [
+  // Dữ liệu menu item cho sidebar
+  const defaultMenuItems = [
     {
       title: 'Dashboard',
-      path: '/dashboard/Dashboard',
+      path: '/dashboard',
       icon: <DashboardOutlinedIcon />
     },
     {
@@ -52,23 +50,14 @@ const Sidebar = () => {
       icon: <CalendarMonthOutlinedIcon />,
       submenu: [
         { title: 'Xem lịch', path: '/calendar/CalendarList' },
-        // { title: 'Thêm lịch', path: '/calendar/CalendarAdd' },
       ]
     },
-    // {
-    //   title: 'Events',
-    //   icon: <CelebrationOutlinedIcon />,
-    //   submenu: [
-    //     // { title: 'Danh sách sự kiện', path: '/events/EventList' },
-    //     // { title: 'Thêm sự kiện', path: '/events/EventAdd' },
-    //   ]
-    // },
+
     {
       title: 'Sponsors',
       icon: <BusinessOutlinedIcon />,
       submenu: [
         { title: 'Danh sách nhà tài trợ', path: '/sponsors/SponsorList' },
-        // { title: 'Thêm nhà tài trợ', path: '/sponsors/SponsorAdd' },
       ]
     },
     {
@@ -76,7 +65,6 @@ const Sidebar = () => {
       icon: <HandshakeOutlinedIcon />,
       submenu: [
         { title: 'Mức độ nhà tài trợ', path: '/sponsorships/' },
-        // { title: 'Thêm tài trợ', path: '/sponsorships/SponsorshipAdd' },
       ]
     },
     {
@@ -84,23 +72,14 @@ const Sidebar = () => {
       icon: <StorefrontOutlinedIcon />,
       submenu: [
         { title: 'Danh sách nhà cung cấp', path: '/providers/ProviderList' },
-        // { title: 'Thêm nhà cung cấp', path: '/providers/ProviderAdd' },
       ]
     },
-    // {
-    //   title: 'Provider Services',
-    //   icon: <HomeRepairServiceOutlinedIcon />,
-    //   submenu: [
-    //     { title: 'Danh sách dịch vụ', path: '/provider-services/ProviderServiceList' },
-    //     { title: 'Thêm dịch vụ', path: '/provider-services/ProviderServiceAdd' },
-    //   ]
-    // },
+
     {
       title: 'Speakers',
       icon: <RecordVoiceOverOutlinedIcon />,
       submenu: [
         { title: 'Danh sách diễn giả', path: '/speakers' },
-        // { title: 'Thêm diễn giả', path: '/speakers/SpeakerAdd' },
       ]
     },
     {
@@ -108,7 +87,6 @@ const Sidebar = () => {
       icon: <CampaignOutlinedIcon />,
       submenu: [
         { title: 'Danh sách MC', path: '/mcs' },
-        // { title: 'Thêm MC', path: '/mcs/MCAdd' },
       ]
     },
     {
@@ -116,7 +94,6 @@ const Sidebar = () => {
       icon: <GroupsOutlinedIcon />,
       submenu: [
         { title: 'Danh sách nhóm', path: '/teams/TeamList' },
-        // { title: 'Thêm nhóm', path: '/teams/TeamAdd' },
       ]
     },
     {
@@ -124,10 +101,30 @@ const Sidebar = () => {
       icon: <AssignmentOutlinedIcon />,
       submenu: [
         { title: 'Danh sách công việc', path: '/tasks' },
-        // { title: 'Thêm công việc', path: '/tasks/add' },
       ]
     },
+
   ];
+
+  const eventMenuItems = [
+    {
+      title: "Event Details",
+      icon: <CalendarMonthOutlinedIcon />,
+      submenu: [
+        { title: "View Event", path: `/event/${selectedEvent?.eventId}` },
+      ],
+    },
+    {
+      title: "Manage Participants",
+      icon: <GroupsOutlinedIcon />,
+      submenu: [
+        { title: "Add Participants", path: `/event/${selectedEvent?.eventId}/participants` },
+      ],
+    },
+    // Các mục khác dành riêng cho event
+  ];
+
+  const menuItems = selectedEvent ? eventMenuItems : defaultMenuItems;
 
   return (
     <Box
@@ -151,21 +148,11 @@ const Sidebar = () => {
     >
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
-          {/* LOGO AND MENU ICON */}
-          <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                ml="15px"
-              >
-                <Typography variant="h3" color={colors.grey[100]}>
-                  EVENT 
-                </Typography>
-                
-              </Box>
-
-          
-
+          <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
+            <Typography variant="h3" color={colors.grey[100]}>
+              EVENT
+            </Typography>
+          </Box>
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
             {menuItems.map((item, index) => (
               <div key={index}>

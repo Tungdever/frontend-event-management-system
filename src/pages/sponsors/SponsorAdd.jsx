@@ -6,7 +6,7 @@ import Header from "../../components/Header";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
-const SponsorAddForm = () => {
+const SponsorAdd = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [sponsorshipLevels, setSponsorshipLevels] = useState([]);
 
@@ -17,7 +17,7 @@ const SponsorAddForm = () => {
         const response = await axios.get("http://localhost:8080/man/sponsorship",  {
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`, // Thêm JWT token từ localStorage
+              Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
             },
           });
         setSponsorshipLevels(response.data.data);
@@ -30,21 +30,26 @@ const SponsorAddForm = () => {
 
   const handleFormSubmit = async (values, { resetForm }) => {
     try {
-      const sponsorDTO = {
-        name: values.name,
-        contact: values.contact,
-        email: values.email,
-        phone: values.phone,
-        address: values.address,
-        website: values.website,
-        sponsorshipId: values.sponsorshipId, // Gửi sponsorshipId
-        sponsorshipLevel: values.sponsorshipLevel, // Gửi tên cấp độ
-      };
+      // Gửi file logo lên API
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("contact", values.contact);
+      formData.append("email", values.email);
+      formData.append("phone", values.phone);
+      formData.append("address", values.address);
+      formData.append("website", values.website);
+      formData.append("sponsorshipId", values.sponsorshipId);
+      formData.append("sponsorshipLevel", values.sponsorshipLevel);
 
-      const response = await axios.post("http://localhost:8080/man/sponsor", sponsorDTO, {
+      // Nếu có logo, thêm vào formData
+      if (values.sponsorLogo) {
+        formData.append("logo", values.sponsorLogo);
+      }
+      
+      const response = await axios.post("http://localhost:8080/man/sponsor", formData, {
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`, // Thêm JWT token từ localStorage
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
         },
       });
       alert("Sponsor added successfully!");
@@ -83,6 +88,7 @@ const SponsorAddForm = () => {
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
+              {/* Các trường input */}
               <TextField
                 fullWidth
                 variant="filled"
@@ -162,6 +168,17 @@ const SponsorAddForm = () => {
                 sx={{ gridColumn: "span 4" }}
               />
 
+              {/* Logo File Upload */}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setFieldValue("sponsorLogo", e.target.files[0])}
+                style={{ gridColumn: "span 4", marginTop: "16px" }}
+              />
+              {touched.sponsorLogo && errors.sponsorLogo && (
+                <FormHelperText error>{errors.sponsorLogo}</FormHelperText>
+              )}
+
               {/* Sponsorship Level Select */}
               <FormControl
                 fullWidth
@@ -216,7 +233,8 @@ const validationSchema = yup.object().shape({
   phone: yup.string().required("Phone is required"),
   address: yup.string().required("Address is required"),
   website: yup.string().url("Invalid URL").required("Website is required"),
-  sponsorshipId: yup.number().required("Sponsorship level is required"),
+  sponsorLogo: yup.mixed().required("Logo is required"),
+  sponsorshipId: yup.string().required("Sponsorship level is required"),
 });
 
 const initialValues = {
@@ -226,8 +244,9 @@ const initialValues = {
   phone: "",
   address: "",
   website: "",
+  sponsorLogo: null,
   sponsorshipId: "",
   sponsorshipLevel: "",
 };
 
-export default SponsorAddForm;
+export default SponsorAdd;

@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import { TextField, Button, Grid, Typography, Card, CardMedia, CircularProgress } from '@mui/material';
 import axios from 'axios';
 
-const MCAdd = () => {
+const McAdd = () => {
   const [mcName, setMcName] = useState('');
   const [email, setEmail] = useState('');
+  const [title, setTitle] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
+  const [imageName, setImageName] = useState('');
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
 
@@ -13,21 +18,27 @@ const MCAdd = () => {
     const file = event.target.files[0];
     if (file) {
       setImage(file);
-      setImagePreview(URL.createObjectURL(file)); // Tạo preview cho ảnh
+      setImageName(file.name);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!mcName || !email || !image) {
-      alert('Vui lòng điền đầy đủ thông tin');
+    if (!mcName || !email || !title || !phone || !address || !description || !image) {
+      alert('Vui lòng điền đầy đủ thông tin.');
       return;
     }
 
     const formData = new FormData();
     formData.append('mcName', mcName);
     formData.append('email', email);
-    formData.append('imageMc', image); // Đính kèm ảnh vào FormData
+    formData.append('title', title);
+    formData.append('phone', phone);
+    formData.append('address', address);
+    formData.append('description', description);
+    formData.append('imageMc', image);
+    formData.append('image', imageName);
 
     setLoading(true);
     try {
@@ -37,15 +48,19 @@ const MCAdd = () => {
           Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
         },
       });
-      alert('MC đã được thêm thành công');
-      // Reset form sau khi thêm thành công
+      console.log('API Response:', response);
+      alert('Thêm MC thành công!');
       setMcName('');
       setEmail('');
+      setTitle('');
+      setPhone('');
+      setAddress('');
+      setDescription('');
       setImage(null);
       setImagePreview(null);
     } catch (error) {
       console.error('Lỗi khi thêm MC:', error);
-      alert('Đã xảy ra lỗi, vui lòng thử lại');
+      alert('Có lỗi xảy ra, vui lòng thử lại.');
     } finally {
       setLoading(false);
     }
@@ -59,7 +74,6 @@ const MCAdd = () => {
       <Card style={{ padding: '20px' }}>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            {/* mcName */}
             <Grid item xs={12} sm={6}>
               <TextField
                 label="Tên MC"
@@ -69,8 +83,6 @@ const MCAdd = () => {
                 onChange={(e) => setMcName(e.target.value)}
               />
             </Grid>
-
-            {/* Email */}
             <Grid item xs={12} sm={6}>
               <TextField
                 label="Email"
@@ -81,8 +93,44 @@ const MCAdd = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </Grid>
-
-            {/* Ảnh đại diện */}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Chức Danh"
+                variant="outlined"
+                fullWidth
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Số Điện Thoại"
+                variant="outlined"
+                fullWidth
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Địa Chỉ"
+                variant="outlined"
+                fullWidth
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Mô Tả"
+                variant="outlined"
+                fullWidth
+                multiline
+                rows={4}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </Grid>
             <Grid item xs={12} sm={6}>
               <input
                 type="file"
@@ -93,20 +141,23 @@ const MCAdd = () => {
               />
               <label htmlFor="image-upload">
                 <Button variant="contained" component="span" fullWidth>
-                  Chọn ảnh
+                  Chọn Ảnh
                 </Button>
               </label>
               {imagePreview && (
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={imagePreview}
-                  alt="MC Image Preview"
-                />
+                <>
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={imagePreview}
+                    alt="MC Image Preview"
+                  />
+                  <Typography variant="body2" align="center">
+                    {imageName}
+                  </Typography>
+                </>
               )}
             </Grid>
-
-            {/* Nút submit */}
             <Grid item xs={12}>
               <Button
                 type="submit"
@@ -125,4 +176,4 @@ const MCAdd = () => {
   );
 };
 
-export default MCAdd;
+export default McAdd;
