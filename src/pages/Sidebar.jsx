@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, Typography, useTheme } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../theme";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
@@ -37,8 +37,9 @@ const Sidebar = ({ selectedEvent }) => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+  const location = useLocation();  // Lấy URL hiện tại
 
-  // Dữ liệu menu item cho sidebar
+  // Các menu items mặc định
   const defaultMenuItems = [
     {
       title: 'Dashboard',
@@ -52,7 +53,6 @@ const Sidebar = ({ selectedEvent }) => {
         { title: 'Xem lịch', path: '/calendar/CalendarList' },
       ]
     },
-
     {
       title: 'Sponsors',
       icon: <BusinessOutlinedIcon />,
@@ -74,7 +74,6 @@ const Sidebar = ({ selectedEvent }) => {
         { title: 'Danh sách nhà cung cấp', path: '/providers/ProviderList' },
       ]
     },
-
     {
       title: 'Speakers',
       icon: <RecordVoiceOverOutlinedIcon />,
@@ -103,28 +102,69 @@ const Sidebar = ({ selectedEvent }) => {
         { title: 'Danh sách công việc', path: '/tasks' },
       ]
     },
-
   ];
 
-  const eventMenuItems = [
+  // Menu items dành cho sự kiện
+  const eventMenuItems = selectedEvent ? [
     {
       title: "Event Details",
       icon: <CalendarMonthOutlinedIcon />,
       submenu: [
-        { title: "View Event", path: `/event/${selectedEvent?.eventId}` },
+        { title: "View Event", path: `/event/${selectedEvent.eventId}` },
+      ],
+    },
+    
+    {
+      title: "Manage Invite",
+      icon: <GroupsOutlinedIcon />,
+      submenu: [
+        { title: "Add invite", path: `/event/${selectedEvent.eventId}/participants` },
       ],
     },
     {
-      title: "Manage Participants",
+      title: "Manage Sponsor",
       icon: <GroupsOutlinedIcon />,
       submenu: [
-        { title: "Add Participants", path: `/event/${selectedEvent?.eventId}/participants` },
+        { title: "Add sponsor", path: `/event/${selectedEvent.eventId}/participants` },
       ],
-    },
-    // Các mục khác dành riêng cho event
-  ];
+    },{
+      title: "Manage Provider",
+      icon: <GroupsOutlinedIcon />,
+      submenu: [
+        { title: "Add Provider", path: `/event/${selectedEvent.eventId}/participants` },
+      ],
+    },{
+      title: "Manage Task",
+      icon: <GroupsOutlinedIcon />,
+      submenu: [
+        { title: "Add Task", path: `/event/${selectedEvent.eventId}/participants` },
+      ],
+    },{
+      title: "Manage SubTask",
+      icon: <GroupsOutlinedIcon />,
+      submenu: [
+        { title: "Add SubTask", path: `/event/${selectedEvent.eventId}/participants` },
+      ],
+    },{
+      title: "Manage Team",
+      icon: <GroupsOutlinedIcon />,
+      submenu: [
+        { title: "Add Team", path: `/event/${selectedEvent.eventId}/participants` },
+      ],
+    }
+  ] : [];
 
-  const menuItems = selectedEvent ? eventMenuItems : defaultMenuItems;
+  // Cập nhật lại menuItems dựa trên URL
+  const [menuItems, setMenuItems] = useState(defaultMenuItems);
+  console.log(location.pathname);
+  useEffect(() => {
+    // Kiểm tra URL hiện tại và quyết định menuItems cần hiển thị
+    if (location.pathname.includes('/events/')) {
+      setMenuItems(eventMenuItems);  // Nếu là sự kiện, hiển thị menu sự kiện
+    } else {
+      setMenuItems(defaultMenuItems);  // Nếu không, hiển thị menu mặc định
+    }
+  }, [location, selectedEvent]);
 
   return (
     <Box
@@ -148,11 +188,18 @@ const Sidebar = ({ selectedEvent }) => {
     >
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
-          <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
+          {/* LOGO AND MENU ICON */}
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            ml="15px"
+          >
             <Typography variant="h3" color={colors.grey[100]}>
               EVENT
             </Typography>
           </Box>
+
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
             {menuItems.map((item, index) => (
               <div key={index}>

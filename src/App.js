@@ -8,6 +8,7 @@ import CalendarList from './pages/calendar/CalendarList';
 import CalendarAdd from './pages/calendar/CalendarAdd';
 import EventList from './pages/events/EventList';
 import EventAdd from './pages/events/EventAdd';
+import EventDetail from "./pages/events/EventDetail";
 import SponsorList from './pages/sponsors/SponsorList';
 import SponsorAdd from './pages/sponsors/SponsorAdd';
 import SponsorDetail from './pages/sponsors/SponsorDetail';
@@ -41,17 +42,18 @@ function App() {
         <CssBaseline />
         <Router>
           <div className="app">
-            <Sidebar />
+          <Sidebar selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} />
             <div className="content-wrapper">
               <Topbar />
               <main className="main-content">
                 <Routes>
-                  <Route path="/dashboard" element={<EventList />} />
+                  {/* <Route path="/dashboard" element={<EventList />} /> */}
 
                   <Route path="/calendar/CalendarList" element={<CalendarList />} />
                   <Route path="/calendar/add" element={<CalendarAdd />} />
 
-                  <Route path="/events" element={<EventList />} />
+                  <Route path="/dashboard" element={<EventList setSelectedEvent={setSelectedEvent} />} />
+                  <Route path="/events/:eventId" element={<EventDetail />} />
                   <Route path="/events/add" element={<EventAdd />} />
 
                   <Route path="/sponsors/SponsorList" element={<SponsorList />} />
