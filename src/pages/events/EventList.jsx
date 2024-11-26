@@ -8,7 +8,7 @@ const EventList = ({ setSelectedEvent }) => {
     const [events, setEvents] = useState([]);
     const navigate = useNavigate();
     const [imageUrls, setImageUrls] = useState({});
-    const defaultImage = 'https://chiemtaimobile.vn/images/companies/1/%E1%BA%A2nh%20Blog/avatar-facebook-dep/Hinh-dai-dien-hai-huoc-meme-deo-kinh.jpg?1704789860473';
+    const defaultImage = 'https://static.vecteezy.com/system/resources/previews/006/692/205/non_2x/loading-icon-template-black-color-editable-loading-icon-symbol-flat-illustration-for-graphic-and-web-design-free-vector.jpg';
     useEffect(() => {
         axios
             .get("http://localhost:8080/man/event", {

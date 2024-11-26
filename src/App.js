@@ -6,14 +6,20 @@ import Sidebar from './pages/Sidebar';
 import Dashboard from './pages/dashboard/Dashboard';
 import CalendarList from './pages/calendar/CalendarList';
 import CalendarAdd from './pages/calendar/CalendarAdd';
+
 import EventList from './pages/events/EventList';
 import EventAdd from './pages/events/EventAdd';
 import EventDetail from "./pages/events/EventDetail";
+import SponsorForEvent from "./pages/events/AddSponsorForEvent";
+
 import SponsorList from './pages/sponsors/SponsorList';
 import SponsorAdd from './pages/sponsors/SponsorAdd';
+
 import SponsorDetail from './pages/sponsors/SponsorDetail';
+
 import SponsorshipList from './pages/sponsorships/SponsorshipList';
 import SponsorshipAdd from './pages/sponsorships/SponsorshipAdd';
+
 import ProviderList from './pages/providers/ProviderList';
 import ProviderAdd from './pages/providers/ProviderAdd';
 import ProviderEdit from './pages/providers/ProviderEdit'
@@ -21,13 +27,17 @@ import ProviderDetail from './pages/providers/ProviderDetail';
 
 import ProviderServiceAdd from './pages/provider-services/ProviderServiceAdd';
 import ProviderServiceDetail from './pages/provider-services/ProviderServiceDetail'
+
 import SpeakerList from './pages/speakers/SpeakerList';
 import SpeakerAdd from './pages/speakers/SpeakerAdd';
 import SpeakerDetail from './pages/speakers/SpeakerDetail';
+
 import MCList from './pages/mcs/MCList';
 import MCAdd from './pages/mcs/MCAdd'
+
 import TeamList from './pages/teams/TeamList';
 import TeamAdd from './pages/teams/TeamAdd';
+
 import TaskList from './pages/tasks/TaskList';
 import TaskAdd from './pages/tasks/TaskAdd';
 import Topbar from './pages/Topbar';
@@ -54,11 +64,13 @@ function App() {
 
                   <Route path="/dashboard" element={<EventList setSelectedEvent={setSelectedEvent} />} />
                   <Route path="/events/:eventId" element={<EventDetail />} />
+                  <Route path="/events/:eventId/sponsors" element={<SponsorForEvent/>} />
                   <Route path="/events/add" element={<EventAdd />} />
 
                   <Route path="/sponsors/SponsorList" element={<SponsorList />} />
                   <Route path="/sponsors/SponsorAdd" element={<SponsorAdd />} />
                   <Route path="/sponsors/:sponsorId" element={<SponsorDetail />} />
+                  
 
                   <Route path="/sponsorships/" element={<SponsorshipList />} />
                   <Route path="/sponsorships/add" element={<SponsorshipAdd />} />

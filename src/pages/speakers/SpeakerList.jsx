@@ -1,29 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import {
-    Box,
-    Card,
-    CardContent,
-    Typography,
-    Button,
-    IconButton,
-    Menu,
-    MenuItem,
-    Avatar,
-    Grid,
-} from '@mui/material';
+import { Box, Card, CardContent, Typography, Button, IconButton,  Menu, MenuItem, Avatar,Grid,} from '@mui/material';
 import { Link } from "react-router-dom";
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
+const axiosInstance = axios.create({
+    baseURL: 'http://localhost:8080/man/speaker', 
+    headers: {
+      Authorization: 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw'
+    },
+  });
 const SpeakerList = () => {
     const [speakers, setSpeakers] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedSpeakerId, setSelectedSpeaker] = useState(null);
-    const [imageUrls, setImageUrls] = useState({});  // State to store image URLs
-
+    const [imageUrls, setImageUrls] = useState({});  
     const open = Boolean(anchorEl);
+    const navigate = useNavigate();
 
     // Fetch data from API
     useEffect(() => {
@@ -57,15 +54,27 @@ const SpeakerList = () => {
         setSelectedSpeaker(null);
     };
 
-    const handleEdit = () => {
-        console.log('Edit speaker:', selectedSpeakerId);
-        handleMenuClose();
-    };
+    // const handleViewDetail = () => {
+    //     console.log('Edit speaker:', selectedSpeakerId);
+    //     handleMenuClose();
+    //     navigate(`/speakers/${selectedSpeakerId.id}`);
+    // };
 
-    const handleDelete = () => {
-        console.log('Delete speaker:', selectedSpeakerId);
-        handleMenuClose();
-    };
+    const handleDelete = async () => {
+        try {
+          await axiosInstance.delete(`/${selectedSpeakerId}`);
+          alert("Sponsor deleted successfully");
+      
+          const response = await axiosInstance.get();
+          setSpeakers(response.data.data || []);
+         
+        } catch (error) {
+          console.error("Error deleting sponsor:", error);
+          alert("Failed to delete sponsor. Please try again later.");
+        } finally {
+        }
+        handleMenuClose(); // Đóng menu khi hoàn thành thao tác
+      };
 
     // Fetch image with authentication headers
     const fetchImage = async (image) => {
@@ -122,7 +131,7 @@ const SpeakerList = () => {
                                     open={open}
                                     onClose={handleMenuClose}
                                 >
-                                    <MenuItem onClick={handleEdit}>Edit</MenuItem>
+                                    {/* <MenuItem onClick={handleViewDetail}>View detail</MenuItem> */}
                                     <MenuItem onClick={handleDelete}>Delete</MenuItem>
                                 </Menu>
                             </div>

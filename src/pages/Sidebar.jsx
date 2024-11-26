@@ -88,20 +88,20 @@ const Sidebar = ({ selectedEvent }) => {
         { title: 'Danh sách MC', path: '/mcs' },
       ]
     },
-    {
-      title: 'Teams',
-      icon: <GroupsOutlinedIcon />,
-      submenu: [
-        { title: 'Danh sách nhóm', path: '/teams/TeamList' },
-      ]
-    },
-    {
-      title: 'Tasks',
-      icon: <AssignmentOutlinedIcon />,
-      submenu: [
-        { title: 'Danh sách công việc', path: '/tasks' },
-      ]
-    },
+    // {
+    //   title: 'Teams',
+    //   icon: <GroupsOutlinedIcon />,
+    //   submenu: [
+    //     { title: 'Danh sách nhóm', path: '/teams/TeamList' },
+    //   ]
+    // },
+    // {
+    //   title: 'Tasks',
+    //   icon: <AssignmentOutlinedIcon />,
+    //   submenu: [
+    //     { title: 'Danh sách công việc', path: '/tasks' },
+    //   ]
+    // },
   ];
 
   // Menu items dành cho sự kiện
@@ -110,7 +110,7 @@ const Sidebar = ({ selectedEvent }) => {
       title: "Event Details",
       icon: <CalendarMonthOutlinedIcon />,
       submenu: [
-        { title: "View Event", path: `/event/${selectedEvent.eventId}` },
+        { title: "View Event", path: `/events/${selectedEvent.eventId}` },
       ],
     },
     
@@ -118,38 +118,38 @@ const Sidebar = ({ selectedEvent }) => {
       title: "Manage Invite",
       icon: <GroupsOutlinedIcon />,
       submenu: [
-        { title: "Add invite", path: `/event/${selectedEvent.eventId}/participants` },
+        { title: "Add invite", path: `/events/${selectedEvent.eventId}/participants` },
       ],
     },
     {
       title: "Manage Sponsor",
       icon: <GroupsOutlinedIcon />,
       submenu: [
-        { title: "Add sponsor", path: `/event/${selectedEvent.eventId}/participants` },
+        { title: "Add sponsor", path: `/events/${selectedEvent.eventId}/sponsors` },
       ],
     },{
       title: "Manage Provider",
       icon: <GroupsOutlinedIcon />,
       submenu: [
-        { title: "Add Provider", path: `/event/${selectedEvent.eventId}/participants` },
+        { title: "Add Provider", path: `/events/${selectedEvent.eventId}/participants` },
       ],
     },{
       title: "Manage Task",
       icon: <GroupsOutlinedIcon />,
       submenu: [
-        { title: "Add Task", path: `/event/${selectedEvent.eventId}/participants` },
+        { title: "Add Task", path: `/events/${selectedEvent.eventId}/participants` },
       ],
     },{
       title: "Manage SubTask",
       icon: <GroupsOutlinedIcon />,
       submenu: [
-        { title: "Add SubTask", path: `/event/${selectedEvent.eventId}/participants` },
+        { title: "Add SubTask", path: `/events/${selectedEvent.eventId}/participants` },
       ],
     },{
       title: "Manage Team",
       icon: <GroupsOutlinedIcon />,
       submenu: [
-        { title: "Add Team", path: `/event/${selectedEvent.eventId}/participants` },
+        { title: "Add Team", path: `/events/${selectedEvent.eventId}/participants` },
       ],
     }
   ] : [];

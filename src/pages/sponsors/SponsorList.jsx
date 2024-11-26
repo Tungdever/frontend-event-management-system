@@ -12,7 +12,7 @@ const defaultImage = 'path/to/default/image.jpg'; // Thay bằng đường dẫn
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:8080/man/sponsor', // Base URL của Spring Boot (đổi thành sponsor)
   headers: {
-    Authorization: 'Bearer YOUR_TOKEN'
+    Authorization: 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw'
   },
 });
 
@@ -31,12 +31,7 @@ const SponsorList = () => {
   useEffect(() => {
     const fetchSponsors = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/man/sponsor', {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw'
-          },
-        });
+        const response = await axiosInstance.get();
         setSponsors(response.data.data || []);
         setFilteredSponsors(response.data.data || []); // Lưu dữ liệu đã tải vào danh sách lọc
       } catch (error) {
@@ -104,20 +99,24 @@ const SponsorList = () => {
     navigate(`/sponsors/${selectedSponsor.id}`);
   };
 
-  const handleEdit = () => {
-    handleMenuClose();
-    navigate(`/sponsors/${selectedSponsor.id}/edit`);
-  };
 
   const handleDelete = async () => {
     try {
-      const response = await axiosInstance.delete(`/${selectedSponsor.id}`);
+      await axiosInstance.delete(`/${selectedSponsor.id}`);
       alert("Sponsor deleted successfully");
-      setSponsors((prev) => prev.filter((sp) => sp.id !== selectedSponsor.id));
+  
+      // Fetch lại danh sách sponsors sau khi xóa thành công
+      setLoading(true); // Hiển thị loading trong khi đợi dữ liệu mới
+      const response = await axiosInstance.get();
+      setSponsors(response.data.data || []);
+      setFilteredSponsors(response.data.data || []);
     } catch (error) {
       console.error("Error deleting sponsor:", error);
+      alert("Failed to delete sponsor. Please try again later.");
+    } finally {
+      setLoading(false); // Kết thúc trạng thái loading
     }
-    handleMenuClose();
+    handleMenuClose(); // Đóng menu khi hoàn thành thao tác
   };
 
   const columns = [
@@ -206,7 +205,7 @@ const SponsorList = () => {
           />
           <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
             <MenuItem onClick={handleViewDetail}>View Detail</MenuItem>
-            <MenuItem onClick={handleEdit}>Edit</MenuItem>
+            {/* <MenuItem onClick={handleEdit}>Edit</MenuItem> */}
             <MenuItem onClick={handleDelete}>Delete</MenuItem>
           </Menu>
         </>

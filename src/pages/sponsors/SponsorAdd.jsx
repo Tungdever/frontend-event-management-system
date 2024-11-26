@@ -7,6 +7,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 
 const SponsorAdd = () => {
+  
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [sponsorshipLevels, setSponsorshipLevels] = useState([]);
 
