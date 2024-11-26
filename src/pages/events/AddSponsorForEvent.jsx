@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -7,69 +8,40 @@ import {
   Grid,
   Box,
   CircularProgress,
-  Link as MuiLink,
   Button,
-  IconButton,
-  Menu,
-  MenuItem,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
-  TextField,
+  IconButton,
 } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
 
 const SponsorCard = ({ sponsor, onDelete }) => {
   const [imageUrl, setImageUrl] = useState("");
   const [loadingImage, setLoadingImage] = useState(true);
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const open = Boolean(anchorEl);
-
-  useEffect(() => {
-    const fetchImage = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3000/file/${sponsor.sponsorLogo}`,
-          {
+  const fetchImage = async (sponsorLogo) => {
+    try {
+        const response = await axios.get(`http://localhost:8080/file/${sponsor.sponsorLogo}`, {
             headers: {
-              Authorization: "Bearer your-token-here", // Thay thế bằng token thực tế
+              Authorization: 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw'
             },
-            responseType: "blob",
-          }
-        );
-        const url = URL.createObjectURL(response.data);
-        setImageUrl(url);
-      } catch (error) {
-        console.error("Error loading image:", error);
-      } finally {
-        setLoadingImage(false);
-      }
-    };
-
-    fetchImage();
-  }, [sponsor.sponsorLogo]);
-
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+            responseType: 'blob',
+          });
+      const url = URL.createObjectURL(response.data);
+      setImageUrl(url);
+    } catch (error) {
+      console.error("Error loading image:", error);
+    } finally {
+      setLoadingImage(false);
+    }
   };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleViewDetail = () => {
-    alert(`Viewing details for: ${sponsor.name}`);
-    handleMenuClose();
-  };
-
-  const handleDelete = () => {
-    onDelete(sponsor.id);
-    handleMenuClose();
-  };
+  useEffect(() => {
+    if (sponsor.sponsorLogo) {
+      setLoadingImage(true); // Bắt đầu quá trình tải
+      fetchImage(sponsor.sponsorLogo);
+    }
+  }, [sponsor.sponsorLogo]); // Chạy lại khi sponsor.sponsorLogo thay đổi
 
   return (
     <Card>
@@ -84,79 +56,49 @@ const SponsorCard = ({ sponsor, onDelete }) => {
         />
       )}
       <CardContent>
-        <Box display="flex" justifyContent="space-between">
-          <Typography variant="h6">{sponsor.name}</Typography>
-          <IconButton onClick={handleMenuOpen}>
-            <MoreVertIcon />
-          </IconButton>
-        </Box>
-        <Typography variant="body2" color="text.secondary">
-          Contact: {sponsor.contact}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Email: {sponsor.email}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Phone: {sponsor.phone}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Address: {sponsor.address}
-        </Typography>
+        <Typography variant="h6">{sponsor.name}</Typography>
         <Typography variant="body2" color="text.secondary">
           Sponsorship Level: {sponsor.sponsorshipLevel}
         </Typography>
-        <MuiLink href={sponsor.website} target="_blank" rel="noopener">
-          Visit Website
-        </MuiLink>
       </CardContent>
-
-      {/* Dots Menu */}
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleMenuClose}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <MenuItem onClick={handleViewDetail}>View Detail</MenuItem>
-        <MenuItem onClick={handleDelete}>Delete</MenuItem>
-      </Menu>
     </Card>
   );
 };
-
 
 const SponsorForEvent = () => {
   const [sponsors, setSponsors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [availableSponsors, setAvailableSponsors] = useState([]);
+  const [loadingAddSponsor, setLoadingAddSponsor] = useState(false);
 
-  const eventId = 1; // Lấy từ URL
+  const { eventId } = useParams();
   const apiUrl = `http://localhost:8080/man/event/${eventId}/sponsors`;
-  const authHeader = {
-    headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
-      "Content-Type": "application/json",
-    },
-  };
-
-  useEffect(() => {
-    const fetchSponsors = async () => {
-      try {
-        const response = await axios.get(apiUrl, authHeader);
-        if (response.data && response.data.statusCode === 0) {
-          setSponsors(response.data.data);
-        } else {
-          setError("Failed to fetch sponsors");
-        }
-      } catch (err) {
-        setError("An error occurred while fetching sponsors");
-      } finally {
-        setLoading(false);
+  const fetchSponsors = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(apiUrl, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+        },
+      });
+  
+      if (response.data.statusCode === 0) {
+        setSponsors(response.data.data);
+      } else {
+        setError("Failed to fetch sponsors");
       }
-    };
-
+    } catch (err) {
+      setError("An error occurred while fetching sponsors");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
     fetchSponsors();
   }, [apiUrl]);
 
@@ -164,7 +106,44 @@ const SponsorForEvent = () => {
     setSponsors((prev) => prev.filter((sponsor) => sponsor.id !== id));
   };
 
+  const fetchAvailableSponsors = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/man/event/${eventId}/listponsor`, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+            },
+          }
+      );
+      if (response.data.statusCode === 0) {
+        setAvailableSponsors(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching available sponsors:", error);
+    }
+  };
 
+  const handleAddSponsor = async (sponsorId) => {
+    console.log("add sponsor for event")
+    setLoadingAddSponsor(true);
+    try {
+      await axios.post(
+        `http://localhost:8080/man/event/${eventId}/sponsors/${sponsorId}`,null, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+            },
+          }
+      );
+      await fetchAvailableSponsors();
+      await fetchSponsors();
+    } catch (error) {
+      console.error("Error adding sponsor:", error);
+    } finally {
+      setLoadingAddSponsor(false);
+    }
+  };
 
   return (
     <Box sx={{ padding: 4 }}>
@@ -173,7 +152,10 @@ const SponsorForEvent = () => {
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={() => setOpenAddDialog(true)}
+          onClick={() => {
+            fetchAvailableSponsors();
+            setOpenAddDialog(true);
+          }}
         >
           Add Sponsor
         </Button>
@@ -192,7 +174,49 @@ const SponsorForEvent = () => {
         </Grid>
       )}
 
-     
+      <Dialog
+        open={openAddDialog}
+        onClose={() => setOpenAddDialog(false)}
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogTitle>Available Sponsors</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            {availableSponsors.map((sponsor) => (
+              <Grid item xs={12} sm={6} md={4} key={sponsor.id}>
+                <Card
+                  onClick={() => handleAddSponsor(sponsor.id)}
+                  sx={{
+                    cursor: "pointer",
+                    "&:hover": { boxShadow: 6 },
+                    position: "relative",
+                  }}
+                >
+                  {loadingAddSponsor && (
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        bgcolor: "rgba(255,255,255,0.7)",
+                      }}
+                    >
+                      <CircularProgress />
+                    </Box>
+                  )}
+                  <SponsorCard sponsor={sponsor} />
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };

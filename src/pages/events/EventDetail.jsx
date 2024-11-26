@@ -4,27 +4,21 @@ import axios from "axios";
 import {
   Box,
   Typography,
-  Card,
-  CardMedia,
-  CardContent,
-  Stack,
   Grid,
-  Paper,
+  Divider,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import DescriptionIcon from "@mui/icons-material/Description";
 import InfoIcon from "@mui/icons-material/Info";
-import {  Divider } from "@mui/material";
-
 import EventNoteIcon from "@mui/icons-material/EventNote";
 
-
-import { styled } from "@mui/system";
 const EventDetail = () => {
   const { eventId } = useParams(); // Lấy eventId từ URL
   const [event, setEvent] = useState(null);
+  const [eventImage, setEventImage] = useState(null); // Trạng thái URL ảnh
 
   useEffect(() => {
+    // Lấy thông tin sự kiện
     axios
       .get(`http://localhost:8080/man/event/${eventId}`, {
         headers: {
@@ -35,6 +29,23 @@ const EventDetail = () => {
       .then((response) => {
         if (response.data.statusCode === 0) {
           setEvent(response.data.data);
+
+          // Lấy ảnh từ API
+          const imageUrl = `http://localhost:8080/file/${response.data.data.eventImg}`;
+          axios
+            .get(imageUrl, {
+              headers: {
+                Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+              },
+              responseType: "blob", // Lấy dữ liệu ảnh dưới dạng blob
+            })
+            .then((imageResponse) => {
+              const blobUrl = URL.createObjectURL(imageResponse.data);
+              setEventImage(blobUrl); // Lưu URL tạm thời của ảnh
+            })
+            .catch((imageError) => {
+              console.error("Error fetching event image", imageError);
+            });
         }
       })
       .catch((error) => {
@@ -47,20 +58,23 @@ const EventDetail = () => {
   }
 
   return (
-    <Box sx={{ maxWidth: "80%", margin: "0 auto", padding: 3 }}>
+    <Box sx={{ maxWidth: "100%", margin: "0 auto", padding: 3 }}>
       {/* Event Image */}
-      <Box
-        component="img"
-        src={`http://localhost:8080/images/${event.eventImg}`} // URL đến ảnh
-        alt={event.eventName}
-        sx={{
-          width: "100%",
-          height: "auto",
-          borderRadius: 2,
-          boxShadow: 3,
-          marginBottom: 3,
-        }}
-      />
+      {eventImage && (
+        <Box
+          component="img"
+          src={eventImage} // URL tạm thời của ảnh
+          alt={event.eventName}
+          sx={{
+            width: "100%", // Fullwidth
+            maxHeight: "200px", // Giới hạn chiều cao
+            objectFit: "cover", // Giữ chất lượng và cắt ảnh theo khung
+            borderRadius: 2,
+            boxShadow: 3,
+            marginBottom: 3,
+          }}
+        />
+      )}
 
       {/* Event Name */}
       <Typography variant="h4" sx={{ marginBottom: 2 }}>
@@ -119,7 +133,6 @@ const EventDetail = () => {
         </Grid>
       </Grid>
     </Box>
-    
   );
 };
 

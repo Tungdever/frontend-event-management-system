@@ -11,6 +11,7 @@ import EventList from './pages/events/EventList';
 import EventAdd from './pages/events/EventAdd';
 import EventDetail from "./pages/events/EventDetail";
 import SponsorForEvent from "./pages/events/AddSponsorForEvent";
+import AddProviderForEvent from "./pages/events/AddProviderForEvent";
 
 import SponsorList from './pages/sponsors/SponsorList';
 import SponsorAdd from './pages/sponsors/SponsorAdd';
@@ -65,6 +66,7 @@ function App() {
                   <Route path="/dashboard" element={<EventList setSelectedEvent={setSelectedEvent} />} />
                   <Route path="/events/:eventId" element={<EventDetail />} />
                   <Route path="/events/:eventId/sponsors" element={<SponsorForEvent/>} />
+                  <Route path="/events/:eventId/providers" element={<AddProviderForEvent/>} />
                   <Route path="/events/add" element={<EventAdd />} />
 
                   <Route path="/sponsors/SponsorList" element={<SponsorList />} />

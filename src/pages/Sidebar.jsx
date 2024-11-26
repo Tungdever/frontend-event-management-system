@@ -131,7 +131,7 @@ const Sidebar = ({ selectedEvent }) => {
       title: "Manage Provider",
       icon: <GroupsOutlinedIcon />,
       submenu: [
-        { title: "Add Provider", path: `/events/${selectedEvent.eventId}/participants` },
+        { title: "Add Provider", path: `/events/${selectedEvent.eventId}/providers` },
       ],
     },{
       title: "Manage Task",
