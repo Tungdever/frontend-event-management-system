@@ -51,6 +51,7 @@ const Sidebar = ({ selectedEvent }) => {
       icon: <CalendarMonthOutlinedIcon />,
       submenu: [
         { title: 'Xem lịch', path: '/calendar/CalendarList' },
+        
       ]
     },
     {
@@ -134,10 +135,11 @@ const Sidebar = ({ selectedEvent }) => {
         { title: "Add Provider", path: `/events/${selectedEvent.eventId}/providers` },
       ],
     },{
-      title: "Manage Task",
+      title: "Manage Task", 
       icon: <GroupsOutlinedIcon />,
       submenu: [
-        { title: "Add Task", path: `/events/${selectedEvent.eventId}/participants` },
+      
+        { title: 'Kanban', path: `/events/${selectedEvent.eventId}/tasks` },
       ],
     },{
       title: "Manage SubTask",
@@ -149,7 +151,7 @@ const Sidebar = ({ selectedEvent }) => {
       title: "Manage Team",
       icon: <GroupsOutlinedIcon />,
       submenu: [
-        { title: "Add Team", path: `/events/${selectedEvent.eventId}/participants` },
+        { title: "Add Team", path: `/events/${selectedEvent.eventId}/teams` },
       ],
     }
   ] : [];

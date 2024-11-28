@@ -6,6 +6,7 @@ import Sidebar from './pages/Sidebar';
 import Dashboard from './pages/dashboard/Dashboard';
 import CalendarList from './pages/calendar/CalendarList';
 import CalendarAdd from './pages/calendar/CalendarAdd';
+import KanbanBoard from "./pages/tasks/Kanban";
 
 import EventList from './pages/events/EventList';
 import EventAdd from './pages/events/EventAdd';
@@ -38,6 +39,7 @@ import MCAdd from './pages/mcs/MCAdd'
 
 import TeamList from './pages/teams/TeamList';
 import TeamAdd from './pages/teams/TeamAdd';
+import AddTeamForEvent from "./pages/events/AddTeamForEvent";
 
 import TaskList from './pages/tasks/TaskList';
 import TaskAdd from './pages/tasks/TaskAdd';
@@ -61,12 +63,13 @@ function App() {
                   {/* <Route path="/dashboard" element={<EventList />} /> */}
 
                   <Route path="/calendar/CalendarList" element={<CalendarList />} />
-                  <Route path="/calendar/add" element={<CalendarAdd />} />
+                  <Route path="/events/:eventId/tasks" element={<KanbanBoard />} />
 
                   <Route path="/dashboard" element={<EventList setSelectedEvent={setSelectedEvent} />} />
                   <Route path="/events/:eventId" element={<EventDetail />} />
                   <Route path="/events/:eventId/sponsors" element={<SponsorForEvent/>} />
                   <Route path="/events/:eventId/providers" element={<AddProviderForEvent/>} />
+                  <Route path="/events/:eventId/teams" element={<AddTeamForEvent/>} />
                   <Route path="/events/add" element={<EventAdd />} />
 
                   <Route path="/sponsors/SponsorList" element={<SponsorList />} />
@@ -94,6 +97,7 @@ function App() {
 
                   <Route path="/teams/TeamList" element={<TeamList />} />
                   <Route path="/teams/TeamAdd" element={<TeamAdd />} />
+
 
                   <Route path="/tasks" element={<TaskList />} />
                   <Route path="/tasks/add" element={<TaskAdd />} />
