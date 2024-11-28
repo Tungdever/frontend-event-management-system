@@ -57,7 +57,7 @@ const EventList = ({ setSelectedEvent }) => {
     }, [events]);
 
     const handleEventClick = (event) => {
-        console.log(`Navigating to: /events/${event.eventId}`);
+        //console.log(`Navigating to: /events/${event.eventId}`);
         setSelectedEvent(event);
         navigate(`/events/${event.eventId}`);
     };
