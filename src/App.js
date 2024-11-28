@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route,useLocation } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { ColorModeContext, useMode } from './theme';
 import Sidebar from './pages/Sidebar';
@@ -44,11 +44,25 @@ import AddTeamForEvent from "./pages/events/AddTeamForEvent";
 import TaskList from './pages/tasks/TaskList';
 import TaskAdd from './pages/tasks/TaskAdd';
 import Topbar from './pages/Topbar';
+import Login from "./pages/Auth/login";
 import './App.css';
 
 function App() {
   const [theme, colorMode] = useMode();
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(() => {
+    // Lấy giá trị từ localStorage nếu tồn tại
+    const savedEvent = localStorage.getItem("selectedEvent");
+    return savedEvent ? JSON.parse(savedEvent) : null;
+  });
+
+  useEffect(() => {
+    
+    if (selectedEvent) {
+      localStorage.setItem("selectedEvent", JSON.stringify(selectedEvent));
+    } else {
+      localStorage.removeItem("selectedEvent");
+    }
+  }, [selectedEvent]);
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>

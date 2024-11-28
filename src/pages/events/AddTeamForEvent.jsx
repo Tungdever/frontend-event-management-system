@@ -141,88 +141,98 @@ const Contacts = () => {
   return (
     <Box m="20px">
       <Header title="TEAMS" subtitle="List of Teams and Employees" />
-      <Tabs
-        value={selectedTab}
-        onChange={handleTabChange}
-        textColor="primary"
-        indicatorColor="primary"
-        variant="scrollable"
-        scrollButtons="auto"
-      >
-        {teams.map((team, index) => (
-          <Tab key={team.teamId} label={team.teamName} />
-        ))}
-      </Tabs>
-
-      {teams.map((team, index) =>
-        index === selectedTab ? (
-          <Box key={team.teamId} mt="20px">
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleOpenDialog}
-              sx={{ mb: 2 }}
-            >
-              Add Member
-            </Button>
-            <TextField
-              label="Search Employees"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <Box
-              height="400px"
-              sx={{
-                "& .MuiDataGrid-root": {
-                  border: "none",
-                },
-                "& .MuiDataGrid-cell": {
-                  borderBottom: "none",
-                },
-                "& .MuiDataGrid-columnHeaders": {
-                  backgroundColor: colors.blueAccent[700],
-                  borderBottom: "none",
-                },
-                "& .MuiDataGrid-virtualScroller": {
-                  backgroundColor: colors.primary[400],
-                },
-                "& .MuiDataGrid-footerContainer": {
-                  borderTop: "none",
-                  backgroundColor: colors.blueAccent[700],
-                },
-              }}
-            >
-              <DataGrid
-                rows={team.listEmployees.map((employee) => ({
-                  id: employee.id,
-                  fullName: employee.fullName,
-                  email: employee.email,
-                  phone: employee.phone,
-                  address: employee.address,
-                }))}
-                columns={[
-                  { field: "id", headerName: "ID", flex: 0.5 },
-                  { field: "fullName", headerName: "Name", flex: 1 },
-                  { field: "email", headerName: "Email", flex: 1 },
-                  { field: "phone", headerName: "Phone", flex: 1 },
-                  { field: "address", headerName: "Address", flex: 1 },
-                ]}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-              />
-            </Box>
-          </Box>
-        ) : null
+      
+      {teams.length === 0 ? (
+        <Box textAlign="center" m="20px">
+          <Typography>No teams available.</Typography>
+        </Box>
+      ) : (
+        <>
+          <Tabs
+            value={selectedTab}
+            onChange={handleTabChange}
+            textColor="primary"
+            indicatorColor="primary"
+            variant="scrollable"
+            scrollButtons="auto"
+          >
+            {teams.map((team, index) => (
+              <Tab key={team.teamId} label={team.teamName} />
+            ))}
+          </Tabs>
+  
+          {teams.map((team, index) =>
+            index === selectedTab ? (
+              <Box key={team.teamId} mt="20px">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleOpenDialog}
+                  sx={{ mb: 2 }}
+                >
+                  Add Member
+                </Button>
+                <TextField
+                  label="Search Employees"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <Box
+                  height="400px"
+                  sx={{
+                    "& .MuiDataGrid-root": {
+                      border: "none",
+                      color:colors.primary[100],
+                    },
+                    "& .MuiDataGrid-cell": {
+                      borderBottom: "none",
+                    },
+                    "& .MuiDataGrid-columnHeaders": {
+                      backgroundColor: colors.blueAccent[700],
+                      borderBottom: "none",
+                    },
+                    "& .MuiDataGrid-virtualScroller": {
+                      backgroundColor: colors.primary[400],
+                    },
+                    "& .MuiDataGrid-footerContainer": {
+                      borderTop: "none",
+                      backgroundColor: colors.blueAccent[700],
+                    },
+                  }}
+                >
+                  <DataGrid
+                    rows={team.listEmployees.map((employee) => ({
+                      id: employee.id,
+                      fullName: employee.fullName,
+                      email: employee.email,
+                      phone: employee.phone,
+                      address: employee.address,
+                    }))}
+                    columns={[
+                      { field: "id", headerName: "ID", flex: 0.5 },
+                      { field: "fullName", headerName: "Name", flex: 1 },
+                      { field: "email", headerName: "Email", flex: 1 },
+                      { field: "phone", headerName: "Phone", flex: 1 },
+                      { field: "address", headerName: "Address", flex: 1 },
+                    ]}
+                    pageSize={5}
+                    rowsPerPageOptions={[5]}
+                  />
+                </Box>
+              </Box>
+            ) : null
+          )}
+        </>
       )}
-
+  
       {/* Dialog thêm thành viên */}
       <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">
         <DialogTitle>Add Member to Team</DialogTitle>
         <DialogContent>
-          <Typography>Team ID: {teams[selectedTab].teamId}</Typography>
+          <Typography>Team ID: {teams[selectedTab]?.teamId}</Typography>
           <Box mt={2}>
             {employees.map((employee) => (
               <Box
@@ -236,7 +246,7 @@ const Contacts = () => {
                 <IconButton
                   color="primary"
                   onClick={() =>
-                    handleAddMember(teams[selectedTab].teamId, employee.id)
+                    handleAddMember(teams[selectedTab]?.teamId, employee.id)
                   }
                 >
                   <AddOutlinedIcon />
@@ -253,6 +263,7 @@ const Contacts = () => {
       </Dialog>
     </Box>
   );
+  
 };
 
 export default Contacts;
