@@ -37,7 +37,14 @@ const ForgotPassword = () => {
   };
 
   return (
-    <Box display="flex" alignItems="center" justifyContent="center" height="70vh">
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      height="100vh" 
+      width="100vw" 
+      bgcolor="lightgray"
+    >
       <Box
         width="100%"
         maxWidth="400px"
@@ -90,11 +97,11 @@ const ForgotPassword = () => {
               {success}
             </Typography>
           )}
-          <Box display="flex" justifyContent="center" mt={3}>
+          <Box display="flex" justifyContent="center" mt={3} bgcolor="#3b71cb" color = "#ffffff">
             <Button
               type="submit"
               variant="contained"
-              color="primary"
+              color="#333333"
               disabled={loading}
               fullWidth
             >
@@ -102,11 +109,12 @@ const ForgotPassword = () => {
             </Button>
           </Box>
         </form>
-        <Typography color="#aaaaaa" textAlign="center" mt={2}>
-         
-          <Link to="/login" style={{ color: "#76c7c0", textDecoration: "none" }}>
-          Quay lại trang đăng nhập
-          </Link>
+        <Typography color="#333333" textAlign="center" mt={2}>
+          <Box display="flex" justifyContent="flex-end">
+            <Link to="/login" style={{ color: "#333333", textDecoration: "line" }}>
+            Quay lại trang đăng nhập
+            </Link>
+          </Box>
         </Typography>
       </Box>
     </Box>

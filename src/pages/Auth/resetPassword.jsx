@@ -51,7 +51,14 @@ const ResetPassword = () => {
   };
 
   return (
-    <Box display="flex" alignItems="center" justifyContent="center" height="70vh">
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      height="100vh" 
+      width="100vw" 
+      bgcolor="lightgray"
+    >
       <Box
         width="100%"
         maxWidth="400px"

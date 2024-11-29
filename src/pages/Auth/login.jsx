@@ -27,11 +27,11 @@ function Login({ setIsAuthenticated }) {
         email,
         password,
       });
-      const token = response.data.data; 
+      const token = response.data.data;
       localStorage.setItem("token", token); // Lưu token vào localStorage
       setIsAuthenticated(true);
       console.log("Đăng nhập thành công:", response.data);
-    
+
       console.log("Token:", token);
       window.location.href = "/dashboard"; // Điều hướng tới dashboard
     } catch (error) {
@@ -43,7 +43,14 @@ function Login({ setIsAuthenticated }) {
   };
 
   return (
-    <Box display="flex" alignItems="center" justifyContent="center" height="70vh">
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      height="100vh"
+      width="100vw"
+      bgcolor="#f0f0f0"
+    >
       <Box
         width="100%"
         maxWidth="400px"
@@ -58,6 +65,7 @@ function Login({ setIsAuthenticated }) {
         <form onSubmit={handleSubmit}>
           {/* Email Field */}
           <TextField
+
             placeholder="Email"
             fullWidth
             variant="outlined"
@@ -84,12 +92,17 @@ function Login({ setIsAuthenticated }) {
                 "&.Mui-focused fieldset": {
                   borderColor: "#76c7c0",
                 },
+                "& input:-webkit-autofill": {
+                  backgroundColor: "##ffffff !important", // Màu nền khi autofill
+                  WebkitBoxShadow: "0 0 0px 1000px #ffffff inset !important", // Đảm bảo màu nền không bị ghi đè
+                },
               },
             }}
           />
 
           {/* Password Field */}
           <TextField
+
             placeholder="Mật khẩu"
             type="password"
             fullWidth
@@ -117,6 +130,10 @@ function Login({ setIsAuthenticated }) {
                 "&.Mui-focused fieldset": {
                   borderColor: "#76c7c0",
                 },
+                "& input:-webkit-autofill": {
+                  backgroundColor: "#ffffff !important", // Màu nền khi autofill
+                  WebkitBoxShadow: "0 0 0px 1000px #ffffff inset !important", // Đảm bảo màu nền không bị ghi đè
+                },
               },
             }}
           />
@@ -129,11 +146,12 @@ function Login({ setIsAuthenticated }) {
           )}
 
           {/* Nút đăng nhập */}
-          <Box display="flex" justifyContent="center" mt={3}>
+          <Box display="flex" justifyContent="center" mt={3} bgcolor="#3b71cb" color = "#ffffff">
             <Button
               type="submit"
               variant="contained"
-              color="primary"
+              color="#333333;"
+
               disabled={loading}
               fullWidth
             >
@@ -143,10 +161,12 @@ function Login({ setIsAuthenticated }) {
         </form>
 
         {/* Link quên mật khẩu */}
-        <Typography color="#aaaaaa" textAlign="center" mt={2}>
-          <Link to="/forgot" style={{ color: "#76c7c0", textDecoration: "none" }}>
-            Quên mật khẩu
-          </Link>
+        <Typography color="#333333" textAlign="center" mt={2}>
+          <Box display="flex" justifyContent="flex-end">
+            <Link to="/forgot" style={{ color: "#333333", textDecoration: "line" }}>
+              Quên mật khẩu
+            </Link>
+          </Box>
         </Typography>
       </Box>
     </Box>
