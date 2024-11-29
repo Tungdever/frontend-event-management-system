@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -7,36 +7,30 @@ import {
   CircularProgress,
   InputAdornment,
 } from "@mui/material";
-import { Email, Lock } from "@mui/icons-material";
+import { Email } from "@mui/icons-material";
 import axios from "axios";
 import { Link } from "react-router-dom";
-function Login({ setIsAuthenticated }) {
+const ForgotPassword = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-
-  // Xử lý đăng nhập
-  const handleSubmit = async (e) => {
+  const handleForgotPassword = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setSuccess("");
+
     try {
-      const response = await axios.post("http://localhost:8080/login", {
+      const response = await axios.post("http://localhost:8080/forgot", {
         email,
-        password,
       });
-      const token = response.data.data; 
-      localStorage.setItem("token", token); // Lưu token vào localStorage
-      setIsAuthenticated(true);
-      console.log("Đăng nhập thành công:", response.data);
-    
-      console.log("Token:", token);
-      window.location.href = "/dashboard"; // Điều hướng tới dashboard
+      console.log("Yêu cầu đặt lại mật khẩu thành công:", response.data);
+      setSuccess("Đường dẫn đặt lại mật khẩu đã được gửi đến email của bạn.");
     } catch (error) {
-      console.error("Đăng nhập thất bại:", error);
-      setError("Email hoặc mật khẩu không đúng!");
+      console.error("Yêu cầu đặt lại mật khẩu thất bại:", error);
+      setError("Email không tồn tại hoặc xảy ra lỗi.");
     } finally {
       setLoading(false);
     }
@@ -53,10 +47,9 @@ function Login({ setIsAuthenticated }) {
         boxShadow={3}
       >
         <Typography variant="h4" color="#000000" textAlign="center" mb={3}>
-          Đăng Nhập
+          Quên Mật Khẩu
         </Typography>
-        <form onSubmit={handleSubmit}>
-          {/* Email Field */}
+        <form onSubmit={handleForgotPassword}>
           <TextField
             placeholder="Email"
             fullWidth
@@ -87,48 +80,16 @@ function Login({ setIsAuthenticated }) {
               },
             }}
           />
-
-          {/* Password Field */}
-          <TextField
-            placeholder="Mật khẩu"
-            type="password"
-            fullWidth
-            variant="outlined"
-            margin="normal"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Lock style={{ color: "#d5cbff" }} />
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                color: "#171316",
-                "& fieldset": {
-                  borderColor: "#d5cbff",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#76c7c0",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#76c7c0",
-                },
-              },
-            }}
-          />
-
-          {/* Hiển thị lỗi nếu có */}
           {error && (
             <Typography color="error" mt={1} textAlign="center">
               {error}
             </Typography>
           )}
-
-          {/* Nút đăng nhập */}
+          {success && (
+            <Typography color="success.main" mt={1} textAlign="center">
+              {success}
+            </Typography>
+          )}
           <Box display="flex" justifyContent="center" mt={3}>
             <Button
               type="submit"
@@ -137,20 +98,19 @@ function Login({ setIsAuthenticated }) {
               disabled={loading}
               fullWidth
             >
-              {loading ? <CircularProgress size={24} color="inherit" /> : "Đăng Nhập"}
+              {loading ? <CircularProgress size={24} color="inherit" /> : "Gửi Yêu Cầu"}
             </Button>
           </Box>
         </form>
-
-        {/* Link quên mật khẩu */}
         <Typography color="#aaaaaa" textAlign="center" mt={2}>
-          <Link to="/forgot" style={{ color: "#76c7c0", textDecoration: "none" }}>
-            Quên mật khẩu
+         
+          <Link to="/login" style={{ color: "#76c7c0", textDecoration: "none" }}>
+          Quay lại trang đăng nhập
           </Link>
         </Typography>
       </Box>
     </Box>
   );
-}
+};
 
-export default Login;
+export default ForgotPassword;
