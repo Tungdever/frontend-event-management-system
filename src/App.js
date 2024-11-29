@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route,useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { ColorModeContext, useMode } from './theme';
 import Sidebar from './pages/Sidebar';
@@ -45,6 +45,7 @@ import TaskList from './pages/tasks/TaskList';
 import TaskAdd from './pages/tasks/TaskAdd';
 import Topbar from './pages/Topbar';
 import Login from "./pages/Auth/login";
+import TaskSubTasks from "./pages/events/AddSubtaskForEvent"
 import './App.css';
 
 function App() {
@@ -56,7 +57,7 @@ function App() {
   });
 
   useEffect(() => {
-    
+
     if (selectedEvent) {
       localStorage.setItem("selectedEvent", JSON.stringify(selectedEvent));
     } else {
@@ -69,9 +70,13 @@ function App() {
         <CssBaseline />
         <Router>
           <div className="app">
-          <Sidebar selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} />
+            <div className="sidebar">
+              <Sidebar selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} />
+            </div>
             <div className="content-wrapper">
-              <Topbar />
+              <div className="topbar">
+                <Topbar />
+              </div>
               <main className="main-content">
                 <Routes>
                   {/* <Route path="/dashboard" element={<EventList />} /> */}
@@ -81,15 +86,16 @@ function App() {
 
                   <Route path="/dashboard" element={<EventList setSelectedEvent={setSelectedEvent} />} />
                   <Route path="/events/:eventId" element={<EventDetail />} />
-                  <Route path="/events/:eventId/sponsors" element={<SponsorForEvent/>} />
-                  <Route path="/events/:eventId/providers" element={<AddProviderForEvent/>} />
-                  <Route path="/events/:eventId/teams" element={<AddTeamForEvent/>} />
+                  <Route path="/events/:eventId/sponsors" element={<SponsorForEvent />} />
+                  <Route path="/events/:eventId/providers" element={<AddProviderForEvent />} />
+                  <Route path="/events/:eventId/teams" element={<AddTeamForEvent />} />
+                  <Route path="/events/:eventId/subtask" element={<TaskSubTasks />} />
                   <Route path="/events/add" element={<EventAdd />} />
 
                   <Route path="/sponsors/SponsorList" element={<SponsorList />} />
                   <Route path="/sponsors/SponsorAdd" element={<SponsorAdd />} />
                   <Route path="/sponsors/:sponsorId" element={<SponsorDetail />} />
-                  
+
 
                   <Route path="/sponsorships/" element={<SponsorshipList />} />
                   <Route path="/sponsorships/add" element={<SponsorshipAdd />} />
@@ -98,7 +104,7 @@ function App() {
                   <Route path="/providers/:providerId/edit" element={<ProviderEdit />} />
                   <Route path="/providers/ProviderList" element={<ProviderList />} />
                   <Route path="/providers/ProviderAdd" element={<ProviderAdd />} />
-                
+
                   <Route path="/provider/:providerId/service" element={<ProviderServiceAdd />} />
                   <Route path="/provider/service/:serviceId" element={<ProviderServiceDetail />} />
 

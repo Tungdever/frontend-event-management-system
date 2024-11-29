@@ -133,7 +133,7 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
       title: "Manage SubTask",
       icon: <GroupsOutlinedIcon />,
       submenu: [
-        { title: "Add SubTask", path: `/events/${selectedEvent.eventId}/participants` },
+        { title: "Add SubTask", path: `/events/${selectedEvent.eventId}/subtask` },
       ],
     },
     {

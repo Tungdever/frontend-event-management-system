@@ -20,7 +20,7 @@ const AddTaskDialog = ({ onClose, onSave, eventId }) => {
       eventId: parseInt(eventId),
       teamId
     };
-  
+
     onSave(newTask);
     onClose();
   };
@@ -113,21 +113,21 @@ const KanbanBoard = () => {
       alert("Assigned team chưa được chỉ định");
       return;
     }
-  
+
     // Kiểm tra nếu trạng thái chuyển đổi hợp lệ
     const validTransitions = {
       'to do': ['doing', 'done'],
       'doing': ['to do', 'done'],
       'done': ['to do', 'doing']
     };
-  
+
     if (!validTransitions[task.taskStatus].includes(newStatus)) {
       alert('Invalid status transition');
       return;
     }
-  
+
     task.taskStatus = newStatus;
-  
+
     try {
       // Cập nhật task qua API
       const response = await updateTask(task);
@@ -136,7 +136,7 @@ const KanbanBoard = () => {
         const updatedColumns = { ...columns };
         updatedColumns[columnId] = updatedColumns[columnId].filter(t => t.taskId !== taskId);
         updatedColumns[newStatus].push(task);
-  
+
         setColumns(updatedColumns);
       } else {
         //alert('Task update failed');
@@ -146,7 +146,7 @@ const KanbanBoard = () => {
       alert('There was an error updating the task');
     }
   };
-  
+
 
 
 
@@ -170,12 +170,12 @@ const KanbanBoard = () => {
   };
   const handleAssignedTeamChange = async (taskId, teamId) => {
     try {
-      const responseData = await assignedTeam(taskId, teamId); 
-      console.log('Response Data:', responseData);  
-      if (responseData === true) {  
+      const responseData = await assignedTeam(taskId, teamId);
+      console.log('Response Data:', responseData);
+      if (responseData === true) {
         alert("Team assigned successfully!");
-        
-        
+
+
       } else {
         alert("Failed to assign team");
       }
@@ -193,7 +193,7 @@ const KanbanBoard = () => {
   const handleSaveTask = async (newTask) => {
     // Thêm task vào API
     await createTask(newTask);
-  
+
     // Fetch tất cả task lại để lấy danh sách mới nhất
     const tasks = await fetchTasks(eventId);
     const groupedTasks = {
@@ -201,133 +201,133 @@ const KanbanBoard = () => {
       doing: tasks.filter((task) => task.taskStatus === "doing"),
       done: tasks.filter((task) => task.taskStatus === "done")
     };
-  
+
     // Cập nhật lại state với danh sách task mới
     setColumns(groupedTasks);
   };
-  
+
 
   return (
-<div>
-  <div style={{ ...kanbanContainerStyle, display: 'flex', overflowX: 'auto' }}>
-    {Object.keys(columns).map((columnId) => (
-      <div
-        key={columnId}
-        style={{
-          ...kanbanColumnStyle,
-          margin: '10px',
-          maxHeight: '600px', 
-          overflowY: 'auto',  
-          flex: 1,
-          padding: '10px',
-          boxSizing: 'border-box',
-        }}
-      >
-        <h3>{columnId.toUpperCase()}</h3>
-        {columns[columnId].map((task, index) => (
+    <div>
+      <div style={{ ...kanbanContainerStyle, display: 'flex', overflowX: 'auto' }}>
+        {Object.keys(columns).map((columnId) => (
           <div
-            key={task.taskId}
+            key={columnId}
             style={{
-              ...kanbanTaskStyle,
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',  
-              marginBottom: '6px',  
-              padding: '4px',  
-              fontSize: '13x',  
-              height: 'auto',  
-              minHeight: '100px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
+              ...kanbanColumnStyle,
+              margin: '10px',
+              maxHeight: '600px',
+              overflowY: 'auto',
+              flex: 1,
+              padding: '10px',
+              boxSizing: 'border-box',
             }}
           >
-            <h4><strong>Name: </strong>{task.taskName}</h4>
-            <p><strong>Description: </strong> {task.taskDesc}</p>
-            <p>
-              <strong>Deadline: </strong> 
-              {new Date(task.taskDl).toLocaleString('en-GB', { 
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-              })}
-            </p>
-            
-            {/* Status */}
-            <div style={{ marginBottom: '6px' }}>
-              <label htmlFor={`status-${task.taskId}`}><strong>Status</strong></label>
-              <select
-                id={`status-${task.taskId}`}
-                value={task.taskStatus}
-                onChange={(e) => handleStatusChange(task.taskId, e.target.value, columnId)}
+            <h3>{columnId.toUpperCase()}</h3>
+            {columns[columnId].map((task, index) => (
+              <div
+                key={task.taskId}
                 style={{
-                  ...selectStyle,
-                  fontSize: "12px",
-                  width: "auto", 
-                  textAlign: "center",
-                  marginRight: '5px',
-                  border: 'none',  
+                  ...kanbanTaskStyle,
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                  marginBottom: '6px',
+                  padding: '4px',
+                  fontSize: '13x',
+                  height: 'auto',
+                  minHeight: '100px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
                 }}
               >
-                <option value="to do" style={{ fontWeight: 'bold' }}>To Do</option>
-                <option value="doing" style={{ fontWeight: 'bold' }}>Doing</option>
-                <option value="done" style={{ fontWeight: 'bold' }}>Done</option>
-              </select>
-            </div>
+                <h4><strong>Name: </strong>{task.taskName}</h4>
+                <p><strong>Description: </strong> {task.taskDesc}</p>
+                <p>
+                  <strong>Deadline: </strong>
+                  {new Date(task.taskDl).toLocaleString('en-GB', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                  })}
+                </p>
 
-            {/* Assigned Team */}
-            <div style={{ marginBottom: '6px' }}>
-              <label htmlFor={`team-${task.taskId}`}><strong>Assigned Team</strong></label>
-              <select
-                id={`team-${task.taskId}`}
-                value={task.teamId || ""}
-                onChange={(e) => handleAssignedTeamChange(task.taskId, e.target.value)}
-                onFocus={() => fetchTeams(eventId, task.taskId)}
-                style={{
-                  ...selectStyle,
-                  fontSize: "12px",
-                  width: "auto",
-                  textAlign: "center",
-                  border: 'none', 
-                }}
-                disabled={task.teamName}
-              >
-                {task.teamName ? (
-                  <option value={task.teamId} style={{ fontStyle: 'italic' }}>{task.teamName}</option>
-                ) : (
-                  <>
-                    <option value="">Select a team</option>
-                    {teams.map((team) => (
-                      <option key={team.teamId} value={team.teamId} style={{ fontStyle: 'italic' }}>
-                        {team.teamName}
-                      </option>
-                    ))}
-                  </>
-                )}
-              </select>
-            </div>
+                {/* Status */}
+                <div style={{ marginBottom: '6px' }}>
+                  <label htmlFor={`status-${task.taskId}`}><strong>Status</strong></label>
+                  <select
+                    id={`status-${task.taskId}`}
+                    value={task.taskStatus}
+                    onChange={(e) => handleStatusChange(task.taskId, e.target.value, columnId)}
+                    style={{
+                      ...selectStyle,
+                      fontSize: "12px",
+                      width: "auto",
+                      textAlign: "center",
+                      marginRight: '5px',
+                      border: 'none',
+                    }}
+                  >
+                    <option value="to do" style={{ fontWeight: 'bold' }}>To Do</option>
+                    <option value="doing" style={{ fontWeight: 'bold' }}>Doing</option>
+                    <option value="done" style={{ fontWeight: 'bold' }}>Done</option>
+                  </select>
+                </div>
 
-            <button onClick={() => handleDelete(task.taskId, columnId)} style={deleteButtonStyle}>
-              Delete
+                {/* Assigned Team */}
+                <div style={{ marginBottom: '6px' }}>
+                  <label htmlFor={`team-${task.taskId}`}><strong>Assigned Team</strong></label>
+                  <select
+                    id={`team-${task.taskId}`}
+                    value={task.teamId || ""}
+                    onChange={(e) => handleAssignedTeamChange(task.taskId, e.target.value)}
+                    onFocus={() => fetchTeams(eventId, task.taskId)}
+                    style={{
+                      ...selectStyle,
+                      fontSize: "12px",
+                      width: "auto",
+                      textAlign: "center",
+                      border: 'none',
+                    }}
+                    disabled={task.teamName}
+                  >
+                    {task.teamName ? (
+                      <option value={task.teamId} style={{ fontStyle: 'italic' }}>{task.teamName}</option>
+                    ) : (
+                      <>
+                        <option value="">Select a team</option>
+                        {teams.map((team) => (
+                          <option key={team.teamId} value={team.teamId} style={{ fontStyle: 'italic' }}>
+                            {team.teamName}
+                          </option>
+                        ))}
+                      </>
+                    )}
+                  </select>
+                </div>
+
+                <button onClick={() => handleDelete(task.taskId, columnId)} style={deleteButtonStyle}>
+                  Delete
+                </button>
+              </div>
+            ))}
+            <button onClick={handleAddTask} style={addButtonStyle}>
+              Add Task
             </button>
           </div>
         ))}
-        <button onClick={handleAddTask} style={addButtonStyle}>
-          Add Task
-        </button>
       </div>
-    ))}
-  </div>
 
-  {showDialog && (
-    <AddTaskDialog
-      onClose={() => setShowDialog(false)}
-      onSave={handleSaveTask}
-      eventId={eventId}
-    />
-  )}
-</div>
+      {showDialog && (
+        <AddTaskDialog
+          onClose={() => setShowDialog(false)}
+          onSave={handleSaveTask}
+          eventId={eventId}
+        />
+      )}
+    </div>
 
 
 
