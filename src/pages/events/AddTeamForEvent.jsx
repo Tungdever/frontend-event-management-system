@@ -38,7 +38,7 @@ const Contacts = () => {
         const response = await fetch(`http://localhost:8080/man/event/${eventId}/team-member`,{
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+            Authorization: localStorage.getItem("token"),
           },
         });
         const result = await response.json();
@@ -63,7 +63,7 @@ const Contacts = () => {
       const response = await fetch("http://localhost:8080/man/employee",{
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+          Authorization: localStorage.getItem("token"),
         },
       });
       const result = await response.json();
@@ -96,7 +96,7 @@ const Contacts = () => {
       const response = await fetch(`http://localhost:8080/man/team/${teamId}/add/${employeeId}`, {
         method: "POST",
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+            Authorization: localStorage.getItem("token"),
         }
       });
       if (response.ok) {
@@ -106,8 +106,8 @@ const Contacts = () => {
         const updatedTeams = await fetch(`http://localhost:8080/man/event/${eventId}/team-member`, {
           method: "GET",
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
-          }
+              Authorization: localStorage.getItem("token"),
+            }
         });
         const result = await updatedTeams.json();
         if (result.statusCode === 0 && result.data) {

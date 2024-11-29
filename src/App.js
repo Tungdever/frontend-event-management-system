@@ -55,7 +55,7 @@ function App() {
     const savedEvent = localStorage.getItem("selectedEvent");
     return savedEvent ? JSON.parse(savedEvent) : null;
   });
-
+  localStorage.setItem("token","Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjg5MDg3MCwiZXhwIjoxNzMzNDk1NjcwLCJyb2xlcyI6WyJST0xFX0FETUlOIl19.q2-HQ0jzFHaTf_Sp4lqN4exOZTf0U7OjhL3Qcy4Mgo5_iXbxKq9x6q3ntAHk0xQDtHwsy-kmq_22RsaECR5f8A")
   useEffect(() => {
 
     if (selectedEvent) {

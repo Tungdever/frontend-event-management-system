@@ -5,8 +5,8 @@ const BASE_URL = 'http://localhost:8080';
 // Hàm helper để thêm header Authorization
 const getHeaders = (token) => ({
   headers: {
-    Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjgwMTk1MywiZXhwIjoxNzMzNDA2NzUzLCJyb2xlcyI6WyJST0xFX0FETUlOIl19.vVqxiTiBuLxFYHPVsQ7EvjiwZVlZYungWsphscZclmcn3l-EFsgbTS9VEP-HJUhEv8lclJJyDW0g6QKJfdlU-Q`,
-},
+    Authorization: localStorage.getItem("token"),
+  },
 });
 
 // Fetch tasks theo eventId

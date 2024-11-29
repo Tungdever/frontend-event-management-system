@@ -72,7 +72,7 @@ const TaskSubTasks = () => {
                 formData, {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjg5MDg3MCwiZXhwIjoxNzMzNDk1NjcwLCJyb2xlcyI6WyJST0xFX0FETUlOIl19.q2-HQ0jzFHaTf_Sp4lqN4exOZTf0U7OjhL3Qcy4Mgo5_iXbxKq9x6q3ntAHk0xQDtHwsy-kmq_22RsaECR5f8A`,
+                    Authorization: localStorage.getItem("token"),
                 },
             }
             );
@@ -92,7 +92,7 @@ const TaskSubTasks = () => {
             try {
                 const response = await axios.get(`http://localhost:8080/man/event/${eventId}/subtasks`, {
                     headers: {
-                        Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`, // Token JWT
+                        Authorization: localStorage.getItem("token"), // Token JWT
                     },
                 });
                 if (response.data && response.data.statusCode === 0) {

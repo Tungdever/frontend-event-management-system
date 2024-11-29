@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 const axiosInstance = axios.create({
     baseURL: 'http://localhost:8080/man/speaker', 
     headers: {
-      Authorization: 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw'
+        Authorization: localStorage.getItem("token"),
     },
   });
 const SpeakerList = () => {
@@ -27,7 +27,7 @@ const SpeakerList = () => {
         fetch('http://localhost:8080/man/speaker', {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+                Authorization: localStorage.getItem("token"),
             },
         })
             .then((response) => response.json())
@@ -83,7 +83,7 @@ const SpeakerList = () => {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+                    Authorization: localStorage.getItem("token"),
                 },
             });
             if (response.ok) {
