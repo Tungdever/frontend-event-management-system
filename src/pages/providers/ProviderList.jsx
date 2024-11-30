@@ -16,7 +16,7 @@ const getToken = () => {
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:8080/man/provider', // Base URL của Spring Boot
   headers: {
-    Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`, // Thêm JWT token từ localStorage
+    Authorization: localStorage.getItem("token"),
   },
 });
 

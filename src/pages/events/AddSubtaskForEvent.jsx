@@ -1,290 +1,365 @@
-import React, { useEffect, useState } from "react";
-import {
-    Box,
-    Typography,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    TextField,
-    MenuItem,
-    CircularProgress,
-} from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { useTheme } from "@mui/material/styles";
-import { tokens } from "../../theme"; // Custom theme tokens
-import Header from "../../components/Header"; // Custom Header component
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import {
+  Box,
+  Typography,
+  Tabs,
+  Tab,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  MenuItem,
+  CircularProgress,
+} from "@mui/material";
+import axios from "axios";
+import Header from "../../components/Header";
+// Function to fetch tasks
+const fetchTasks = async (eventId) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8080/man/event/${eventId}/tasks`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    );
+    return response.data.data || [];
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    throw error; // Rethrow the error to be handled by the calling function
+  }
+};
 
+// Function to fetch employees for a specific team
+const fetchEmployees = async (teamId) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8080/man/team/${teamId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    );
+    return response.data.data.listEmployees || [];
+  } catch (error) {
+    console.error("Error fetching employees:", error);
+    throw error; // Rethrow the error to be handled by the calling function
+  }
+};
+
+// Function to save subtask
+const saveSubtask = async (taskId, formData) => {
+  const formattedTaskDl = new Date(formData.subTaskDeadline)
+    .toISOString()
+    .slice(0, 19)
+    .replace("T", " ");
+  formData.subTaskDeadline = formattedTaskDl;
+
+  try {
+    const response = await axios.post(
+      `http://localhost:8080/man/subtask/${taskId}`,
+      formData,
+      {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    );
+    console.log("Subtask saved successfully:", response.data);
+    return response.data; // Return the response data to be used in the calling function
+  } catch (error) {
+    console.error("Error saving subtask:", error);
+    throw error; // Rethrow the error to be handled by the calling function
+  }
+};
 
 const TaskSubTasks = () => {
-    const { eventId } = useParams();
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
+  const { eventId } = useParams();
+  const [tasks, setTasks] = useState([]);
+  const [activeTab, setActiveTab] = useState(0);
+  const [openDialog, setOpenDialog] = useState(false);
 
-    const [tasks, setTasks] = useState([]);
-    const [loading, setLoading] = useState(false);
-    // State quản lý dialog
-    const [open, setOpen] = useState(false);
-    const [formData, setFormData] = useState({
-        subTaskName: "",
-        subTaskDesc: "",
-        subTaskDeadline: "",
-        status: "",
-        employeeId: "",
-        taskId: null,
-    });
+  const [formData, setFormData] = useState({
+    subTaskName: "",
+    subTaskDesc: "",
+    subTaskDeadline: "",
+    status: "",
+    employeeId: "",
+    taskId: null,
+  });
 
-    // Mở dialog và thiết lập taskId
-    const handleOpenDialog = (taskId) => {
-        setFormData((prev) => ({ ...prev, taskId }));
-        setOpen(true);
-    };
+  const [loading, setLoading] = useState(false);
+  const [employees, setEmployees] = useState([]);
+  const [teamId, setTeamId] = useState(null);
 
-    // Đóng dialog
-    const handleCloseDialog = () => {
-        setOpen(false);
-        setFormData({
-            subTaskName: "",
-            subTaskDesc: "",
-            subTaskDeadline: "",
-            status: "",
-            employeeId: "",
-            taskId: null,
-        });
-    };
+  useEffect(() => {
+    const getTasks = async () => {
+      try {
+        const data = await fetchTasks(eventId);
+        setTasks(data);
 
-    // Xử lý thay đổi form
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-
-    // Hàm gửi subtask đến API
-    const handleSubmit = async () => {
-        setLoading(true);
-        try {
-            console.log("Task ID:", formData.taskId);
-            const response = await axios.post(
-                `http://localhost:8080/man/subtask/${formData.taskId}`,
-                formData, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjg5MDg3MCwiZXhwIjoxNzMzNDk1NjcwLCJyb2xlcyI6WyJST0xFX0FETUlOIl19.q2-HQ0jzFHaTf_Sp4lqN4exOZTf0U7OjhL3Qcy4Mgo5_iXbxKq9x6q3ntAHk0xQDtHwsy-kmq_22RsaECR5f8A`,
-                },
-            }
-            );
-            console.log("Subtask saved successfully:", response.data);
-
-            handleCloseDialog();
-        } catch (error) {
-            console.error("Error saving subtask:", error);
-
-        } finally {
-            setLoading(false);
+        if (data.length > 0 && data[0].teamId) {
+          setTeamId(data[0].teamId);
         }
-    };
-    // Fetch data from the API
-    useEffect(() => {
-        const fetchSubTasks = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8080/man/event/${eventId}/subtasks`, {
-                    headers: {
-                        Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`, // Token JWT
-                    },
-                });
-                if (response.data && response.data.statusCode === 0) {
-                    const groupedTasks = groupByTask(response.data.data);
-                    setTasks(groupedTasks);
-                }
-            } catch (error) {
-                console.error("Error fetching subtasks:", error);
-            }
-        };
-
-        fetchSubTasks();
-    }, [eventId]);
-
-    // Helper function to group subtasks by taskId
-    const groupByTask = (subtasks) => {
-        const grouped = subtasks.reduce((acc, subtask) => {
-            const { taskId } = subtask;
-            if (!acc[taskId]) acc[taskId] = [];
-            acc[taskId].push(subtask);
-            return acc;
-        }, {});
-        return Object.entries(grouped).map(([taskId, subtasks]) => ({
-            taskId,
-            subtasks,
-        }));
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
     };
 
+    getTasks();
+  }, [eventId, tasks]);
+  useEffect(() => {
+    if (teamId) {
+      const getEmployees = async () => {
+        try {
+          const data = await fetchEmployees(teamId);
+          setEmployees(data);
+        } catch (error) {
+          console.error("Error fetching employees:", error);
+        }
+      };
 
-    // Columns definition for DataGrid
-    const columns = [
-        { field: "subTaskName", headerName: "Subtask Name", flex: 1, minWidth: 150 },
-        { field: "subTaskDesc", headerName: "Description", flex: 1.5, minWidth: 200 },
-        { field: "subTaskStart", headerName: "Start Date", flex: 1, minWidth: 150 },
-        { field: "subTaskDeadline", headerName: "Deadline", flex: 1, minWidth: 150 },
-        { field: "status", headerName: "Status", flex: 1, minWidth: 100 },
-        { field: "employeeId", headerName: "Employee ID", flex: 0.5, minWidth: 100 },
-    ];
+      getEmployees();
+    }
+  }, [teamId]);
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
+  // Mở dialog và thiết lập taskId
+  const handleOpenDialog = (taskId, teamId) => {
+    setOpenDialog(true);
+    setFormData((prev) => ({ ...prev, taskId: taskId, teamId: teamId })); // Thiết lập cả taskId và teamId
+  };
 
+  // Đóng dialog
+  const handleCloseDialog = () => {
+    setFormData({
+      subTaskName: "",
+      subTaskDesc: "",
+      subTaskDeadline: "",
+      status: "",
+      employeeId: "",
+      taskId: null,
+    });
+    setOpenDialog(false);
+  };
 
-    return (
-        <Box m="20px">
-            <Header title="SUBTASKS" subtitle="View and manage subtasks by task" />
-            {tasks.length > 0 ? (
-                tasks.map((task) => (
-                    <Box key={task.taskId} mb="30px">
-                        <Typography variant="h6" gutterBottom>
-                            Task ID: {task.taskId}
-                        </Typography>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => handleOpenDialog(task.taskId)}
-                            sx={{ mb: 2 }}
-                        >
-                            Add Subtask
-                        </Button>
-                        <Box
-                            height="400px"
-                            sx={{
-                                "& .MuiDataGrid-root": {
-                                    border: "none",
-                                },
-                                "& .MuiDataGrid-cell": {
-                                    borderBottom: "none",
-                                },
-                                "& .MuiDataGrid-columnHeaders": {
-                                    backgroundColor: colors.blueAccent[700],
-                                    borderBottom: "none",
-                                },
-                                "& .MuiDataGrid-virtualScroller": {
-                                    backgroundColor: colors.primary[400],
-                                },
-                                "& .MuiDataGrid-footerContainer": {
-                                    borderTop: "none",
-                                    backgroundColor: colors.blueAccent[700],
-                                },
-                            }}
-                        >
-                            <DataGrid
-                                autoHeight
-                                rows={task.subtasks.map((subtask) => ({
-                                    id: subtask.subTaskId,
-                                    ...subtask,
-                                }))}
-                                columns={columns}
-                                components={{ Toolbar: GridToolbar }}
-                                sx={{
-                                    "& .MuiDataGrid-root": {
-                                        border: "none",
-                                    },
-                                    "& .MuiDataGrid-cell": {
-                                        borderBottom: "none",
-                                    },
-                                    "& .MuiDataGrid-columnHeaders": {
-                                        backgroundColor: colors.tmp[100],
-                                        borderBottom: "none",
-                                    },
-                                    "& .MuiDataGrid-virtualScroller": {
-                                        backgroundColor: colors.primary[400],
-                                    },
-                                    "& .MuiDataGrid-footerContainer": {
-                                        borderTop: "none",
-                                        backgroundColor: colors.tmp[100],
-                                    },
-                                }}
-                            />
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
-                        </Box>
-                    </Box>
-                ))
-            ) : (
-                <Typography>No tasks available</Typography>
-            )}
-            {/* Dialog thêm subtask */}
-            <Dialog open={open} onClose={handleCloseDialog} fullWidth maxWidth="sm">
-                <DialogTitle>Add Subtask</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        label="Subtask Name"
-                        name="subTaskName"
-                        value={formData.subTaskName}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        label="Description"
-                        name="subTaskDesc"
-                        value={formData.subTaskDesc}
-                        onChange={handleInputChange}
-                    />
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        label="Deadline"
-                        name="subTaskDeadline"
-                        type="datetime-local"
-                        value={formData.subTaskDeadline}
-                        onChange={handleInputChange}
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                    />
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        label="Status"
-                        name="status"
-                        select
-                        value={formData.status}
-                        onChange={handleInputChange}
-                    >
-                        <MenuItem value="To do">To do</MenuItem>
-                        <MenuItem value="Doing">Doing</MenuItem>
-                        <MenuItem value="Done">Done</MenuItem>
-                    </TextField>
-                    <TextField
-                        margin="normal"
-                        fullWidth
-                        label="Assigned Employee"
-                        name="employeeId"
-                        select
-                        value={formData.employeeId}
-                        onChange={handleInputChange}
-                    >
-                        <MenuItem value="1">Employee 1</MenuItem>
-                        <MenuItem value="2">Employee 2</MenuItem>
-                        <MenuItem value="3">Employee 3</MenuItem>
+  // Hàm gửi subtask đến API
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const response = await saveSubtask(formData.taskId, formData);
+      console.log("Subtask saved successfully:", response);
+      await fetchTasks(eventId);
+      handleCloseDialog();
+    } catch (error) {
+      console.error("Error saving subtask:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  return (
+    <Box sx={{ width: "100%", typography: "body1" }}>
+      <Header title="TASK FOR EVENT" subtitle="List of Tasks and subtask" />
+      {/* Tabs for Tasks */}
+      <Tabs value={activeTab} onChange={handleTabChange} aria-label="Task Tabs">
+        {tasks.map((task, index) => (
+          <Tab label={task.taskName} key={task.taskId} />
+        ))}
+      </Tabs>
 
-                    </TextField>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseDialog}>Cancel</Button>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleSubmit}
-                        disabled={loading}
-                    >
-                        {loading ? (
-                            <CircularProgress size={24} sx={{ color: "white" }} />
-                        ) : (
-                            "Save"
-                        )}
-                    </Button>
-                </DialogActions>
-            </Dialog>
+      {/* Tab Panels */}
+      {tasks.map((task, index) => (
+        <Box
+          role="tabpanel"
+          hidden={activeTab !== index}
+          key={task.taskId}
+          sx={{ p: 2 }}
+          onClick={() => handleOpenDialog(task.taskId, task.teamId)}
+        >
+          {activeTab === index && (
+            <>
+              <Box sx={{ mt: 2 }}>
+                <Typography variant="h6">Task Details</Typography>
+                <Box sx={{ display: "flex", mb: 1 }}>
+                  <Typography sx={{ fontWeight: "bold", minWidth: "150px" }}>
+                    Name:
+                  </Typography>
+                  <Typography>{task.taskName}</Typography>
+                </Box>
+                <Box sx={{ display: "flex", mb: 1 }}>
+                  <Typography sx={{ fontWeight: "bold", minWidth: "150px" }}>
+                    Description:
+                  </Typography>
+                  <Typography>{task.taskDesc}</Typography>
+                </Box>
+                <Box sx={{ display: "flex", mb: 1 }}>
+                  <Typography sx={{ fontWeight: "bold", minWidth: "150px" }}>
+                    Deadline:
+                  </Typography>
+                  <Typography>{task.taskDl}</Typography>
+                </Box>
+                <Box sx={{ display: "flex", mb: 1 }}>
+                  <Typography sx={{ fontWeight: "bold", minWidth: "150px" }}>
+                    Status:
+                  </Typography>
+                  <Typography>{task.taskStatus}</Typography>
+                </Box>
+                <Box sx={{ display: "flex", mb: 1 }}>
+                  <Typography sx={{ fontWeight: "bold", minWidth: "150px" }}>
+                    Team:
+                  </Typography>
+                  <Typography>{task.teamName || "N/A"}</Typography>
+                </Box>
+              </Box>
+
+              <Typography variant="h6" sx={{ mt: 2 }}>
+                Sub-Tasks
+              </Typography>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{ mt: 2 }}
+                onClick={handleOpenDialog}
+              >
+                Add Subtask
+              </Button>
+              {task.listSubTasks && task.listSubTasks.length > 0 ? (
+                <TableContainer component={Paper}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>SubTask Name</TableCell>
+                        <TableCell>Description</TableCell>
+                        <TableCell>Start Date</TableCell>
+                        <TableCell>Deadline</TableCell>
+                        <TableCell>Status</TableCell>
+                        <TableCell>Employee ID</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {task.listSubTasks.map((subTask) => (
+                        <TableRow key={subTask.subTaskId}>
+                          <TableCell>{subTask.subTaskName}</TableCell>
+                          <TableCell>{subTask.subTaskDesc}</TableCell>
+                          <TableCell>{subTask.subTaskStart}</TableCell>
+                          <TableCell>{subTask.subTaskDeadline}</TableCell>
+                          <TableCell>{subTask.status}</TableCell>
+                          <TableCell>{subTask.employeeId}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              ) : (
+                <Typography>No Sub-Tasks available</Typography>
+              )}
+            </>
+          )}
         </Box>
-    );
+      ))}
+      {/* Dialog thêm subtask */}
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>Add Subtask</DialogTitle>
+        <DialogContent>
+          <TextField
+            margin="normal"
+            fullWidth
+            label="Subtask Name"
+            name="subTaskName"
+            value={formData.subTaskName}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="normal"
+            fullWidth
+            label="Description"
+            name="subTaskDesc"
+            value={formData.subTaskDesc}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="normal"
+            fullWidth
+            label="Deadline"
+            name="subTaskDeadline"
+            type="datetime-local"
+            value={formData.subTaskDeadline}
+            onChange={handleInputChange}
+            InputLabelProps={{ shrink: true }}
+          />
+          <TextField
+            margin="normal"
+            fullWidth
+            label="Status"
+            name="status"
+            select
+            value={formData.status}
+            onChange={handleInputChange}
+          >
+            <MenuItem value="To do">To do</MenuItem>
+            <MenuItem value="Doing">Doing</MenuItem>
+            <MenuItem value="Done">Done</MenuItem>
+          </TextField>
+          <TextField
+            margin="normal"
+            fullWidth
+            label="Assigned Employee"
+            name="employeeId"
+            select
+            value={formData.employeeId}
+            onChange={handleInputChange}
+          >
+            {employees.map((emp) => (
+              <MenuItem key={emp.id} value={emp.id}>
+                {emp.fullName}
+              </MenuItem>
+            ))}
+          </TextField>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="secondary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            color="primary"
+            disabled={loading}
+            startIcon={loading && <CircularProgress size={20} />}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
+  );
 };
 
 export default TaskSubTasks;

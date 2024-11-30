@@ -46,7 +46,7 @@ const SpeakerAdd = () => {
       const response = await axios.post('http://localhost:8080/man/speaker', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`, // Token authorization
+          Authorization: localStorage.getItem("token"),
 
         },
       });

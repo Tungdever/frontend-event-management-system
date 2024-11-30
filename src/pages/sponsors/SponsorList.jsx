@@ -12,7 +12,7 @@ const defaultImage = 'path/to/default/image.jpg'; // Thay bằng đường dẫn
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:8080/man/sponsor', // Base URL của Spring Boot (đổi thành sponsor)
   headers: {
-    Authorization: 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw'
+    Authorization: localStorage.getItem("token"),
   },
 });
 
@@ -66,7 +66,7 @@ const SponsorList = () => {
           try {
             const response = await axios.get(`http://localhost:8080/file/${sponsor.sponsorLogo}`, {
               headers: {
-                Authorization: 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw'
+                Authorization: localStorage.getItem("token"),
               },
               responseType: 'blob',
             });

@@ -22,7 +22,7 @@ const McList = () => {
                 const response = await axios.get('http://localhost:8080/man/mc', {
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`, // Token JWT
+                        Authorization: localStorage.getItem("token"),
                     },
                 });
                 setMcList(response.data.data || []);
@@ -44,7 +44,7 @@ const McList = () => {
                     try {
                         const response = await axios.get(`http://localhost:8080/file/${mc.image}`, {
                             headers: {
-                                Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+                                Authorization: localStorage.getItem("token"),
                             },
                             responseType: 'blob',
                         });

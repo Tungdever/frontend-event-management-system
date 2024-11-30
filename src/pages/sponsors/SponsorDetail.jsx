@@ -22,7 +22,7 @@ import { useTheme } from "@mui/material/styles";
 const axiosInstance = axios.create({
     baseURL: "http://localhost:8080/man/sponsor/",
     headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+        Authorization: localStorage.getItem("token"),
     },
 });
 
@@ -53,7 +53,7 @@ const SponsorDetail = () => {
                 if (sponsorData.sponsorLogo) {
                     const logoResponse = await axios.get(`http://localhost:8080/file/${sponsorData.sponsorLogo}`, {
                         headers: {
-                            Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`, // Token authorization
+                            Authorization: localStorage.getItem("token"),
                         },
                         responseType: 'blob',
                     });
@@ -78,7 +78,7 @@ const SponsorDetail = () => {
                 const response = await axios.get("http://localhost:8080/man/sponsorship", {
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+                        Authorization: localStorage.getItem("token"),
                     },
                 });
                 //console.log(response.data.data)
@@ -130,7 +130,7 @@ const SponsorDetail = () => {
             await axios.put("http://localhost:8080/man/sponsor", formDataToSubmit, {
                 headers: {
                     "Content-Type": "multipart/form-data",
-                    Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+                    Authorization: localStorage.getItem("token"),
 
                 },
             });

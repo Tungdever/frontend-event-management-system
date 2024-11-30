@@ -22,7 +22,7 @@ import { useTheme } from "@mui/material/styles";
 const axiosInstance = axios.create({
     baseURL: "http://localhost:8080/man/speaker/",
     headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+        Authorization: localStorage.getItem("token"),
     },
 });
 
@@ -52,7 +52,7 @@ const SpeakerDetail = () => {
                 if (speakerData.image) {
                     const imageResponse = await axios.get(`http://localhost:8080/file/${speakerData.image}`, {
                         headers: {
-                            Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+                            Authorization: localStorage.getItem("token"),
                         },
                         responseType: 'blob',
                     });
@@ -104,7 +104,7 @@ const SpeakerDetail = () => {
             await axios.put("http://localhost:8080/man/speaker", formDataToSubmit, {
                 headers: {
                     "Content-Type": "multipart/form-data",
-                    Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+                    Authorization: localStorage.getItem("token"),
                 },
             });
 
