@@ -92,7 +92,7 @@ function App() {
                   <Route path="/events/:eventId/subtask" element={<TaskSubTasks />} />
                   <Route path="/events/add" element={<EventAdd />} />
 
-                  <Route path="/sponsors/SponsorList" element={<SponsorList />} />
+                  <Route path="/sponsors" element={<SponsorList />} />
                   <Route path="/sponsors/SponsorAdd" element={<SponsorAdd />} />
                   <Route path="/sponsors/:sponsorId" element={<SponsorDetail />} />
 

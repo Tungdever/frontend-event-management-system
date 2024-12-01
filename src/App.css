@@ -48,6 +48,7 @@
   color: var(--text-primary);
   overflow-y: auto; /* Cuộn nếu nội dung dài */
   box-sizing: border-box;
+ 
 }
 
 /* Responsive: với màn hình nhỏ hơn 768px */

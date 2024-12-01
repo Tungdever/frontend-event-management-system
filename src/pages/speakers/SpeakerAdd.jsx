@@ -1,18 +1,31 @@
-import React, { useState } from 'react';
-import { TextField, Button, Grid, Typography, Card, CardMedia, CircularProgress } from '@mui/material';
-import axios from 'axios';
+import React, { useState } from "react";
+import {
+  TextField,
+  Button,
+  Grid,
+  Typography,
+  Card,
+  CardMedia,
+  CircularProgress,
+  IconButton,
+} from "@mui/material";
+import axios from "axios";
+import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
+import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
+import { useNavigate } from "react-router-dom";
 
 const SpeakerAdd = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [title, setTitle] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
-  const [description, setDescription] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [title, setTitle] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
-  const [imageName, setImageName] = useState('');
+  const [imageName, setImageName] = useState("");
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
+  const navigate = useNavigate();
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -25,57 +38,155 @@ const SpeakerAdd = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!name || !email || !title || !phone || !address || !description || !image) {
-      alert('Vui lòng điền đầy đủ thông tin.');
+    if (
+      !name ||
+      !email ||
+      !title ||
+      !phone ||
+      !address ||
+      !description ||
+      !image
+    ) {
+      alert("Vui lòng điền đầy đủ thông tin.");
       return;
     }
 
     const formData = new FormData();
-    formData.append('name', name);
-    formData.append('email', email);
-    formData.append('title', title);
-    formData.append('phone', phone);
-    formData.append('address', address);
-    formData.append('description', description);
-    formData.append('imageSpeaker', image);
-    formData.append('image', imageName);
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("title", title);
+    formData.append("phone", phone);
+    formData.append("address", address);
+    formData.append("description", description);
+    formData.append("imageSpeaker", image);
+    formData.append("image", imageName);
 
     setLoading(true);
     try {
-      console.log(formData)
-      const response = await axios.post('http://localhost:8080/man/speaker', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: localStorage.getItem("token"),
-
-        },
-      });
-      console.log('API Response:', response);
-      alert('Thêm diễn giả thành công!');
-      setName('');
-      setEmail('');
-      setTitle('');
-      setPhone('');
-      setAddress('');
-      setDescription('');
+      console.log(formData);
+      const response = await axios.post(
+        "http://localhost:8080/man/speaker",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      );
+      console.log("API Response:", response);
+      alert("Thêm diễn giả thành công!");
+      setName("");
+      setEmail("");
+      setTitle("");
+      setPhone("");
+      setAddress("");
+      setDescription("");
       setImage(null);
       setImagePreview(null);
     } catch (error) {
-      console.error('Lỗi khi thêm diễn giả:', error);
-      alert('Có lỗi xảy ra, vui lòng thử lại.');
+      console.error("Lỗi khi thêm diễn giả:", error);
+      alert("Có lỗi xảy ra, vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
   };
+  const onBack = async () => {
+    navigate(`/speakers`);
+  };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <Typography variant="h5" gutterBottom>
-        Thêm Diễn Giả Mới
-      </Typography>
-      <Card style={{ padding: '20px' }}>
+    <div style={{ padding: "20px", backgroundColor: "#f0f0f0" }}>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <IconButton onClick={onBack}>
+          <ArrowBackOutlinedIcon style={{ color: "#3f51b5" }} />
+        </IconButton>
+        <Typography
+          variant="h4"
+          gutterBottom
+          style={{ color: "#3f51b5", fontWeight: "bold", marginLeft: "10px" }}
+        >
+          Thêm Diễn Giả Mới
+        </Typography>
+      </div>
+      <Card
+        style={{
+          padding: "30px",
+          borderRadius: "15px",
+          boxShadow: "0 6px 20px rgba(0, 0, 0, 0.15)",
+        }}
+      >
         <form onSubmit={handleSubmit}>
-          <Grid container spacing={2}>
+          {imagePreview ? (
+            <div style={{ textAlign: "left", marginBottom: "20px" }}>
+              <CardMedia
+                component="img"
+                image={imagePreview}
+                alt="Diễn Giả Image Preview"
+                style={{
+                  width: "150px",
+                  height: "150px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                  margin: "0",
+                }}
+              />
+              <label htmlFor="image-upload">
+                <Button
+                  variant="contained"
+                  component="span"
+                  startIcon={<PersonAddOutlinedIcon />}
+                  style={{
+                    marginTop: "10px",
+                    backgroundColor: "#3f51b5",
+                    color: "#ffffff",
+                  }}
+                >
+                  Chọn Ảnh
+                </Button>
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: "none" }}
+                id="image-upload"
+              />
+              <Typography
+                variant="body2"
+                align="left"
+                style={{ marginTop: "10px" }}
+              >
+                {imageName}
+              </Typography>
+            </div>
+          ) : (
+            <div style={{ textAlign: "left", marginBottom: "20px" }}>
+              <label htmlFor="image-upload">
+                <Button
+                  variant="contained"
+                  component="span"
+                  startIcon={<PersonAddOutlinedIcon />}
+                  style={{
+                    marginTop: "10px",
+                    backgroundColor: "#3f51b5",
+                    color: "#ffffff",
+                  }}
+                >
+                  Chọn Ảnh
+                </Button>
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: "none" }}
+                id="image-upload"
+              />
+            </div>
+          )}
+          <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <TextField
                 label="Tên Diễn Giả"
@@ -83,6 +194,7 @@ const SpeakerAdd = () => {
                 fullWidth
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                style={{ backgroundColor: "#ffffff", borderRadius: "5px" }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -93,6 +205,7 @@ const SpeakerAdd = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                style={{ backgroundColor: "#ffffff", borderRadius: "5px" }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -102,6 +215,7 @@ const SpeakerAdd = () => {
                 fullWidth
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                style={{ backgroundColor: "#ffffff", borderRadius: "5px" }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -111,15 +225,17 @@ const SpeakerAdd = () => {
                 fullWidth
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+                style={{ backgroundColor: "#ffffff", borderRadius: "5px" }}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 label="Địa Chỉ"
                 variant="outlined"
                 fullWidth
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
+                style={{ backgroundColor: "#ffffff", borderRadius: "5px" }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -131,44 +247,30 @@ const SpeakerAdd = () => {
                 rows={4}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                style={{ backgroundColor: "#ffffff", borderRadius: "5px" }}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                style={{ display: 'none' }}
-                id="image-upload"
-              />
-              <label htmlFor="image-upload">
-                <Button variant="contained" component="span" fullWidth>
-                  Chọn Ảnh
-                </Button>
-              </label>
-              {imagePreview && (
-                <>
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={imagePreview}
-                    alt="Diễn Giả Image Preview"
-                  />
-                  <Typography variant="body2" align="center">
-                    {imageName}
-                  </Typography>
-                </>
-              )}
-            </Grid>
-            <Grid item xs={12}>
+            <Grid
+              item
+              xs={12}
+              style={{ display: "flex", justifyContent: "flex-end" }}
+            >
               <Button
                 type="submit"
                 variant="contained"
-                color="primary"
-                fullWidth
                 disabled={loading}
+                style={{
+                  backgroundColor: "#3f51b5",
+                  color: "#ffffff",
+                  borderRadius: "20px",
+                  padding: "8px 16px",
+                }}
               >
-                {loading ? <CircularProgress size={24} /> : 'Thêm Diễn Giả'}
+                {loading ? (
+                  <CircularProgress size={24} style={{ color: "#ffffff" }} />
+                ) : (
+                  "Thêm Diễn Giả"
+                )}
               </Button>
             </Grid>
           </Grid>

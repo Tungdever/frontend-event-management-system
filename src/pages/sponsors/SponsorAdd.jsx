@@ -1,26 +1,42 @@
-import { Box, Button, TextField, Select, MenuItem, FormHelperText, FormControl } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  FormHelperText,
+  FormControl,
+  Typography,
+  IconButton
+} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
+import { useNavigate } from "react-router-dom";
 
 const SponsorAdd = () => {
-  
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [sponsorshipLevels, setSponsorshipLevels] = useState([]);
+  const [previewImage, setPreviewImage] = useState(null);
+  const navigate = useNavigate();
 
   // Fetch sponsorship levels from API
   useEffect(() => {
     const fetchSponsorshipLevels = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/man/sponsorship",  {
+        const response = await axios.get(
+          "http://localhost:8080/man/sponsorship",
+          {
             headers: {
               "Content-Type": "application/json",
               Authorization: localStorage.getItem("token"),
             },
-          });
+          }
+        );
         setSponsorshipLevels(response.data.data);
       } catch (error) {
         console.error("Error fetching sponsorship levels:", error);
@@ -28,10 +44,11 @@ const SponsorAdd = () => {
     };
     fetchSponsorshipLevels();
   }, []);
-
+  const onBack = async () => {
+    navigate(`/sponsors`);
+  };
   const handleFormSubmit = async (values, { resetForm }) => {
     try {
-      // Gửi file logo lên API
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("contact", values.contact);
@@ -46,16 +63,21 @@ const SponsorAdd = () => {
       if (values.sponsorLogo) {
         formData.append("logo", values.sponsorLogo);
       }
-      
-      const response = await axios.post("http://localhost:8080/man/sponsor", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: localStorage.getItem("token"),
-        },
-      });
+
+      const response = await axios.post(
+        "http://localhost:8080/man/sponsor",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      );
       alert("Sponsor added successfully!");
       console.log("Response:", response.data);
       resetForm();
+      setPreviewImage(null); // Reset preview image
     } catch (error) {
       console.error("Error adding sponsor:", error);
       alert("Failed to add sponsor. Please try again.");
@@ -64,7 +86,14 @@ const SponsorAdd = () => {
 
   return (
     <Box m="20px">
-      <Header title="ADD SPONSOR" subtitle="Add a New Sponsor" />
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <IconButton onClick={onBack}>
+          <ArrowBackOutlinedIcon style={{ color: '#3f51b5' }} />
+        </IconButton>
+        <Typography variant="h4" gutterBottom style={{ color: '#3f51b5', fontWeight: 'bold', marginLeft: '10px' }}>
+          Thêm Sponsors
+        </Typography>
+      </div>
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -89,7 +118,74 @@ const SponsorAdd = () => {
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
-              {/* Các trường input */}
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="flex-start" // Căn trái đúng
+                sx={{ gridColumn: "span 4" }}
+              >
+                {previewImage ? (
+                  <Box
+                    component="img"
+                    src={previewImage}
+                    alt="Preview"
+                    sx={{
+                      width: 120,
+                      height: 120,
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      mb: 2,
+                    }}
+                  />
+                ) : (
+                  <Box
+                    sx={{
+                      width: 120,
+                      height: 120,
+                      borderRadius: "50%",
+                      backgroundColor: "#e0e0e0",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      mb: 2,
+                    }}
+                  >
+                    <Typography variant="caption" color="textSecondary">
+                      No Image
+                    </Typography>
+                  </Box>
+                )}
+                <Button
+                  variant="contained"
+                  component="label"
+                  sx={{
+                    textTransform: "none",
+                    width: "fit-content", // Giới hạn chiều rộng
+                    padding: "6px 16px", // Giữ kích thước đẹp
+                  }}
+                >
+                  Choose Logo
+                  <input
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      setFieldValue("sponsorLogo", file);
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = () => setPreviewImage(reader.result);
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                </Button>
+                {touched.sponsorLogo && errors.sponsorLogo && (
+                  <FormHelperText error>{errors.sponsorLogo}</FormHelperText>
+                )}
+              </Box>
+
+              {/* Các trường input khác */}
               <TextField
                 fullWidth
                 variant="filled"
@@ -168,18 +264,6 @@ const SponsorAdd = () => {
                 helperText={touched.website && errors.website}
                 sx={{ gridColumn: "span 4" }}
               />
-
-              {/* Logo File Upload */}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setFieldValue("sponsorLogo", e.target.files[0])}
-                style={{ gridColumn: "span 4", marginTop: "16px" }}
-              />
-              {touched.sponsorLogo && errors.sponsorLogo && (
-                <FormHelperText error>{errors.sponsorLogo}</FormHelperText>
-              )}
-
               {/* Sponsorship Level Select */}
               <FormControl
                 fullWidth
@@ -204,7 +288,10 @@ const SponsorAdd = () => {
                     Select Sponsorship Level
                   </MenuItem>
                   {sponsorshipLevels.map((level) => (
-                    <MenuItem key={level.sponsorShipID} value={level.sponsorShipID}>
+                    <MenuItem
+                      key={level.sponsorShipID}
+                      value={level.sponsorShipID}
+                    >
                       {level.level}
                     </MenuItem>
                   ))}
@@ -234,8 +321,8 @@ const validationSchema = yup.object().shape({
   phone: yup.string().required("Phone is required"),
   address: yup.string().required("Address is required"),
   website: yup.string().url("Invalid URL").required("Website is required"),
-  sponsorLogo: yup.mixed().required("Logo is required"),
   sponsorshipId: yup.string().required("Sponsorship level is required"),
+  sponsorLogo: yup.mixed(),
 });
 
 const initialValues = {
@@ -245,9 +332,9 @@ const initialValues = {
   phone: "",
   address: "",
   website: "",
-  sponsorLogo: null,
   sponsorshipId: "",
   sponsorshipLevel: "",
+  sponsorLogo: null,
 };
 
 export default SponsorAdd;

@@ -1,122 +1,180 @@
-import { Box, Typography } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { useTheme } from "@mui/material";
-import Header from "../../components/Header";
-import { tokens } from "../../theme";
-const Contacts = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+import React, { useEffect, useState } from "react";
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+  Tabs,
+  Tab,
+  Box,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import axios from "axios";
 
-  // Dữ liệu giả lập
-  const teams = [
-    {
-      teamId: "1",
-      teamName: "Team Alpha",
-      employeeList: [
-        {
-          empId: "101",
-          employName: "John Doe",
-          email: "john@example.com",
-          phone: "123-456-7890",
-        },
-        {
-          empId: "102",
-          employName: "Jane Smith",
-          email: "jane@example.com",
-          phone: "234-567-8901",
-        },
-        {
-          empId: "103",
-          employName: "Mark Lee",
-          email: "mark@example.com",
-          phone: "345-678-9012",
-        },
-      ],
-    },
-    {
-      teamId: "2",
-      teamName: "Team Beta",
-      employeeList: [
-        {
-          empId: "201",
-          employName: "Alice Brown",
-          email: "alice@example.com",
-          phone: "456-789-0123",
-        },
-        {
-          empId: "202",
-          employName: "Bob Green",
-          email: "bob@example.com",
-          phone: "567-890-1234",
-        },
-        {
-          empId: "203",
-          employName: "Cathy White",
-          email: "cathy@example.com",
-          phone: "678-901-2345",
-        },
-      ],
-    },
-  ];
-
-  // Định nghĩa cột cho bảng nhân viên
-  const columns = [
-    { field: "empId", headerName: "Employee ID", flex: 0.5 },
-    { field: "employName", headerName: "Employee Name", flex: 1 },
-    { field: "email", headerName: "Email", flex: 1 },
-    { field: "phone", headerName: "Phone", flex: 1 },
-  ];
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
 
   return (
-    <Box m="20px">
-      <Header title="TEAMS" subtitle="List of Teams and Employees" />
-      {teams.length > 0 ? (
-        teams.map((team) => (
-          <Box key={team.teamId} mb="30px">
-            <Typography variant="h6" gutterBottom>
-              Team: {team.teamName}
-            </Typography>
-            <Box
-              height="300px"
-              sx={{
-                "& .MuiDataGrid-root": {
-                  border: "none",
-                },
-                "& .MuiDataGrid-cell": {
-                  borderBottom: "none",
-                },
-                "& .MuiDataGrid-columnHeaders": {
-                  backgroundColor: colors.blueAccent[700],
-                  borderBottom: "none",
-                },
-                "& .MuiDataGrid-virtualScroller": {
-                  backgroundColor: colors.primary[400],
-                },
-                "& .MuiDataGrid-footerContainer": {
-                  borderTop: "none",
-                  backgroundColor: colors.blueAccent[700],
-                },
-              }}
-            >
-              <DataGrid
-                rows={team.employeeList.map((employee) => ({
-                  id: employee.empId,
-                  empId: employee.empId,
-                  employName: employee.employName,
-                  email: employee.email,
-                  phone: employee.phone,
-                }))}
-                columns={columns}
-                components={{ Toolbar: GridToolbar }}
-              />
-            </Box>
-          </Box>
-        ))
-      ) : (
-        <Typography>No teams available</Typography>
-      )}
-    </Box>
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box>{children}</Box>}
+    </div>
   );
-};
+}
 
-export default Contacts;
+function EmployeeList({ employees }) {
+  return (
+    <List>
+      {employees.map((employee) => (
+        <ListItem key={employee.id}>
+          <ListItemText
+            primary={employee.fullName}
+            secondary={
+              <>
+                Email: {employee.email}
+                <br />
+                Address: {employee.address}
+                <br />
+                Phone: {employee.phone}
+              </>
+            }
+          />
+        </ListItem>
+      ))}
+    </List>
+  );
+}
+
+function SubTaskList({ subTasks }) {
+  return (
+    <List>
+      {subTasks.map((subTask) => (
+        <ListItem key={subTask.subTaskId}>
+          <ListItemText
+            primary={subTask.subTaskName}
+            secondary={
+              <>
+                Description: {subTask.subTaskDesc}
+                <br />
+                Deadline: {subTask.subTaskDeadline}
+                <br />
+                Status: {subTask.status}
+              </>
+            }
+          />
+        </ListItem>
+      ))}
+    </List>
+  );
+}
+
+function TaskList({ tasks }) {
+  return (
+    <List>
+      {tasks.map((task) => (
+        <ListItem key={task.taskId}>
+          <ListItemText
+            primary={task.taskName}
+            secondary={
+              <>
+                Description: {task.taskDesc}
+                <br />
+                Deadline: {task.taskDl}
+                <br />
+                Status: {task.taskStatus}
+              </>
+            }
+          />
+          <SubTaskList subTasks={task.listSubTasks || []} />
+        </ListItem>
+      ))}
+    </List>
+  );
+}
+
+function TeamList() {
+  const [teams, setTeams] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [tabValue, setTabValue] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/man/team/1/detail`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      );
+      console.log("API Response Data:", response.data.data); // Log dữ liệu để kiểm tra
+      return response.data.data;
+    } catch (err) {
+      throw new Error("Failed to fetch team data");
+    }
+  };
+
+  useEffect(() => {
+    const loadDetail = async () => {
+      try {
+        setLoading(true);
+        const detailTeam = await fetchData();
+        setTeams(detailTeam);
+        console.log("Teams after API call:", detailTeam); // Thêm log để kiểm tra dữ liệu gán vào state
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDetail();
+  }, []);
+
+  if (loading) {
+    return <Typography>Loading...</Typography>;
+  }
+
+  if (error) {
+    return <Typography color="error">{`Error: ${error}`}</Typography>;
+  }
+
+  return (
+    <>
+      {teams.map((team) => (
+        <Accordion key={team.teamId}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography>{`Team: ${team.teamName}`}</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Tabs value={tabValue} onChange={handleChange}>
+              <Tab label="Employees" />
+              <Tab label="Tasks" />
+            </Tabs>
+            <TabPanel value={tabValue} index={0}>
+              <EmployeeList employees={team.listEmployees || []} />
+            </TabPanel>
+            <TabPanel value={tabValue} index={1}>
+              <TaskList tasks={team.listTasks || []} />
+            </TabPanel>
+          </AccordionDetails>
+        </Accordion>
+      ))}
+    </>
+  );
+}
+
+export default TeamList;

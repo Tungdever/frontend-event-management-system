@@ -95,7 +95,7 @@ const AddProviderForEvent = () => {
   }, [eventId]);
 
   return (
-    <div>
+    <div style={{marginLeft:'20px'}}>
       <Typography variant="h4" gutterBottom>
         Providers for Event
       </Typography>

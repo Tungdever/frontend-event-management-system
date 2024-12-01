@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -23,14 +23,13 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import Header from "../../components/Header";
-// Function to fetch tasks
+
 const fetchTasks = async (eventId) => {
   try {
     const response = await axios.get(
       `http://localhost:8080/man/event/${eventId}/tasks`,
       {
         headers: {
-          "Content-Type": "application/json",
           Authorization: localStorage.getItem("token"),
         },
       }
@@ -38,11 +37,10 @@ const fetchTasks = async (eventId) => {
     return response.data.data || [];
   } catch (error) {
     console.error("Error fetching tasks:", error);
-    throw error; // Rethrow the error to be handled by the calling function
+    throw error;
   }
 };
 
-// Function to fetch employees for a specific team
 const fetchEmployees = async (teamId) => {
   try {
     const response = await axios.get(
@@ -57,11 +55,10 @@ const fetchEmployees = async (teamId) => {
     return response.data.data.listEmployees || [];
   } catch (error) {
     console.error("Error fetching employees:", error);
-    throw error; // Rethrow the error to be handled by the calling function
+    throw error;
   }
 };
 
-// Function to save subtask
 const saveSubtask = async (taskId, formData) => {
   const formattedTaskDl = new Date(formData.subTaskDeadline)
     .toISOString()
@@ -80,10 +77,10 @@ const saveSubtask = async (taskId, formData) => {
       }
     );
     console.log("Subtask saved successfully:", response.data);
-    return response.data; // Return the response data to be used in the calling function
+    return response.data;
   } catch (error) {
     console.error("Error saving subtask:", error);
-    throw error; // Rethrow the error to be handled by the calling function
+    throw error;
   }
 };
 
@@ -122,6 +119,7 @@ const TaskSubTasks = () => {
 
     getTasks();
   }, [eventId, tasks]);
+
   useEffect(() => {
     if (teamId) {
       const getEmployees = async () => {
@@ -142,7 +140,7 @@ const TaskSubTasks = () => {
   // Mở dialog và thiết lập taskId
   const handleOpenDialog = (taskId, teamId) => {
     setOpenDialog(true);
-    setFormData((prev) => ({ ...prev, taskId: taskId, teamId: teamId })); // Thiết lập cả taskId và teamId
+    setFormData((prev) => ({ ...prev, taskId: taskId, teamId: teamId }));
   };
 
   // Đóng dialog
@@ -181,7 +179,7 @@ const TaskSubTasks = () => {
     }
   };
   return (
-    <Box sx={{ width: "100%", typography: "body1" }}>
+    <Box sx={{ width: "100%", typography: "body1", marginLeft: "15px" }}>
       <Header title="TASK FOR EVENT" subtitle="List of Tasks and subtask" />
       {/* Tabs for Tasks */}
       <Tabs value={activeTab} onChange={handleTabChange} aria-label="Task Tabs">
