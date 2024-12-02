@@ -25,7 +25,7 @@ const AddTaskDialog = ({ onClose, onSave, eventId }) => {
     const newTask = {
       taskName,
       taskDesc,
-      taskDl: formattedTaskDl, // Sử dụng giá trị đã chuyển đổi
+      taskDl: formattedTaskDl,
       taskStatus,
       eventId: parseInt(eventId),
       teamId,
