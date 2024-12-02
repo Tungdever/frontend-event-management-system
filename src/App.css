@@ -36,14 +36,14 @@
   color: white; /* Màu chữ */
 
  
-  padding: 0 5px;
+  padding: 0 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng */
 }
 
 /* 5. Nội dung chính */
 .main-content {
   flex: 1; /* Chiếm không gian còn lại bên dưới topbar */
-  padding: 5px; /* Cách lề */
+  padding: 10px; /* Cách lề */
   background-color: var(--content-bg); /* Nền */
   color: var(--text-primary);
   overflow-y: auto; /* Cuộn nếu nội dung dài */
@@ -61,3 +61,4 @@
     width: 100%;
   }
 }
+

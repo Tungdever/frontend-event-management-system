@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Card, CardContent, Typography, Button, IconButton,  Menu, MenuItem, Avatar,Grid,} from '@mui/material';
+import { Box, Card, CardContent, Typography, Button, IconButton,  Menu, MenuItem, Avatar,Grid, TextField} from '@mui/material';
 import { Link } from "react-router-dom";
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
@@ -7,6 +7,8 @@ import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
+import SpeakerAdd from './SpeakerAdd';
 
 const axiosInstance = axios.create({
     baseURL: 'http://localhost:8080/man/speaker', 
@@ -16,12 +18,24 @@ const axiosInstance = axios.create({
   });
 const SpeakerList = () => {
     const [speakers, setSpeakers] = useState([]);
+    const [filteredSpeakers, setFilteredSpeakers] = useState([]);
+
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedSpeakerId, setSelectedSpeaker] = useState(null);
     const [imageUrls, setImageUrls] = useState({});  
+    const [searchTerm, setSearchTerm] = useState("");
+
     const open = Boolean(anchorEl);
     const navigate = useNavigate();
 
+    const handleSearchChange = (e) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+        const filtered = speakers.filter((speaker) =>
+            speaker.name.toLowerCase().includes(value.toLowerCase())
+        );
+        filteredSpeakers(filtered);
+    };
     // Fetch data from API
     useEffect(() => {
         fetch('http://localhost:8080/man/speaker', {
@@ -107,12 +121,26 @@ const SpeakerList = () => {
 
     return (
         <Box sx={{ padding: 2 }}>
-            <Box display="flex" justifyContent="end" mt="20px" marginBottom="20px" marginRight="10px">
-                <Link to={`/speakers/add`} style={{ textDecoration: 'none' }}>
-                    <Button type="submit" color="secondary" variant="contained">
-                        Add Speaker
-                    </Button>
-                </Link>
+            <Typography
+                variant="h4"
+                style={{ fontWeight: "bold", color: "#333", textAlign: "left", marginBottom: "20px" }}
+            >
+                LIST SPEAKERS
+            </Typography>
+            <Box display="flex" justifyContent="space-between" marginBottom="20px">
+                <TextField
+                    label="Search Speaker"
+                    variant="outlined"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    style={{ width: "300px" }}
+                />
+                <SpeakerAdd
+                    onAdd={(newSpeaker) => {
+                        setSpeakers((prev) => [...prev, newSpeaker]);
+                        setFilteredSpeakers((prev) => [...prev, newSpeaker]);
+                    }}
+                />
             </Box>
             <Grid container spacing={2}>
                 {speakers.map((speaker) => (
