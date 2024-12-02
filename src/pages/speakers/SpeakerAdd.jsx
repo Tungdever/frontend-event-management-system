@@ -99,6 +99,9 @@ const SpeakerAdd = () => {
       setLoading(false);
     }
   };
+  const onBack = async () => {
+    navigate(`/speakers`);
+  };
 
 
   return (

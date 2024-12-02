@@ -17,7 +17,9 @@ import { DataGrid } from "@mui/x-data-grid";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 
 const Contacts = () => {
   const { eventId } = useParams();
@@ -29,53 +31,183 @@ const Contacts = () => {
   const [error, setError] = useState(null);
   const [employees, setEmployees] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDialogCreateTeam, setOpenDialogCreateTeam] = useState(false);
 
-  // Fetch dữ liệu từ API
-  useEffect(() => {
-    const fetchTeams = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`http://localhost:8080/man/event/${eventId}/team-member`,{
+  const [dataTeam, setDataTeam] = useState({
+    teamName: "",
+    eventId: "",
+  });
+  const createTeam = async (dataTeam) => {
+    const response = await axios.post(
+      `http://localhost:8080/man/team`,
+      dataTeam,
+      {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    );
+    return response.data;
+  };
+  const deleteTeam = async (teamId) => {
+    const response = await axios.delete(
+      `http://localhost:8080/man/team/${teamId}`,
+
+      {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    );
+    return response.data;
+  };
+  const deleteTeamMember = async (teamId, employeeId) => {
+    const response = await axios.delete(
+      `http://localhost:8080/man/team/${teamId}/del/${employeeId}`,
+
+      {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    );
+    return response.data;
+  };
+  const handleDelete = async (teamId) => {
+    try {
+      setLoading(true);
+      const response = await deleteTeam(teamId);
+      if (response.statusCode === 0) {
+        alert("Team deleted successfully!");
+        const teamsData = await fetchTeams(eventId);
+        setTeams(teamsData);
+      } else {
+        alert("Failed to delete team.");
+      }
+    } catch (error) {
+      console.error("Error deleting team:", error);
+      alert("An error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleDeleteMember = async (teamId, employeeId) => {
+    try {
+      setLoading(true);
+      const response = await deleteTeamMember(teamId, employeeId);
+      if (response.statusCode === 0) {
+        alert("Member deleted successfully!");
+        const teamsData = await fetchTeams(eventId);
+        setTeams(teamsData);
+      } else {
+        alert("Failed to delete team.");
+      }
+    } catch (error) {
+      console.error("Error deleting team:", error);
+      alert("An error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      const response = await createTeam({ ...dataTeam, eventId });
+      if (response.statusCode === 0) {
+        alert("Team created successfully!");
+        const teamsData = await fetchTeams(eventId);
+        setTeams(teamsData);
+        setOpenDialogCreateTeam(false);
+        setDataTeam({ teamName: "", eventId: "" });
+      } else {
+        alert("Failed to create team.");
+      }
+    } catch (error) {
+      console.error("Error creating team:", error);
+      alert("An error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  // Hàm fetch team members
+  const fetchTeams = async (eventId) => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `http://localhost:8080/man/event/${eventId}/team-member`,
+        {
           headers: {
             "Content-Type": "application/json",
             Authorization: localStorage.getItem("token"),
           },
-        });
-        const result = await response.json();
-
-        if (result.statusCode === 0 && result.data) {
-          setTeams(result.data);
-        } else {
-          setError("Failed to fetch data.");
         }
-      } catch (err) {
-        setError("An error occurred while fetching data.");
-      } finally {
-        setLoading(false);
+      );
+      const result = await response.json();
+
+      if (result.statusCode === 0 && result.data) {
+        return result.data;
+      } else {
+        throw new Error("Failed to fetch team members.");
       }
-    };
-
-    fetchTeams();
-  }, [eventId]);
-
+    } catch (error) {
+      console.error("Error fetching teams:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+  // Hàm fetch employees
   const fetchEmployees = async () => {
     try {
-      const response = await fetch("http://localhost:8080/man/employee",{
+      const response = await fetch("http://localhost:8080/man/employee", {
         headers: {
           "Content-Type": "application/json",
           Authorization: localStorage.getItem("token"),
         },
       });
       const result = await response.json();
+
       if (result.statusCode === 0 && result.data) {
-        setEmployees(result.data);
+        return result.data;
       } else {
-        console.error("Failed to fetch employees.");
+        throw new Error("Failed to fetch employees.");
       }
-    } catch (err) {
-      console.error("Error fetching employees:", err);
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+      throw error;
     }
   };
+  // useEffect để tải team members
+  useEffect(() => {
+    const loadTeams = async () => {
+      try {
+        setError(null); // Reset error
+        const teamsData = await fetchTeams(eventId);
+        setTeams(teamsData);
+      } catch (err) {
+        setError("Failed to load teams.");
+      }
+    };
+
+    if (eventId) {
+      loadTeams();
+    }
+  }, [eventId]);
+
+  // useEffect để tải employees
+  useEffect(() => {
+    const loadEmployees = async () => {
+      try {
+        const employeesData = await fetchEmployees();
+        setEmployees(employeesData);
+      } catch (err) {
+        console.error("Error loading employees:", err);
+      }
+    };
+
+    loadEmployees();
+  }, []);
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -90,25 +222,33 @@ const Contacts = () => {
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
-
+  const handleCloseDialogCreateTeam = () => {
+    setOpenDialogCreateTeam(false);
+  };
   const handleAddMember = async (teamId, employeeId) => {
     try {
-      const response = await fetch(`http://localhost:8080/man/team/${teamId}/add/${employeeId}`, {
-        method: "POST",
+      const response = await fetch(
+        `http://localhost:8080/man/team/${teamId}/add/${employeeId}`,
+        {
+          method: "POST",
           headers: {
             Authorization: localStorage.getItem("token"),
+          },
         }
-      });
+      );
       if (response.ok) {
         alert("Member added successfully!");
         setOpenDialog(false); // Close dialog
         // Fetch lại dữ liệu team
-        const updatedTeams = await fetch(`http://localhost:8080/man/event/${eventId}/team-member`, {
-          method: "GET",
+        const updatedTeams = await fetch(
+          `http://localhost:8080/man/event/${eventId}/team-member`,
+          {
+            method: "GET",
             headers: {
               Authorization: localStorage.getItem("token"),
-            }
-        });
+            },
+          }
+        );
         const result = await updatedTeams.json();
         if (result.statusCode === 0 && result.data) {
           setTeams(result.data);
@@ -141,7 +281,21 @@ const Contacts = () => {
   return (
     <Box m="20px">
       <Header title="TEAMS" subtitle="List of Teams and Employees" />
-      
+
+      <Button
+        type="submit"
+        variant="contained"
+        onClick={() => setOpenDialogCreateTeam(true)}
+        style={{
+          backgroundColor: "#3f51b5",
+          color: "#ffffff",
+          borderRadius: "20px",
+          padding: "8px 16px",
+        }}
+      >
+        Add Team
+      </Button>
+
       {teams.length === 0 ? (
         <Box textAlign="center" m="20px">
           <Typography>No teams available.</Typography>
@@ -160,18 +314,25 @@ const Contacts = () => {
               <Tab key={team.teamId} label={team.teamName} />
             ))}
           </Tabs>
-  
+
           {teams.map((team, index) =>
             index === selectedTab ? (
               <Box key={team.teamId} mt="20px">
                 <Button
+                  type="submit"
                   variant="contained"
-                  color="primary"
                   onClick={handleOpenDialog}
-                  sx={{ mb: 2 }}
+                  style={{
+                    backgroundColor: "#3f51b5",
+                    color: "#ffffff",
+                    borderRadius: "20px",
+                    padding: "8px 16px",
+                    marginLeft:"1010px"
+                  }}
                 >
                   Add Member
                 </Button>
+
                 <TextField
                   label="Search Employees"
                   variant="outlined"
@@ -185,7 +346,7 @@ const Contacts = () => {
                   sx={{
                     "& .MuiDataGrid-root": {
                       border: "none",
-                      color:colors.primary[100],
+                      color: colors.primary[100],
                     },
                     "& .MuiDataGrid-cell": {
                       borderBottom: "none",
@@ -217,19 +378,58 @@ const Contacts = () => {
                       { field: "email", headerName: "Email", flex: 1 },
                       { field: "phone", headerName: "Phone", flex: 1 },
                       { field: "address", headerName: "Address", flex: 1 },
+                      {
+                        field: "action",
+                        headerName: "Action",
+                        flex: 1,
+                        renderCell: (params) => (
+                          <IconButton
+                            color="error"
+                            onClick={() =>
+                              handleDeleteMember(
+                                teams[selectedTab]?.teamId,
+                                params.row.id
+                              )
+                            }
+                          >
+                            <DeleteOutlineOutlinedIcon />
+                          </IconButton>
+                        ),
+                      },
                     ]}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
                   />
                 </Box>
+
+                <Button
+                  type="submit"
+                  variant="contained"
+                  onClick={() => handleDelete(teams[selectedTab]?.teamId)}
+                  style={{
+                    backgroundColor: "#3f51b5",
+                    color: "#ffffff",
+                    borderRadius: "20px",
+                    padding: "8px 16px",
+                    marginTop: "10px",
+                    marginLeft:"1010px"
+                  }}
+                >
+                  Delete team
+                </Button>
               </Box>
             ) : null
           )}
         </>
       )}
-  
+
       {/* Dialog thêm thành viên */}
-      <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="sm">
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>Add Member to Team</DialogTitle>
         <DialogContent>
           <Typography>Team ID: {teams[selectedTab]?.teamId}</Typography>
@@ -261,9 +461,43 @@ const Contacts = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Dialog tạo team */}
+      <Dialog
+        open={openDialogCreateTeam}
+        onClose={handleCloseDialogCreateTeam}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>Add Team</DialogTitle>
+        <DialogContent>
+          <TextField
+            margin="normal"
+            fullWidth
+            label="Team Name"
+            name="teamName"
+            value={dataTeam.teamName}
+            onChange={(e) =>
+              setDataTeam({ ...dataTeam, teamName: e.target.value })
+            }
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialogCreateTeam} color="secondary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            color="primary"
+            disabled={loading}
+            startIcon={loading && <CircularProgress size={20} />}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
-  
 };
 
 export default Contacts;

@@ -17,7 +17,6 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined';
 import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
 
-
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -174,7 +173,6 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
   const [menuItems, setMenuItems] = useState(defaultMenuItems);
   useEffect(() => {
     if (!selectedEvent) {
-
       const savedEvent = localStorage.getItem("selectedEvent");
       if (savedEvent) {
         setSelectedEvent(JSON.parse(savedEvent));
@@ -188,75 +186,70 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
     }
   }, [location, selectedEvent, setSelectedEvent]);
 
-
   return (
     <Box
-      sx={{
-        "& .pro-sidebar-inner": {
-          background: `${colors.primary[400]} !important`,
-        },
-        "& .pro-icon-wrapper": {
-          backgroundColor: "transparent !important",
-        },
-        "& .pro-inner-item": {
-          padding: "5px 35px 5px 20px !important",
-        },
-        "& .pro-inner-item:hover": {
-          color: "#868dfb !important",
-        },
-        "& .pro-menu-item.active": {
-          color: "#6870fa !important",
-        },
-      }}
+    sx={{
+      display: "flex", /* Đảm bảo toàn bộ ứng dụng sử dụng flexbox */
+      height: "100vh", /* Đảm bảo chiều cao bằng chiều cao của cửa sổ trình duyệt */
+      "& .pro-sidebar-inner": {
+        background: `${colors.primary[400]} !important`,
+        height: "100%", /* Đảm bảo chiều cao sidebar phủ đầy */
+      },
+      "& .pro-icon-wrapper": { backgroundColor: "transparent !important" },
+      "& .pro-inner-item": { padding: "5px 35px 5px 20px !important" },
+      "& .pro-inner-item:hover": { color: "#868dfb !important" },
+      "& .pro-menu-item.active": { color: "#6870fa !important" },
+    }}
     >
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
-          {/* Logo or Title */}
           <Link to={`/dashboard`} style={{ textDecoration: "none" }}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              ml="15px"
+            >
               <Typography variant="h3" color={colors.grey[100]}>
                 EVENT
               </Typography>
             </Box>
           </Link>
 
-          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-            {menuItems.map((item, index) => (
-              <div key={index}>
-                {!item.submenu ? (
-                  // Menu Item without submenu
-                  <Item
-                    title={item.title}
-                    to={item.path}
-                    icon={item.icon}
-                    selected={selected}
-                    setSelected={setSelected}
-                  />
-                ) : (
-                  // Menu Item with submenu
-                  <Box>
-                    <Typography
-                      variant="h6"
-                      color={colors.grey[300]}
-                      sx={{ m: "15px 0 5px 20px" }}
-                    >
-                      {item.title}
-                    </Typography>
-                    {item.submenu.map((subItem, subIndex) => (
-                      <Item
-                        key={subIndex}
-                        title={subItem.title}
-                        to={subItem.path}
-                        icon={subItem.icon} // Use submenu icon
-                        selected={selected}
-                        setSelected={setSelected}
-                      />
-                    ))}
-                  </Box>
-                )}
-              </div>
-            ))}
-          </Box>
+          {/* Các menu items */}
+          {menuItems.map((item, index) => (
+            <div key={index}>
+              {!item.submenu ? (
+                <Item
+                  title={item.title}
+                  to={item.path}
+                  icon={item.icon}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+              ) : (
+                <Box>
+                  <Typography
+                    variant="h6"
+                    color={colors.grey[300]}
+                    sx={{ m: "15px 0 5px 20px" }}
+                  >
+                    {item.title}
+                  </Typography>
+                  {item.submenu.map((subItem, subIndex) => (
+                    <Item
+                      key={subIndex}
+                      title={subItem.title}
+                      to={subItem.path}
+                      icon={item.icon}
+                      selected={selected}
+                      setSelected={setSelected}
+                    />
+                  ))}
+                </Box>
+              )}
+            </div>
+          ))}
         </Menu>
       </ProSidebar>
     </Box>
