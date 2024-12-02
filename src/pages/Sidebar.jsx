@@ -13,6 +13,9 @@ import RecordVoiceOverOutlinedIcon from "@mui/icons-material/RecordVoiceOverOutl
 import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined';
+import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
 
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -50,44 +53,44 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
     },
     {
       title: "Calendar",
-      icon: <CalendarMonthOutlinedIcon />,
+      
       submenu: [
-        { title: "Xem lịch", path: "/calendar/CalendarList" },
+        { title: "Xem lịch", path: "/calendar/CalendarList" , icon: <CalendarMonthOutlinedIcon />,},
       ],
     },
     {
       title: "Sponsors",
-      icon: <BusinessOutlinedIcon />,
+      
       submenu: [
-        { title: "Danh sách nhà tài trợ", path: "/sponsors/SponsorList" },
+        { title: "Danh sách nhà tài trợ", path: "/sponsors/SponsorList",icon: <BusinessOutlinedIcon />, },
       ],
     },
     {
       title: "Sponsorships",
-      icon: <HandshakeOutlinedIcon />,
+      
       submenu: [
-        { title: "Mức độ nhà tài trợ", path: "/sponsorships/" },
+        { title: "Mức độ nhà tài trợ", path: "/sponsorships/", icon: <HandshakeOutlinedIcon />, },
       ],
     },
     {
       title: "Providers",
-      icon: <StorefrontOutlinedIcon />,
+      
       submenu: [
-        { title: "Danh sách nhà cung cấp", path: "/providers/ProviderList" },
+        { title: "Danh sách nhà cung cấp", path: "/providers/ProviderList", icon: <StorefrontOutlinedIcon />, },
       ],
     },
     {
       title: "Speakers",
       icon: <RecordVoiceOverOutlinedIcon />,
       submenu: [
-        { title: "Danh sách diễn giả", path: "/speakers" },
+        { title: "Danh sách diễn giả", path: "/speakers", icon: <RecordVoiceOverOutlinedIcon />, },
       ],
     },
     {
       title: "MCs",
       icon: <CampaignOutlinedIcon />,
       submenu: [
-        { title: "Danh sách MC", path: "/mcs" },
+        { title: "Danh sách MC", path: "/mcs", icon: <CampaignOutlinedIcon />, },
       ],
     },
   ];
@@ -96,51 +99,75 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
   const eventMenuItems = selectedEvent ? [
     {
       title: "Event Details",
-      icon: <CalendarMonthOutlinedIcon />,
       submenu: [
-        { title: "View Event", path: `/events/${selectedEvent.eventId}` },
-      ],
-    },
-    {
-      title: "Manage Invite",
-      icon: <GroupsOutlinedIcon />,
-      submenu: [
-        { title: "Add invite", path: `/events/${selectedEvent.eventId}/participants` },
+        {
+          title: "View Event",
+          path: `/events/1`,
+          icon: <CalendarMonthOutlinedIcon />
+        },
+        {
+          title: "Session Event",
+          path: `/events/${selectedEvent.eventId}/sessionList`,
+          icon: <PendingActionsOutlinedIcon />
+        },
+        {
+          title: "Invite attendee",
+          path: `/events/${selectedEvent.eventId}/participants`,
+          icon: <GroupsOutlinedIcon />
+        },
       ],
     },
     {
       title: "Manage Sponsor",
-      icon: <GroupsOutlinedIcon />,
       submenu: [
-        { title: "Add sponsor", path: `/events/${selectedEvent.eventId}/sponsors` },
+        {
+          title: "Add sponsor",
+          path: `/events/${selectedEvent.eventId}/sponsors`,
+          icon: <GroupsOutlinedIcon />
+        },
       ],
     },
     {
       title: "Manage Provider",
-      icon: <GroupsOutlinedIcon />,
       submenu: [
-        { title: "Add Provider", path: `/events/${selectedEvent.eventId}/providers` },
+        {
+          title: "Add Provider",
+          path: `/events/${selectedEvent.eventId}/providers`,
+          icon: <GroupsOutlinedIcon />,
+        },
       ],
     },
     {
       title: "Manage Task",
-      icon: <GroupsOutlinedIcon />,
       submenu: [
-        { title: "Kanban", path: `/events/${selectedEvent.eventId}/tasks` },
+        {
+          title: "Kanban",
+          path: `/events/${selectedEvent.eventId}/tasks`,
+          icon: <GroupsOutlinedIcon />,
+        },
       ],
     },
     {
       title: "Manage SubTask",
-      icon: <GroupsOutlinedIcon />,
+      
       submenu: [
-        { title: "Add SubTask", path: `/events/${selectedEvent.eventId}/subtask` },
+        { 
+          title: "Add SubTask", 
+          path: `/events/${selectedEvent.eventId}/subtask`, 
+          icon: <GroupsOutlinedIcon />,
+        },
       ],
     },
     {
       title: "Manage Team",
-      icon: <GroupsOutlinedIcon />,
+    
       submenu: [
-        { title: "Add Team", path: `/events/${selectedEvent.eventId}/teams` },
+        { 
+          title: "Add Team", 
+          path: `/events/${selectedEvent.eventId}/teams`, 
+          icon: <GroupsOutlinedIcon />,
+        },
+
       ],
     },
   ] : [];
@@ -163,20 +190,41 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
 
 
   return (
-    <Box sx={{ "& .pro-sidebar-inner": { background: `${colors.primary[400]} !important` }, "& .pro-icon-wrapper": { backgroundColor: "transparent !important" }, "& .pro-inner-item": { padding: "5px 35px 5px 20px !important" }, "& .pro-inner-item:hover": { color: "#868dfb !important" }, "& .pro-menu-item.active": { color: "#6870fa !important" } }}>
+    <Box
+      sx={{
+        "& .pro-sidebar-inner": {
+          background: `${colors.primary[400]} !important`,
+        },
+        "& .pro-icon-wrapper": {
+          backgroundColor: "transparent !important",
+        },
+        "& .pro-inner-item": {
+          padding: "5px 35px 5px 20px !important",
+        },
+        "& .pro-inner-item:hover": {
+          color: "#868dfb !important",
+        },
+        "& .pro-menu-item.active": {
+          color: "#6870fa !important",
+        },
+      }}
+    >
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
-          <Link to={`/dashboard`} style={{ textDecoration: 'none' }}>
+          {/* Logo or Title */}
+          <Link to={`/dashboard`} style={{ textDecoration: "none" }}>
             <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
-              <Typography variant="h3" color={colors.grey[100]}>EVENT</Typography>
+              <Typography variant="h3" color={colors.grey[100]}>
+                EVENT
+              </Typography>
             </Box>
           </Link>
-
 
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
             {menuItems.map((item, index) => (
               <div key={index}>
                 {!item.submenu ? (
+                  // Menu Item without submenu
                   <Item
                     title={item.title}
                     to={item.path}
@@ -185,14 +233,21 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
                     setSelected={setSelected}
                   />
                 ) : (
+                  // Menu Item with submenu
                   <Box>
-                    <Typography variant="h6" color={colors.grey[300]} sx={{ m: "15px 0 5px 20px" }}>{item.title}</Typography>
+                    <Typography
+                      variant="h6"
+                      color={colors.grey[300]}
+                      sx={{ m: "15px 0 5px 20px" }}
+                    >
+                      {item.title}
+                    </Typography>
                     {item.submenu.map((subItem, subIndex) => (
                       <Item
                         key={subIndex}
                         title={subItem.title}
                         to={subItem.path}
-                        icon={item.icon}
+                        icon={subItem.icon} // Use submenu icon
                         selected={selected}
                         setSelected={setSelected}
                       />

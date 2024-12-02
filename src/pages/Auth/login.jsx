@@ -28,11 +28,11 @@ function Login({ setIsAuthenticated }) {
         password,
       });
       const token = response.data.data;
-      localStorage.setItem("token", token); // Lưu token vào localStorage
+      localStorage.setItem("token", "Bearer " + token); // Lưu token vào localStorage
       setIsAuthenticated(true);
       console.log("Đăng nhập thành công:", response.data);
 
-      console.log("Token:", token);
+      console.log("Token:", "Bearer " + token);
       window.location.href = "/dashboard"; // Điều hướng tới dashboard
     } catch (error) {
       console.error("Đăng nhập thất bại:", error);
