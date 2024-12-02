@@ -115,8 +115,9 @@ function App() {
                   <Route path="/mcs" element={<MCList />} />
                   <Route path="/mcs/addMc" element={<MCAdd />} />
 
-                  <Route path="/teams/TeamList" element={<TeamList />} />
+                  <Route path="/events/:eventId/team-detail" element={<TeamList />} />
                   <Route path="/teams/TeamAdd" element={<TeamAdd />} />
+
 
 
                   <Route path="/tasks" element={<TaskList />} />

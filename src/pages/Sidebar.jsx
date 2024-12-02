@@ -143,6 +143,10 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
           icon: <GroupsOutlinedIcon />,
           submenu: [
             {
+              title: "Team Detail",
+              path: `/events/${selectedEvent.eventId}/team-detail`,
+            },
+            {
               title: "Add Team",
               path: `/events/${selectedEvent.eventId}/teams`,
             },
