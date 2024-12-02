@@ -170,7 +170,7 @@ const SectionList = () => {
                 </Box>
             )}
             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-                <MenuItem onClick={handleEdit}>Edit</MenuItem>
+                {/* <MenuItem onClick={handleEdit}>Edit</MenuItem> */}
                 <MenuItem onClick={handleDelete}>Delete</MenuItem>
             </Menu>
         </div>
