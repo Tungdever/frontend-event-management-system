@@ -111,7 +111,7 @@ function TeamList() {
               <EmployeeList employees={team.listEmployees || []} teamId={team.teamId} onTeamUpdate={handleTeamUpdate} />
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-              <TaskList tasks={team.listTasks || []} teamId={team.teamId} onTaskUpdate={handleTeamUpdate}/>
+              <TaskList tasks={team.listTasks || []} teamId={team.teamId} setTasks={handleTeamUpdate}/>
             </TabPanel>
           </AccordionDetails>
         </Accordion>

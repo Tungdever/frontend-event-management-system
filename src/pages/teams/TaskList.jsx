@@ -21,16 +21,18 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-const createTask = async (task) => {
+export const createTask = async (task) => {
   const response = await axios.post(`http://localhost:8080/man/task`, task, {
     headers: { Authorization: localStorage.getItem("token") },
   });
   return response.data;
 };
-const fetchEmployees = async (teamId) => {
+export const fetchEmployees = async (teamId) => {
   try {
     const response = await axios.get(
       `http://localhost:8080/man/team/${teamId}`,
@@ -47,7 +49,7 @@ const fetchEmployees = async (teamId) => {
     throw error;
   }
 };
-const deleteTask = async (taskId) => {
+export const deleteTask = async (taskId) => {
   try {
     const response = await axios.delete(
       `http://localhost:8080/man/task/${taskId}`,
@@ -59,7 +61,7 @@ const deleteTask = async (taskId) => {
     throw error;
   }
 };
-const handleDeleteTask = async (taskId, status, onTaskUpdate) => {
+export const handleDeleteTask = async (taskId, status, onTaskUpdate) => {
   try {
     if (status?.toLowerCase() === "done") {
       alert("Không thể xóa các task đã hoàn thành!");
@@ -85,7 +87,7 @@ const handleDeleteTask = async (taskId, status, onTaskUpdate) => {
     alert("Đã xảy ra lỗi khi xóa task. Vui lòng thử lại sau.");
   }
 };
-const deleteSubTask = async (subtakId) => {
+export const deleteSubTask = async (subtakId) => {
   try {
     const response = await axios.delete(
       `http://localhost:8080/man/subtask/${subtakId}`,
@@ -97,7 +99,11 @@ const deleteSubTask = async (subtakId) => {
     throw error;
   }
 };
-const handleDeleteSubtask = async (subtaskId, status, onSubtaskUpdate) => {
+export const handleDeleteSubtask = async (
+  subtaskId,
+  status,
+  onSubtaskUpdate
+) => {
   try {
     if (status?.toLowerCase() === "done") {
       alert("Không thể xóa các subtask đã hoàn thành!");
@@ -123,7 +129,7 @@ const handleDeleteSubtask = async (subtaskId, status, onSubtaskUpdate) => {
     alert("Đã xảy ra lỗi khi xóa subtask. Vui lòng thử lại sau.");
   }
 };
-const saveSubtask = async (taskId, formData) => {
+export const saveSubtask = async (taskId, formData) => {
   const formattedTaskDl = new Date(formData.subTaskDeadline)
     .toISOString()
     .slice(0, 19)
@@ -142,17 +148,148 @@ const saveSubtask = async (taskId, formData) => {
     throw error;
   }
 };
+export const updateTask = async (task) => {
+  const response = await axios.put(`http://localhost:8080/man/task`, task, {
+    headers: {
+      Authorization: localStorage.getItem("token"),
+    },
+  });
+  return response.data.data;
+};
 
-function SubTaskList({ subTasks, onSubtaskUpdate }) {
+export const updateSubtask = async (subtask) => {
+  const response = await axios.put(
+    `http://localhost:8080/man/subtask`,
+    subtask,
+    {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    }
+  );
+  return response.data.data;
+};
+const UpdateSubtaskDialog = ({ subtask, employees, onClose, onSave }) => {
+  const [subTaskName, setSubTaskName] = useState(subtask.subTaskName);
+  const [subTaskDesc, setSubTaskDesc] = useState(subtask.subTaskDesc);
+  const [subTaskDeadline, setSubTaskDeadline] = useState(subtask.subTaskDeadline);
+  const [status, setStatus] = useState(subtask.status);
+  const [employeeId, setEmployeeId] = useState(subtask.employeeId);
+
+  const handleSave = async () => {
+    try {
+      const updatedSubtask = {
+        ...subtask,
+        subTaskName,
+        subTaskDesc,
+        subTaskDeadline,
+        status,
+        employeeId,
+      };
+      await updateSubtask(updatedSubtask);
+      onSave(updatedSubtask);
+      alert("Subtask updated successfully!");
+      onClose();  
+    } catch (error) {
+      console.error("Error updating subtask:", error);
+      alert("Failed to update subtask. Please try again.");
+    }
+  };
+
+  return (
+    <Dialog open onClose={onClose} fullWidth maxWidth="sm">
+      <DialogTitle>Update Subtask</DialogTitle>
+      <DialogContent>
+        <TextField
+          label="Subtask Name"
+          value={subTaskName}
+          onChange={(e) => setSubTaskName(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Description"
+          value={subTaskDesc}
+          onChange={(e) => setSubTaskDesc(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Deadline"
+          type="datetime-local"
+          value={subTaskDeadline}
+          onChange={(e) => setSubTaskDeadline(e.target.value)}
+          fullWidth
+          margin="normal"
+          InputLabelProps={{ shrink: true }}
+        />
+        <TextField
+          label="Status"
+          select
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+          fullWidth
+          margin="normal"
+        >
+          <MenuItem value="to do">To Do</MenuItem>
+          <MenuItem value="doing">Doing</MenuItem>
+          <MenuItem value="done">Done</MenuItem>
+        </TextField>
+        <TextField
+          label="Assigned Employee"
+          select
+          value={employeeId}
+          onChange={(e) => setEmployeeId(e.target.value)}
+          fullWidth
+          margin="normal"
+        >
+          {employees.map((emp) => (
+            <MenuItem key={emp.id} value={emp.id}>
+              {emp.fullName}
+            </MenuItem>
+          ))}
+        </TextField>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} color="secondary">
+          Cancel
+        </Button>
+        <Button onClick={handleSave} color="primary">
+          Save
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+
+const SubTaskList = ({ subTasks, onSubtaskUpdate, employees }) => {
+  const [currentSubtask, setCurrentSubtask] = useState(null);
+
+  const handleUpdateSubtaskClick = (subtask) => {
+    setCurrentSubtask(subtask);
+  };
+
+  const handleSaveUpdatedSubtask = (updatedSubtask) => {
+    onSubtaskUpdate((prevSubtasks) =>
+      prevSubtasks.map((st) =>
+        st.subTaskId === updatedSubtask.subTaskId ? updatedSubtask : st
+      )
+    );
+    setCurrentSubtask(null); 
+  };
+
+  const handleCloseDialog = () => {
+    setCurrentSubtask(null);  
+  };
+
   const handleDeleteSubtask = async (subtaskId, status) => {
     try {
       if (status?.toLowerCase() === "done") {
         alert("Không thể xóa các subtask đã hoàn thành!");
         return;
       }
-      const isConfirmed = window.confirm(
-        "Bạn có chắc chắn muốn xóa subtask này?"
-      );
+      const isConfirmed = window.confirm("Bạn có chắc chắn muốn xóa subtask này?");
       if (!isConfirmed) return;
       const response = await deleteSubTask(subtaskId);
       if (response.statusCode === 0) {
@@ -161,9 +298,7 @@ function SubTaskList({ subTasks, onSubtaskUpdate }) {
           prevSubtasks.filter((subtask) => subtask.subTaskId !== subtaskId)
         );
       } else {
-        alert(
-          `Không thể xóa subtask. Lỗi: ${response.message || "Không rõ lý do"}`
-        );
+        alert(`Không thể xóa subtask. Lỗi: ${response.message || "Không rõ lý do"}`);
       }
     } catch (error) {
       console.error("Error deleting subtask:", error);
@@ -191,6 +326,9 @@ function SubTaskList({ subTasks, onSubtaskUpdate }) {
               <TableCell>{subTask.subTaskDeadline}</TableCell>
               <TableCell>{subTask.status}</TableCell>
               <TableCell>
+                <IconButton onClick={() => handleUpdateSubtaskClick(subTask)}>
+                  <EditOutlinedIcon />
+                </IconButton>
                 <IconButton
                   onClick={() =>
                     handleDeleteSubtask(subTask.subTaskId, subTask.status)
@@ -203,10 +341,17 @@ function SubTaskList({ subTasks, onSubtaskUpdate }) {
           ))}
         </TableBody>
       </Table>
+      {currentSubtask && (
+        <UpdateSubtaskDialog
+          subtask={currentSubtask}
+          employees={employees}
+          onClose={handleCloseDialog}
+          onSave={handleSaveUpdatedSubtask}
+        />
+      )}
     </TableContainer>
   );
-}
-
+};
 const AddTaskDialog = ({ onClose, onSave, eventId, teamId }) => {
   const [taskName, setTaskName] = useState("");
   const [taskDesc, setTaskDesc] = useState("");
@@ -240,6 +385,82 @@ const AddTaskDialog = ({ onClose, onSave, eventId, teamId }) => {
   return (
     <Dialog open onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>Add New Task</DialogTitle>
+      <DialogContent>
+        <TextField
+          label="Task Name"
+          value={taskName}
+          onChange={(e) => setTaskName(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Task Description"
+          value={taskDesc}
+          onChange={(e) => setTaskDesc(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Task Deadline"
+          type="datetime-local"
+          value={taskDl}
+          onChange={(e) => setTaskDl(e.target.value)}
+          fullWidth
+          margin="normal"
+          InputLabelProps={{ shrink: true }}
+        />
+        <TextField
+          label="Task Status"
+          select
+          value={taskStatus}
+          onChange={(e) => setTaskStatus(e.target.value)}
+          fullWidth
+          margin="normal"
+        >
+          <MenuItem value="to do">To Do</MenuItem>
+          <MenuItem value="doing">Doing</MenuItem>
+          <MenuItem value="done">Done</MenuItem>
+        </TextField>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} color="secondary">
+          Cancel
+        </Button>
+        <Button onClick={handleSave} color="primary">
+          Save
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+const UpdateTaskDialog = ({ task, onClose, onSave }) => {
+  const [taskName, setTaskName] = useState(task.taskName);
+  const [taskDesc, setTaskDesc] = useState(task.taskDesc);
+  const [taskDl, setTaskDl] = useState(task.taskDl);
+  const [taskStatus, setTaskStatus] = useState(task.taskStatus);
+
+  const handleSave = async () => {
+    try {
+      const updatedTask = {
+        ...task,
+        taskName,
+        taskDesc,
+        taskDl,
+        taskStatus,
+      };
+      await updateTask(updatedTask);
+      onSave(updatedTask);
+      alert("Task updated successfully!");
+      onClose();
+    } catch (error) {
+      console.error("Error updating task:", error);
+      alert("Failed to update task. Please try again.");
+    }
+  };
+
+  return (
+    <Dialog open onClose={onClose} fullWidth maxWidth="sm">
+      <DialogTitle>Update Task</DialogTitle>
       <DialogContent>
         <TextField
           label="Task Name"
@@ -394,13 +615,25 @@ function TaskList({ tasks, setTasks, teamId }) {
       setLoading(false);
     }
   };
+
+  const [currentTask, setCurrentTask] = useState(null);
+  const [updateTaskDialogOpen, setUpdateTaskDialogOpen] = useState(false);
+
+  const handleUpdateTaskClick = (task) => {
+    setCurrentTask(task);
+    setUpdateTaskDialogOpen(true);
+  };
+
+  const handleSaveUpdatedTask = (updatedTask) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((t) => (t.taskId === updatedTask.taskId ? updatedTask : t))
+    );
+  };
+
   return (
     <TableContainer component={Paper}>
-      {" "}
       <Table>
-        {" "}
         <TableHead>
-          {" "}
           <Button
             type="submit"
             variant="contained"
@@ -415,9 +648,8 @@ function TaskList({ tasks, setTasks, teamId }) {
               marginBottom: "10px",
             }}
           >
-            {" "}
-            Add Task{" "}
-          </Button>{" "}
+            Add Task
+          </Button>
           {showDialog && (
             <AddTaskDialog
               onClose={() => setShowDialog(false)}
@@ -425,39 +657,42 @@ function TaskList({ tasks, setTasks, teamId }) {
               eventId={eventId}
               teamId={teamId}
             />
-          )}{" "}
+          )}
           <TableRow>
-            {" "}
-            <TableCell>Task Name</TableCell> <TableCell>Description</TableCell>{" "}
-            <TableCell>Deadline</TableCell> <TableCell>Status</TableCell>{" "}
-            <TableCell>Actions</TableCell>{" "}
-          </TableRow>{" "}
-        </TableHead>{" "}
+            <TableCell>Task Name</TableCell> <TableCell>Description</TableCell>
+            <TableCell>Deadline</TableCell> <TableCell>Status</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
         <TableBody>
-          {" "}
           {tasks.map((task) => (
             <React.Fragment key={task.taskId}>
-              {" "}
               <TableRow>
-                {" "}
-                <TableCell>{task.taskName}</TableCell>{" "}
-                <TableCell>{task.taskDesc}</TableCell>{" "}
-                <TableCell>{task.taskDl}</TableCell>{" "}
-                <TableCell>{task.taskStatus}</TableCell>{" "}
+                <TableCell>{task.taskName}</TableCell>
+                <TableCell>{task.taskDesc}</TableCell>
+                <TableCell>{task.taskDl}</TableCell>
+                <TableCell>{task.taskStatus}</TableCell>
                 <TableCell>
-                  {" "}
                   <IconButton onClick={() => handleExpandClick(task.taskId)}>
-                    {" "}
-                    <ExpandMoreIcon />{" "}
-                  </IconButton>{" "}
+                    <ExpandMoreIcon />
+                  </IconButton>
                   <IconButton
                     onClick={() =>
                       handleDeleteTask(task.taskId, task.taskStatus)
                     }
                   >
-                    {" "}
-                    <DeleteOutlineOutlinedIcon />{" "}
-                  </IconButton>{" "}
+                    <DeleteOutlineOutlinedIcon />
+                  </IconButton>
+                  <IconButton onClick={() => handleUpdateTaskClick(task)}>
+                    <EditOutlinedIcon />
+                  </IconButton>
+                  {updateTaskDialogOpen && currentTask && (
+                    <UpdateTaskDialog
+                      task={currentTask}
+                      onClose={() => setUpdateTaskDialogOpen(false)}
+                      onSave={handleSaveUpdatedTask}
+                    />
+                  )}
                   <Button
                     type="submit"
                     variant="contained"
@@ -470,21 +705,17 @@ function TaskList({ tasks, setTasks, teamId }) {
                       marginLeft: "10px",
                     }}
                   >
-                    {" "}
-                    Add Subtask{" "}
-                  </Button>{" "}
-                </TableCell>{" "}
-              </TableRow>{" "}
+                    Add Subtask
+                  </Button>
+                </TableCell>
+              </TableRow>
               <TableRow>
-                {" "}
                 <TableCell colSpan={5}>
-                  {" "}
                   <Collapse
                     in={expandedTaskId === task.taskId}
                     timeout="auto"
                     unmountOnExit
                   >
-                    {" "}
                     <SubTaskList
                       subTasks={task.listSubTasks || []}
                       onSubtaskUpdate={(updatedSubtasks) =>
@@ -496,24 +727,23 @@ function TaskList({ tasks, setTasks, teamId }) {
                           )
                         )
                       }
-                    />{" "}
-                  </Collapse>{" "}
-                </TableCell>{" "}
-              </TableRow>{" "}
+                      employees={employees}
+                    />
+                  </Collapse>
+                </TableCell>
+              </TableRow>
             </React.Fragment>
-          ))}{" "}
-        </TableBody>{" "}
-      </Table>{" "}
+          ))}
+        </TableBody>
+      </Table>
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}
         fullWidth
         maxWidth="sm"
       >
-        {" "}
-        <DialogTitle>Add Subtask</DialogTitle>{" "}
+        <DialogTitle>Add Subtask</DialogTitle>
         <DialogContent>
-          {" "}
           <TextField
             label="Subtask Name"
             name="subTaskName"
@@ -521,7 +751,7 @@ function TaskList({ tasks, setTasks, teamId }) {
             onChange={handleInputChange}
             fullWidth
             margin="normal"
-          />{" "}
+          />
           <TextField
             label="Description"
             name="subTaskDesc"
@@ -529,7 +759,7 @@ function TaskList({ tasks, setTasks, teamId }) {
             onChange={handleInputChange}
             fullWidth
             margin="normal"
-          />{" "}
+          />
           <TextField
             label="Deadline"
             name="subTaskDeadline"
@@ -539,7 +769,7 @@ function TaskList({ tasks, setTasks, teamId }) {
             fullWidth
             margin="normal"
             InputLabelProps={{ shrink: true }}
-          />{" "}
+          />
           <TextField
             margin="normal"
             fullWidth
@@ -549,11 +779,10 @@ function TaskList({ tasks, setTasks, teamId }) {
             value={formData.status}
             onChange={handleInputChange}
           >
-            {" "}
-            <MenuItem value="To do">To do</MenuItem>{" "}
-            <MenuItem value="Doing">Doing</MenuItem>{" "}
-            <MenuItem value="Done">Done</MenuItem>{" "}
-          </TextField>{" "}
+            <MenuItem value="To do">To do</MenuItem>
+            <MenuItem value="Doing">Doing</MenuItem>
+            <MenuItem value="Done">Done</MenuItem>
+          </TextField>
           <TextField
             margin="normal"
             fullWidth
@@ -563,27 +792,22 @@ function TaskList({ tasks, setTasks, teamId }) {
             value={formData.employeeId}
             onChange={handleInputChange}
           >
-            {" "}
             {employees.map((emp) => (
               <MenuItem key={emp.id} value={emp.id}>
-                {" "}
-                {emp.fullName}{" "}
+                {emp.fullName}
               </MenuItem>
-            ))}{" "}
-          </TextField>{" "}
-        </DialogContent>{" "}
+            ))}
+          </TextField>
+        </DialogContent>
         <DialogActions>
-          {" "}
           <Button onClick={handleCloseDialog} color="secondary">
-            {" "}
-            Cancel{" "}
-          </Button>{" "}
+            Cancel
+          </Button>
           <Button onClick={handleSubmit} color="primary" disabled={loading}>
-            {" "}
-            {loading ? "Saving..." : "Save"}{" "}
-          </Button>{" "}
-        </DialogActions>{" "}
-      </Dialog>{" "}
+            {loading ? "Saving..." : "Save"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </TableContainer>
   );
 }
