@@ -26,62 +26,10 @@ import axios from "axios";
 
 const createTask = async (task) => {
   const response = await axios.post(`http://localhost:8080/man/task`, task, {
-    headers: {
-      Authorization: localStorage.getItem("token"),
-    },
+    headers: { Authorization: localStorage.getItem("token") },
   });
   return response.data;
 };
-const updateTask = async (task) => {
-  console.log(task);
-  const response = await axios.put(`http://localhost:8080/man/task`, task, {
-    headers: {
-      Authorization: localStorage.getItem("token"),
-    },
-  });
-  return response.data.data;
-};
-const getTeamsForTask = async (eventId, taskId) => {
-  const response = await axios.get(
-    `http://localhost:8080/man/event/${eventId}/teams/${taskId}`,
-    {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    }
-  );
-  return response.data.data;
-};
-const assignedTeam = async (taskId, teamId) => {
-  const response = await axios.put(
-    `http://localhost:8080/man/task/${taskId}/assigned/${teamId}`,
-    null,
-    {
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    }
-  );
-  console.log("Response from API:", response);
-  return response.data.data;
-};
-const fetchTasks = async (eventId) => {
-  try {
-    const response = await axios.get(
-      `http://localhost:8080/man/event/${eventId}/tasks`,
-      {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      }
-    );
-    return response.data.data || [];
-  } catch (error) {
-    console.error("Error fetching tasks:", error);
-    throw error;
-  }
-};
-
 const fetchEmployees = async (teamId) => {
   try {
     const response = await axios.get(
@@ -103,11 +51,7 @@ const deleteTask = async (taskId) => {
   try {
     const response = await axios.delete(
       `http://localhost:8080/man/task/${taskId}`,
-      {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      }
+      { headers: { Authorization: localStorage.getItem("token") } }
     );
     return response.data;
   } catch (error) {
@@ -115,22 +59,22 @@ const deleteTask = async (taskId) => {
     throw error;
   }
 };
-const handleDeleteTask = async (taskId, status) => {
+const handleDeleteTask = async (taskId, status, onTaskUpdate) => {
   try {
     if (status?.toLowerCase() === "done") {
       alert("Không thể xóa các task đã hoàn thành!");
       return;
     }
-
     const isConfirmed = window.confirm(
       "Lưu ý: Các subtask của task hiện tại cũng sẽ bị xóa. Bạn muốn thực hiện thao tác này?"
     );
     if (!isConfirmed) return;
-
     const response = await deleteTask(taskId);
-
     if (response.statusCode === 0) {
       alert("Xóa task thành công!");
+      onTaskUpdate((prevTasks) =>
+        prevTasks.filter((task) => task.taskId !== taskId)
+      );
     } else {
       alert(
         `Không thể xóa task. Lỗi: ${response.message || "Không rõ lý do."}`
@@ -141,16 +85,11 @@ const handleDeleteTask = async (taskId, status) => {
     alert("Đã xảy ra lỗi khi xóa task. Vui lòng thử lại sau.");
   }
 };
-
 const deleteSubTask = async (subtakId) => {
   try {
     const response = await axios.delete(
       `http://localhost:8080/man/subtask/${subtakId}`,
-      {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      }
+      { headers: { Authorization: localStorage.getItem("token") } }
     );
     return response.data;
   } catch (error) {
@@ -158,22 +97,22 @@ const deleteSubTask = async (subtakId) => {
     throw error;
   }
 };
-const handleDeleteSubtask = async (subtaskId, status) => {
+const handleDeleteSubtask = async (subtaskId, status, onSubtaskUpdate) => {
   try {
     if (status?.toLowerCase() === "done") {
       alert("Không thể xóa các subtask đã hoàn thành!");
       return;
     }
-
     const isConfirmed = window.confirm(
       "Bạn có chắc chắn muốn xóa subtask này?"
     );
     if (!isConfirmed) return;
-
     const response = await deleteSubTask(subtaskId);
-
     if (response.statusCode === 0) {
       alert("Xóa subtask thành công!");
+      onSubtaskUpdate((prevSubtasks) =>
+        prevSubtasks.filter((subtask) => subtask.subTaskId !== subtaskId)
+      );
     } else {
       alert(
         `Không thể xóa subtask. Lỗi: ${response.message || "Không rõ lý do"}`
@@ -184,23 +123,17 @@ const handleDeleteSubtask = async (subtaskId, status) => {
     alert("Đã xảy ra lỗi khi xóa subtask. Vui lòng thử lại sau.");
   }
 };
-
 const saveSubtask = async (taskId, formData) => {
   const formattedTaskDl = new Date(formData.subTaskDeadline)
     .toISOString()
     .slice(0, 19)
     .replace("T", " ");
   formData.subTaskDeadline = formattedTaskDl;
-
   try {
     const response = await axios.post(
       `http://localhost:8080/man/subtask/${taskId}`,
       formData,
-      {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      }
+      { headers: { Authorization: localStorage.getItem("token") } }
     );
     console.log("Subtask saved successfully:", response.data);
     return response.data;
@@ -210,7 +143,34 @@ const saveSubtask = async (taskId, formData) => {
   }
 };
 
-function SubTaskList({ subTasks }) {
+function SubTaskList({ subTasks, onSubtaskUpdate }) {
+  const handleDeleteSubtask = async (subtaskId, status) => {
+    try {
+      if (status?.toLowerCase() === "done") {
+        alert("Không thể xóa các subtask đã hoàn thành!");
+        return;
+      }
+      const isConfirmed = window.confirm(
+        "Bạn có chắc chắn muốn xóa subtask này?"
+      );
+      if (!isConfirmed) return;
+      const response = await deleteSubTask(subtaskId);
+      if (response.statusCode === 0) {
+        alert("Xóa subtask thành công!");
+        onSubtaskUpdate((prevSubtasks) =>
+          prevSubtasks.filter((subtask) => subtask.subTaskId !== subtaskId)
+        );
+      } else {
+        alert(
+          `Không thể xóa subtask. Lỗi: ${response.message || "Không rõ lý do"}`
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting subtask:", error);
+      alert("Đã xảy ra lỗi khi xóa subtask. Vui lòng thử lại sau.");
+    }
+  };
+
   return (
     <TableContainer component={Paper} style={{ backgroundColor: "#f9f9f9" }}>
       <Table>
@@ -246,50 +206,55 @@ function SubTaskList({ subTasks }) {
     </TableContainer>
   );
 }
-const AddTaskDialog = ({ onClose, onSave, eventId }) => {
+
+const AddTaskDialog = ({ onClose, onSave, eventId, teamId }) => {
   const [taskName, setTaskName] = useState("");
   const [taskDesc, setTaskDesc] = useState("");
   const [taskDl, setTaskDl] = useState("2024-12-31T10:00");
   const [taskStatus, setTaskStatus] = useState("to do");
-  const [teamId, setTeamId] = useState(0);
-  const handleSave = () => {
-    const formattedTaskDl = new Date(taskDl)
-      .toISOString()
-      .slice(0, 19)
-      .replace("T", " ");
-    const newTask = {
-      taskName,
-      taskDesc,
-      taskDl: formattedTaskDl,
-      taskStatus,
-      eventId: parseInt(eventId),
-      teamId,
-    };
-    onSave(newTask);
-    onClose();
+
+  const handleSave = async () => {
+    try {
+      const formattedTaskDl = new Date(taskDl)
+        .toISOString()
+        .slice(0, 19)
+        .replace("T", " ");
+      const newTask = {
+        taskName,
+        taskDesc,
+        taskDl: formattedTaskDl,
+        taskStatus,
+        eventId: parseInt(eventId),
+        teamId,
+      };
+      const createdTask = await createTask(newTask);
+      onSave((prevTasks) => [...prevTasks, createdTask]);
+      alert("Task saved successfully!");
+      onClose();
+    } catch (error) {
+      console.error("Error saving task:", error);
+      alert("Failed to save task. Please try again.");
+    }
   };
 
-  
   return (
     <Dialog open onClose={onClose} fullWidth maxWidth="sm">
-      {" "}
-      <DialogTitle>Add New Task</DialogTitle>{" "}
+      <DialogTitle>Add New Task</DialogTitle>
       <DialogContent>
-        {" "}
         <TextField
           label="Task Name"
           value={taskName}
           onChange={(e) => setTaskName(e.target.value)}
           fullWidth
           margin="normal"
-        />{" "}
+        />
         <TextField
           label="Task Description"
           value={taskDesc}
           onChange={(e) => setTaskDesc(e.target.value)}
           fullWidth
           margin="normal"
-        />{" "}
+        />
         <TextField
           label="Task Deadline"
           type="datetime-local"
@@ -298,7 +263,7 @@ const AddTaskDialog = ({ onClose, onSave, eventId }) => {
           fullWidth
           margin="normal"
           InputLabelProps={{ shrink: true }}
-        />{" "}
+        />
         <TextField
           label="Task Status"
           select
@@ -307,73 +272,67 @@ const AddTaskDialog = ({ onClose, onSave, eventId }) => {
           fullWidth
           margin="normal"
         >
-          {" "}
-          <MenuItem value="to do">To Do</MenuItem>{" "}
-          <MenuItem value="doing">Doing</MenuItem>{" "}
-          <MenuItem value="done">Done</MenuItem>{" "}
-        </TextField>{" "}
-      </DialogContent>{" "}
+          <MenuItem value="to do">To Do</MenuItem>
+          <MenuItem value="doing">Doing</MenuItem>
+          <MenuItem value="done">Done</MenuItem>
+        </TextField>
+      </DialogContent>
       <DialogActions>
-        {" "}
         <Button onClick={onClose} color="secondary">
-          {" "}
-          Cancel{" "}
-        </Button>{" "}
+          Cancel
+        </Button>
         <Button onClick={handleSave} color="primary">
-          {" "}
-          Save{" "}
-        </Button>{" "}
-      </DialogActions>{" "}
+          Save
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 };
-const addButtonStyle = {
-  backgroundColor: "#1890ff",
-  color: "#fff",
-  border: "none",
-  borderRadius: "4px",
-  padding: "6px 12px",
-  cursor: "pointer",
-  marginTop: "10px",
-};
-function TaskList({ tasks, onTaskUpdate, teamId }) {
+
+function TaskList({ tasks, setTasks, teamId }) {
   const { eventId } = useParams();
   const [expandedTaskId, setExpandedTaskId] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [loading, setLoading] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [showDialog, setShowDialog] = useState(false);
-  const handleSaveTask = async (newTask) => {
+  const handleSaveTask = (createdTask) => {
+    setTasks((prevTasks) => [...prevTasks, createdTask]);
+    //alert("Task saved successfully!");
+  };
+
+  const handleDeleteTask = async (taskId, status) => {
     try {
-      console.log("xxx"+ newTask.taskDesc)
-      console.log("xxx"+ newTask.taskDl)
-      console.log("xxx"+ newTask.taskName)
-      console.log("xxx"+ newTask.taskStatus)
-      const createdTask = await createTask(newTask); 
-      onTaskUpdate((prevTasks) => [...prevTasks, createdTask]); 
-      alert("Task saved successfully!");
+      if (status?.toLowerCase() === "done") {
+        alert("Không thể xóa các task đã hoàn thành!");
+        return;
+      }
+      const isConfirmed = window.confirm(
+        "Lưu ý: Các subtask của task hiện tại cũng sẽ bị xóa. Bạn muốn thực hiện thao tác này?"
+      );
+      if (!isConfirmed) return;
+      const response = await deleteTask(taskId);
+      if (response.statusCode === 0) {
+        alert("Xóa task thành công!");
+        setTasks((prevTasks) =>
+          prevTasks.filter((task) => task.taskId !== taskId)
+        );
+      } else {
+        alert(
+          `Không thể xóa task. Lỗi: ${response.message || "Không rõ lý do."}`
+        );
+      }
     } catch (error) {
-      console.error("Error saving task:", error);
-      alert("Failed to save task. Please try again.");
+      console.error("Error deleting task:", error);
+      alert("Đã xảy ra lỗi khi xóa task. Vui lòng thử lại sau.");
     }
   };
-  
-  const [formData, setFormData] = useState({
-    subTaskName: "",
-    subTaskDesc: "",
-    subTaskDeadline: "",
-    status: "",
-    employeeId: "",
-    taskId: null,
-  });
   const handleAddTask = () => {
     setShowDialog(true);
   };
-
   const handleExpandClick = (taskId) => {
     setExpandedTaskId(expandedTaskId === taskId ? null : taskId);
   };
-
   const handleOpenDialog = (taskId) => {
     setFormData((prev) => ({ ...prev, taskId }));
     setOpenDialog(true);
@@ -388,10 +347,17 @@ function TaskList({ tasks, onTaskUpdate, teamId }) {
           console.error("Error fetching employees:", error);
         }
       };
-
       getEmployees();
     }
   }, [teamId]);
+  const [formData, setFormData] = useState({
+    subTaskName: "",
+    subTaskDesc: "",
+    subTaskDeadline: "",
+    status: "",
+    employeeId: "",
+    taskId: null,
+  });
   const handleCloseDialog = () => {
     setFormData({
       subTaskName: "",
@@ -403,74 +369,95 @@ function TaskList({ tasks, onTaskUpdate, teamId }) {
     });
     setOpenDialog(false);
   };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
-
   const handleSubmit = async () => {
     setLoading(true);
     try {
       const response = await saveSubtask(formData.taskId, formData);
-      console.log("Subtask saved successfully:", response);
-
       handleCloseDialog();
+      if (response.data === true) {
+        alert("Subtask saved successfully!");
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.taskId === formData.taskId
+              ? { ...task, listSubTasks: [...task.listSubTasks, response.data] }
+              : task
+          )
+        );
+      }
     } catch (error) {
       console.error("Error saving subtask:", error);
     } finally {
       setLoading(false);
     }
   };
-
-
   return (
     <TableContainer component={Paper}>
+      {" "}
       <Table>
+        {" "}
         <TableHead>
-        <button onClick={handleAddTask} style={{ ...addButtonStyle }}>
-                  Add Task
-                </button>
-                {showDialog && (
-                  <AddTaskDialog
-                    onClose={() => setShowDialog(false)}
-                    onSave={handleSaveTask}
-                    eventId={eventId}
-                  />
-                )}{" "}
+          {" "}
+          <Button
+            type="submit"
+            variant="contained"
+            onClick={handleAddTask}
+            style={{
+              backgroundColor: "#3f51b5",
+              color: "#ffffff",
+              borderRadius: "20px",
+              padding: "8px 16px",
+              marginLeft: "20px",
+              marginTop: "10px",
+              marginBottom: "10px",
+            }}
+          >
+            {" "}
+            Add Task{" "}
+          </Button>{" "}
+          {showDialog && (
+            <AddTaskDialog
+              onClose={() => setShowDialog(false)}
+              onSave={handleSaveTask}
+              eventId={eventId}
+              teamId={teamId}
+            />
+          )}{" "}
           <TableRow>
-            <TableCell>Task Name</TableCell>
-            <TableCell>Description</TableCell>
-            <TableCell>Deadline</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Actions</TableCell>
-          </TableRow>
-        </TableHead>
+            {" "}
+            <TableCell>Task Name</TableCell> <TableCell>Description</TableCell>{" "}
+            <TableCell>Deadline</TableCell> <TableCell>Status</TableCell>{" "}
+            <TableCell>Actions</TableCell>{" "}
+          </TableRow>{" "}
+        </TableHead>{" "}
         <TableBody>
+          {" "}
           {tasks.map((task) => (
             <React.Fragment key={task.taskId}>
+              {" "}
               <TableRow>
-               
-                <TableCell>{task.taskName}</TableCell>
-                <TableCell>{task.taskDesc}</TableCell>
-                <TableCell>{task.taskDl}</TableCell>
-                <TableCell>{task.taskStatus}</TableCell>
+                {" "}
+                <TableCell>{task.taskName}</TableCell>{" "}
+                <TableCell>{task.taskDesc}</TableCell>{" "}
+                <TableCell>{task.taskDl}</TableCell>{" "}
+                <TableCell>{task.taskStatus}</TableCell>{" "}
                 <TableCell>
+                  {" "}
                   <IconButton onClick={() => handleExpandClick(task.taskId)}>
-                    <ExpandMoreIcon />
-                  </IconButton>
+                    {" "}
+                    <ExpandMoreIcon />{" "}
+                  </IconButton>{" "}
                   <IconButton
                     onClick={() =>
                       handleDeleteTask(task.taskId, task.taskStatus)
                     }
                   >
-                    <DeleteOutlineOutlinedIcon />
-                  </IconButton>
-                  {/* Nút "Add Subtask" trong từng Task */}
-
+                    {" "}
+                    <DeleteOutlineOutlinedIcon />{" "}
+                  </IconButton>{" "}
                   <Button
                     type="submit"
                     variant="contained"
@@ -483,35 +470,50 @@ function TaskList({ tasks, onTaskUpdate, teamId }) {
                       marginLeft: "10px",
                     }}
                   >
-                    Add Subtask
-                  </Button>
-                </TableCell>
-              </TableRow>
+                    {" "}
+                    Add Subtask{" "}
+                  </Button>{" "}
+                </TableCell>{" "}
+              </TableRow>{" "}
               <TableRow>
+                {" "}
                 <TableCell colSpan={5}>
+                  {" "}
                   <Collapse
                     in={expandedTaskId === task.taskId}
                     timeout="auto"
                     unmountOnExit
                   >
-                    <SubTaskList subTasks={task.listSubTasks || []} />
-                  </Collapse>
-                </TableCell>
-              </TableRow>
+                    {" "}
+                    <SubTaskList
+                      subTasks={task.listSubTasks || []}
+                      onSubtaskUpdate={(updatedSubtasks) =>
+                        setTasks((prevTasks) =>
+                          prevTasks.map((t) =>
+                            t.taskId === task.taskId
+                              ? { ...t, listSubTasks: updatedSubtasks }
+                              : t
+                          )
+                        )
+                      }
+                    />{" "}
+                  </Collapse>{" "}
+                </TableCell>{" "}
+              </TableRow>{" "}
             </React.Fragment>
-          ))}
-        </TableBody>
-      </Table>
-
-      {/* Dialog for Adding Subtask */}
+          ))}{" "}
+        </TableBody>{" "}
+      </Table>{" "}
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}
         fullWidth
         maxWidth="sm"
       >
-        <DialogTitle>Add Subtask</DialogTitle>
+        {" "}
+        <DialogTitle>Add Subtask</DialogTitle>{" "}
         <DialogContent>
+          {" "}
           <TextField
             label="Subtask Name"
             name="subTaskName"
@@ -519,7 +521,7 @@ function TaskList({ tasks, onTaskUpdate, teamId }) {
             onChange={handleInputChange}
             fullWidth
             margin="normal"
-          />
+          />{" "}
           <TextField
             label="Description"
             name="subTaskDesc"
@@ -527,7 +529,7 @@ function TaskList({ tasks, onTaskUpdate, teamId }) {
             onChange={handleInputChange}
             fullWidth
             margin="normal"
-          />
+          />{" "}
           <TextField
             label="Deadline"
             name="subTaskDeadline"
@@ -537,7 +539,7 @@ function TaskList({ tasks, onTaskUpdate, teamId }) {
             fullWidth
             margin="normal"
             InputLabelProps={{ shrink: true }}
-          />
+          />{" "}
           <TextField
             margin="normal"
             fullWidth
@@ -547,10 +549,11 @@ function TaskList({ tasks, onTaskUpdate, teamId }) {
             value={formData.status}
             onChange={handleInputChange}
           >
-            <MenuItem value="To do">To do</MenuItem>
-            <MenuItem value="Doing">Doing</MenuItem>
-            <MenuItem value="Done">Done</MenuItem>
-          </TextField>
+            {" "}
+            <MenuItem value="To do">To do</MenuItem>{" "}
+            <MenuItem value="Doing">Doing</MenuItem>{" "}
+            <MenuItem value="Done">Done</MenuItem>{" "}
+          </TextField>{" "}
           <TextField
             margin="normal"
             fullWidth
@@ -560,22 +563,27 @@ function TaskList({ tasks, onTaskUpdate, teamId }) {
             value={formData.employeeId}
             onChange={handleInputChange}
           >
+            {" "}
             {employees.map((emp) => (
               <MenuItem key={emp.id} value={emp.id}>
-                {emp.fullName}
+                {" "}
+                {emp.fullName}{" "}
               </MenuItem>
-            ))}
-          </TextField>
-        </DialogContent>
+            ))}{" "}
+          </TextField>{" "}
+        </DialogContent>{" "}
         <DialogActions>
+          {" "}
           <Button onClick={handleCloseDialog} color="secondary">
-            Cancel
-          </Button>
+            {" "}
+            Cancel{" "}
+          </Button>{" "}
           <Button onClick={handleSubmit} color="primary" disabled={loading}>
-            {loading ? "Saving..." : "Save"}
-          </Button>
-        </DialogActions>
-      </Dialog>
+            {" "}
+            {loading ? "Saving..." : "Save"}{" "}
+          </Button>{" "}
+        </DialogActions>{" "}
+      </Dialog>{" "}
     </TableContainer>
   );
 }
