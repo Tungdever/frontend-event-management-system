@@ -9,13 +9,18 @@ import {
 } from "@mui/material";
 import { Email } from "@mui/icons-material";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const token = localStorage.getItem("token");
 
+  if (token) {
+    // Người dùng đã đăng nhập, chuyển hướng đến dashboard
+    return <Navigate to="/" replace />;
+  }
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     setLoading(true);

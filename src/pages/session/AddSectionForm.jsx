@@ -13,107 +13,112 @@ import {
     FormControlLabel,
     Radio,
     Select,
-    MenuItem
+    MenuItem,
+    Input,
+    IconButton,
 } from "@mui/material";
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import axios from "axios";
 import SpeakerAdd from './AddSpeakerForm';
 import { useParams } from "react-router-dom";
-const AddSectionForm = ({ onAdd }) => {
+const AddSectionForm = ({ id, onAdd, openEdit, onClose }) => {
     const { eventId } = useParams();
-    const [open, setOpen] = useState(false); // Popup chính
-    const [speakers, setSpeakers] = useState([]); // Danh sách speaker
+    const [open, setOpen] = useState(false);
+    const [speakers, setSpeakers] = useState([]);
     const [formData, setFormData] = useState({
         startTime: "09:00",
         startPeriod: "AM",
         endTime: "10:00",
         endPeriod: "AM",
         sectionTitle: "",
-        sectionDescription: "", // Đổi tên từ description
-        eventId: eventId, // Gán eventId mặc định
-        speakerId: null, // Mảng speaker ID đã chọn
+        sectionDescription: "",
+        eventId: eventId,
+        speakerId: null,
     });
-
-
     // Mở/đóng popup chính
     const handleClickOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setFormData({
+            startTime: "09:00",
+            startPeriod: "AM",
+            endTime: "10:00",
+            endPeriod: "AM",
+            sectionTitle: "",
+            sectionDescription: "",
+            eventId,
+            speakerId: null,
+        });
+        setOpen(false);
+        onClose();
+    }
 
     // Cập nhật giá trị form
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevState) => ({ ...prevState, [name]: value, speakerId: e.target.value }));
-    };
-
-    // Cập nhật danh sách speaker đã chọn
-    const handleCheckboxChange = (e) => {
-        const { value, checked } = e.target;
-
-        setFormData((prevState) => ({
-            ...prevState,
-            speakerId: checked
-                ? [...prevState.speakerId, value]
-                : prevState.speakerId.filter((id) => id !== value),
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: value,
         }));
     };
 
 
     // Gửi form lên server
     const handleSubmit = async () => {
+        if (!formData.sectionTitle || !formData.speakerId) {
+            alert("Vui lòng điền đầy đủ thông tin.");
+            return;
+        }
+
+        if (!file){
+            alert("Chưa có file tàil iệu.");
+        }
+        const convertTo24HourFormat = (time, period) => {
+            let [hour, minute] = time.split(":").map(Number);
+            if (period === "PM" && hour !== 12) hour += 12;
+            if (period === "AM" && hour === 12) hour = 0;
+            return hour * 60 + minute;
+        };
+
+        const startTimeInMinutes = convertTo24HourFormat(formData.startTime, formData.startPeriod);
+        const endTimeInMinutes = convertTo24HourFormat(formData.endTime, formData.endPeriod);
+
+        if (endTimeInMinutes <= startTimeInMinutes) {
+            alert("Thời gian kết thúc phải muộn hơn thời gian bắt đầu.");
+            return;
+        }
+
+        const formattedStartTime = `${formData.startTime} ${formData.startPeriod}`;
+        const formattedEndTime = `${formData.endTime} ${formData.endPeriod}`;
+        const formDataToSend = new FormData();
+        formDataToSend.append("file", file);
+        formDataToSend.append("startTime", formattedStartTime);
+        formDataToSend.append("endTime", formattedEndTime);
+        formDataToSend.append("sectionTitle", formData.sectionTitle);
+        formDataToSend.append("sectionDescription", formData.sectionDescription);
+        formDataToSend.append("eventId", formData.eventId);
+        formDataToSend.append("speakerId", formData.speakerId);
         try {
-            // Chuyển đổi thời gian
-           
-            if (!formData.sectionTitle || !formData.speakerId) {
-                alert("Vui lòng điền đầy đủ thông tin.");
-                return;
+            let response;
+            if (id != null) {
+                formDataToSend.append("sectionId", id);
+                response = await axios.put("http://localhost:8080/man/section", formDataToSend, {
+                    headers: { Authorization: localStorage.getItem("token") },
+                    "Content-Type": "multipart/form-data" // Đảm bảo header đúng cho gửi file
+                });
+            } else {
+                response = await axios.post("http://localhost:8080/man/section", formDataToSend, {
+                    headers: {
+                        Authorization: localStorage.getItem("token"),
+                        "Content-Type": "multipart/form-data" // Đảm bảo header đúng cho gửi file
+                    },
+                });
+                onAdd(response.data.data)
             }
-            // Chuyển đổi startTime và endTime thành giá trị giờ để dễ dàng so sánh
-            const convertTo24HourFormat = (time, period) => {
-                let [hour, minute] = time.split(":").map(Number);
-                if (period === "PM" && hour !== 12) hour += 12; // Chuyển PM
-                if (period === "AM" && hour === 12) hour = 0; // Chuyển 12 AM thành 0 giờ
-                return hour * 60 + minute; // Trả về tổng phút để so sánh dễ dàng
-            };
-
-            const startTimeInMinutes = convertTo24HourFormat(formData.startTime, formData.startPeriod);
-            const endTimeInMinutes = convertTo24HourFormat(formData.endTime, formData.endPeriod);
-
-            if (endTimeInMinutes <= startTimeInMinutes) {
-                alert("Thời gian kết thúc phải muộn hơn thời gian bắt đầu.");
-                return;
-            }   
-            // Tạo payload
-            const formattedStartTime = `${formData.startTime} ${formData.startPeriod}`;
-            const formattedEndTime = `${formData.endTime} ${formData.endPeriod}`;
-            const payload = {
-                startTime: formattedStartTime,
-                endTime: formattedEndTime,
-                sectionTitle: formData.sectionTitle,
-                sectionDescription: formData.sectionDescription,
-                eventId: formData.eventId,
-                speakerId: formData.speakerId, // Chuyển danh sách ID thành chuỗi
-            };
-
-            const response = await axios.post("http://localhost:8080/man/section", payload, {
-                headers: {
-                    Authorization: localStorage.getItem("token"),
-                },
-            });
-            alert("Section added successfully!");
-            onAdd(response.data.data);
-            setFormData({
-                startTime: "09:00",
-                startPeriod: "AM",
-                endTime: "10:00",
-                endPeriod: "AM",
-                sectionTitle: "",
-                sectionDescription: "",
-                eventId: eventId, // Giữ lại eventId
-                speakerId: null, // Reset speakerId về null
-            });
+            alert("Section saved successfully!");
             handleClose();
         } catch (error) {
-            console.error("Error adding section:", error);
-            alert("Failed to add section. Please try again later.");
+            console.error("Error saving section:", error);
+            alert("Failed to save section. Please try again later.");
         }
     };
 
@@ -121,13 +126,57 @@ const AddSectionForm = ({ onAdd }) => {
         try {
             const response = await axios.get("http://localhost:8080/man/speaker", {
                 headers: {
-                    Authorization: localStorage.getItem("token"),
+                    Authorization: localStorage.getItem("token")
                 },
             });
             const speakersData = Array.isArray(response.data.data) ? response.data.data : [];
             setSpeakers(speakersData); // Gán đúng mảng speakers
         } catch (error) {
             console.error("Lỗi khi tải danh sách speakers:", error);
+        }
+    };
+    const fetchSection = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/man/section/${id}`, {
+                headers: {
+                    Authorization: localStorage.getItem("token"),
+                },
+            });
+
+            const sectionData = response.data.data;
+
+            if (sectionData) {
+                // Chuyển đổi thời gian từ "HH:mm:ss" thành "HH:mm"
+                const formatTime = (time) => {
+                    const [hours, minutes] = time.split(':');
+                    return `${hours}:${minutes}`;
+                };
+
+                // Chuyển đổi thời gian thành AM/PM
+                const formatPeriod = (time) => {
+                    const [hours] = time.split(':');
+                    return parseInt(hours) >= 12 ? 'PM' : 'AM';
+                };
+
+                // Cập nhật formData với dữ liệu từ API
+                setFormData((prevState) => ({
+                    ...prevState,
+                    startTime: formatTime(sectionData.startTime) || "09:00",
+                    startPeriod: formatPeriod(sectionData.startTime) || "AM",
+                    endTime: formatTime(sectionData.endTime) || "10:00",
+                    endPeriod: formatPeriod(sectionData.endTime) || "AM",
+                    sectionTitle: sectionData.sectionTitle || "",
+                    sectionDescription: sectionData.sectionDescription || "",
+                    eventId: sectionData.eventId || eventId,
+                    speakerId: String(sectionData.speakerId) || null,
+                }));
+
+                console.log(formData);
+            } else {
+                console.error("Không có dữ liệu section.");
+            }
+        } catch (error) {
+            console.error("Lỗi khi tải thông tin section:", error);
         }
     };
     const generateTimeSlots = () => {
@@ -143,10 +192,27 @@ const AddSectionForm = ({ onAdd }) => {
 
     const timeSlots = generateTimeSlots();
     useEffect(() => {
-        if (open) {
-            fetchSpeakers(); // Gọi API để tải danh sách speakers khi popup được mở
+        if (openEdit) {
+            fetchSection();
+            setOpen(true);
         }
-    }, [open]);
+        fetchSpeakers();
+    }, [openEdit]);
+
+    const [file, setFile] = useState(null);
+
+    // Xử lý khi người dùng chọn file
+    const handleFileChange = (event) => {
+        const selectedFile = event.target.files[0];
+        if (selectedFile) {
+            setFile(selectedFile);
+        }
+    };
+
+    
+    const handleRemoveFile = () => {
+        setFile(null);  // Xóa file
+    };
     return (
         <div style={{ textAlign: "center", marginTop: "20px" }}>
             {/* Nút mở popup chính */}
@@ -275,6 +341,7 @@ const AddSectionForm = ({ onAdd }) => {
                                                     checked={formData.speakerId === String(speaker.id)}
                                                     onChange={handleChange}
                                                     value={speaker.id.toString()}
+                                                    name="speakerId"
                                                     sx={{
                                                         "&.Mui-checked": {
                                                             color: "#0093dd",
@@ -289,6 +356,44 @@ const AddSectionForm = ({ onAdd }) => {
                                 </FormGroup>
                                 <SpeakerAdd onAdd={fetchSpeakers} />
                             </FormControl>
+                        </Grid>
+                        <Grid container spacing={3} sx={{ margin: 1 }}>
+                            {/* Các trường khác trong form */}
+                            <Grid item xs={12}>
+                                <Typography variant="h6" sx={{ color: "#9b9b9b", marginBottom: 1 }}>
+                                    Upload File
+                                </Typography>
+
+                                {/* Hiển thị nút "Choose File" khi chưa chọn file */}
+                                {!file && (
+                                    <label htmlFor="file-upload">
+                                        <Input
+                                            type="file"                                            
+                                            id="file-upload"
+                                            inputProps={{ accept: ".pdf, .docx, .pptx, .ppt, .doc" }}
+                                            onChange={handleFileChange}
+                                            sx={{ display: "none",  }}  // Ẩn Input, chỉ hiển thị dưới dạng button
+                                        />
+                                        <Button variant="contained" component="span" sx={{ backgroundColor: "#109c7b" }}>
+                                            Choose File
+                                        </Button>
+                                    </label>
+                                )}
+
+                                {/* Hiển thị tên file và icon "X" khi đã chọn file */}
+                                {file && (
+                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                        <Typography variant="body1" sx={{ marginRight: 2 }}>
+                                            Selected File: {file.name}
+                                        </Typography>
+                                        <IconButton onClick={handleRemoveFile} color="error">
+                                            <CloseOutlinedIcon />
+                                        </IconButton>
+                                    </div>
+                                )}
+
+
+                            </Grid>
                         </Grid>
                     </Grid>
                 </DialogContent>

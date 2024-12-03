@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { Lock } from "@mui/icons-material";
 import axios from "axios";
-import { useParams, Link , useLocation } from "react-router-dom";
+import { useParams, Link , useLocation, Navigate } from "react-router-dom";
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
@@ -17,12 +17,17 @@ const ResetPassword = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const tokenLogin = localStorage.getItem("token");
 
+  
   // Lấy token từ URL (nếu API yêu cầu)
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const token = queryParams.get("token");
-
+  if (tokenLogin) {
+    // Người dùng đã đăng nhập, chuyển hướng đến dashboard
+    return <Navigate to="/" replace />;
+  }
   const handleResetPassword = async (e) => {
     e.preventDefault();
     setLoading(true);

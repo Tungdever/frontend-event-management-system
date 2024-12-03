@@ -11,8 +11,16 @@ const EventList = ({ setSelectedEvent }) => {
     const [events, setEvents] = useState([]);
     const navigate = useNavigate();
     const [imageUrls, setImageUrls] = useState({});
+    // const token = ;
     const defaultImage = 'https://static.vecteezy.com/system/resources/previews/006/692/205/non_2x/loading-icon-template-black-color-editable-loading-icon-symbol-flat-illustration-for-graphic-and-web-design-free-vector.jpg';
     useEffect(() => {
+        // if (token) {
+        // const payload = JSON.parse(atob(token.split(".")[1]));
+        // // Lấy thông tin roles từ payload
+        // const roles = payload.roles || [];
+        // if (userRoles.some(role => ["ROLE_MANAGER", "ROLE_ADMIN"].includes(role))){
+
+        // }
         axios
             .get("http://localhost:8080/man/event", {
                 headers: {
@@ -28,6 +36,8 @@ const EventList = ({ setSelectedEvent }) => {
             .catch((error) => {
                 console.error("Error fetching data", error);
             });
+        // }
+
     }, []);
     useEffect(() => {
         const fetchImages = async () => {
@@ -62,7 +72,7 @@ const EventList = ({ setSelectedEvent }) => {
     };
 
     return (
-        <Grid container spacing={4}sx={{ marginTop: '0px'}}>
+        <Grid container spacing={4} sx={{ marginTop: '0px' }}>
             {events.map((event) => (
                 <Grid item xs={12} sm={6} md={4} key={event.eventId}>
                     <Card

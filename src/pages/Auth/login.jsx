@@ -9,13 +9,19 @@ import {
 } from "@mui/material";
 import { Email, Lock } from "@mui/icons-material";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 function Login({ setIsAuthenticated }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    // Người dùng đã đăng nhập, chuyển hướng đến dashboard
+    return <Navigate to="/" replace />;
+  }
 
   // Xử lý đăng nhập
   const handleSubmit = async (e) => {
@@ -33,7 +39,7 @@ function Login({ setIsAuthenticated }) {
       console.log("Đăng nhập thành công:", response.data);
 
       console.log("Token:", "Bearer " + token);
-      window.location.href = "/dashboard"; // Điều hướng tới dashboard
+      window.location.href = "/home"; // Điều hướng tới dashboard
     } catch (error) {
       console.error("Đăng nhập thất bại:", error);
       setError("Email hoặc mật khẩu không đúng!");

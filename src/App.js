@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { ColorModeContext, useMode } from './theme';
 import TaskSubTasks from "./pages/events/AddSubtaskForEvent"
 import Sidebar from './pages/Sidebar';
+import SidebarEmployee from './pages/Sidebar_employee';
 import Dashboard from './pages/dashboard/Dashboard';
 import CalendarList from './pages/calendar/CalendarList';
 import CalendarAdd from './pages/calendar/CalendarAdd';
@@ -57,9 +58,15 @@ function App() {
   }, [selectedEvent]);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRoles, setUserRoles] = useState([]);
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      // Lấy thông tin roles từ payload
+      const roles = payload.roles || [];
+      console.log(roles);
+      setUserRoles(roles);
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
@@ -73,22 +80,46 @@ function App() {
         <CssBaseline />
         <Router>
           {isAuthenticated && (
-            <div className="app">
-              <div className="sidebar">
-                <Sidebar selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} />
-              </div>
-              <div className="content-wrapper">
-                <div className="topbar">
-                  <Topbar setIsAuthenticated={setIsAuthenticated} />
+
+            <>
+              {userRoles.some(role => ["ROLE_ADMIN"].includes(role)) && ( 
+                <div className="app">
+                  <div className="sidebar">
+                    <Sidebar selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} />
+                  </div>
+                  <div className="content-wrapper">
+                    <div className="topbar">
+                      <Topbar setIsAuthenticated={setIsAuthenticated} />
+                    </div>
+                    <main className="main-content">
+                      <Routes>
+                        {/* Các tuyến đường dành cho manager */}
+
+                      </Routes>
+                    </main>
+                  </div>
                 </div>
-                <main className="main-content">
-                  <Routes>
-                    {isAuthenticated && (
-                      <>
-                         <Route path="" element={<EventList setSelectedEvent={setSelectedEvent} />} />
+                
+              )}
+
+              {userRoles.some(role => ["ROLE_MANAGER"].includes(role)) && (
+                <div className="app">
+                  <div className="sidebar">
+                    <Sidebar selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} />
+                  </div>
+                  <div className="content-wrapper">
+                    <div className="topbar">
+                      <Topbar setIsAuthenticated={setIsAuthenticated} />
+                    </div>
+                    <main className="main-content">
+                      <Routes>
+                        {/* Các tuyến đường dành cho manager */}
+                        <Route path="/home" element={<EventList setSelectedEvent={setSelectedEvent} />} />
+                        <Route path="/" element={<EventList setIsAuthenticated={setIsAuthenticated} />} />
+                        <Route path="/login" element={<Navigate to="/" replace />} />
+                        <Route path="" element={<EventList setSelectedEvent={setSelectedEvent} />} />
                         <Route path="/calendar/CalendarList" element={<CalendarList />} />
                         <Route path="/events/:eventId/tasks" element={<KanbanBoard />} />
-                        <Route path="/" element={<EventList setSelectedEvent={setSelectedEvent} />} />
                         <Route path="/dashboard" element={<EventList setSelectedEvent={setSelectedEvent} />} />
                         <Route path="/events/:eventId" element={<EventDetail />} />
                         <Route path="/events/:eventId/sponsors" element={<SponsorForEvent />} />
@@ -100,48 +131,55 @@ function App() {
                         <Route path="/sponsors/SponsorList" element={<SponsorList />} />
                         <Route path="/sponsors/SponsorAdd" element={<SponsorAdd />} />
                         <Route path="/sponsors/:sponsorId" element={<SponsorDetail />} />
-
-
                         <Route path="/sponsorships/" element={<SponsorshipList />} />
                         <Route path="/sponsorships/add" element={<SponsorshipAdd />} />
-
-                  <Route path="/sponsors" element={<SponsorList />} />
-                  <Route path="/sponsors/SponsorAdd" element={<SponsorAdd />} />
-                  <Route path="/sponsors/:sponsorId" element={<SponsorDetail />} />
-
                         <Route path="/provider/:providerId/service" element={<ProviderServiceAdd />} />
                         <Route path="/provider/service/:serviceId" element={<ProviderServiceDetail />} />
-
                         <Route path="/speakers" element={<SpeakerList />} />
                         <Route path="/speakers/add" element={<SpeakerAdd />} />
                         <Route path="/speakers/:speakerId/detail" element={<SpeakerDetail />} />
-
                         <Route path="/mcs" element={<MCList />} />
                         <Route path="/mcs/addMc" element={<MCAdd />} />
-
                         <Route path="/teams/TeamList" element={<TeamList />} />
                         <Route path="/teams/TeamAdd" element={<TeamAdd />} />
                         <Route path="/tasks" element={<TaskList />} />
                         <Route path="/tasks/add" element={<TaskAdd />} />
+                      </Routes>
+                    </main>
+                  </div>
+                </div>
+              )}
 
+              {userRoles.some(role => ["ROLE_EMPLOYEE"].includes(role)) && (
+                // <></>
+                <div className="app">
+                  <div className="sidebar">
+                    <SidebarEmployee selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} />
+                  </div>
+                  <div className="content-wrapper">
+                    <div className="topbar">
+                      <Topbar setIsAuthenticated={setIsAuthenticated} />
+                    </div>
+                    <main className="main-content">
+                      <Routes>
+                        {/* Các tuyến đường dành cho manager */}
 
-                      </>
-                    )}
-                  </Routes>
-                </main>
-              </div>
-            </div>
+                      </Routes>
+                    </main>
+                  </div>
+                </div>
+              )}
+            </>
           )}
 
-          {/* Nếu chưa đăng nhập hoặc đang ở trang chủ */}
-          {(!isAuthenticated) ? (
+          {!isAuthenticated && (
             <Routes>
               <Route path="/" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
               <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
               <Route path="/forgot" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
             </Routes>
-          ) : null}
+          )}
         </Router>
       </ThemeProvider>
     </ColorModeContext.Provider>
