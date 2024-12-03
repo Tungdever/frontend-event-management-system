@@ -5,7 +5,7 @@ import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 import { useNavigate } from "react-router-dom";
 
-const McAdd = () => {
+const McAdd = ({ closeDialog ,fetchMcList }) => {
   const [mcName, setMcName] = useState('');
   const [email, setEmail] = useState('');
   const [title, setTitle] = useState('');
@@ -42,7 +42,6 @@ const McAdd = () => {
     formData.append('address', address);
     formData.append('description', description);
     formData.append('imageMc', image);
-    formData.append('image', imageName);
 
     setLoading(true);
     try {
@@ -54,14 +53,8 @@ const McAdd = () => {
       });
       console.log('API Response:', response);
       alert('Thêm MC thành công!');
-      setMcName('');
-      setEmail('');
-      setTitle('');
-      setPhone('');
-      setAddress('');
-      setDescription('');
-      setImage(null);
-      setImagePreview(null);
+      closeDialog(); 
+      fetchMcList(); 
     } catch (error) {
       console.error('Lỗi khi thêm MC:', error);
       alert('Có lỗi xảy ra, vui lòng thử lại.');
@@ -69,20 +62,11 @@ const McAdd = () => {
       setLoading(false);
     }
   };
-  const onBack = async () => {
-    navigate(`/mcs`);
-  };
+
 
   return (
-    <div style={{ padding: '20px', backgroundColor: '#f0f0f0' }}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <IconButton onClick={onBack}>
-          <ArrowBackOutlinedIcon style={{ color: '#3f51b5' }} />
-        </IconButton>
-        <Typography variant="h4" gutterBottom style={{ color: '#3f51b5', fontWeight: 'bold', marginLeft: '10px' }}>
-          Thêm MC Mới
-        </Typography>
-      </div>
+    <>
+     
       <Card style={{ padding: '30px', borderRadius: '15px', boxShadow: '0 6px 20px rgba(0, 0, 0, 0.15)' }}>
         <form onSubmit={handleSubmit}>
           {imagePreview ? (
@@ -227,7 +211,7 @@ const McAdd = () => {
           </Grid>
         </form>
       </Card>
-    </div>
+    </>
   );
 };
 

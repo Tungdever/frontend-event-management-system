@@ -105,12 +105,16 @@ function App() {
                         <Route path="/sponsorships/" element={<SponsorshipList />} />
                         <Route path="/sponsorships/add" element={<SponsorshipAdd />} />
 
-                  <Route path="/sponsors" element={<SponsorList />} />
-                  <Route path="/sponsors/SponsorAdd" element={<SponsorAdd />} />
-                  <Route path="/sponsors/:sponsorId" element={<SponsorDetail />} />
+                        <Route path="/sponsors" element={<SponsorList />} />
+                        <Route path="/sponsors/SponsorAdd" element={<SponsorAdd />} />
+                        <Route path="/sponsors/:sponsorId" element={<SponsorDetail />} />
 
+                        <Route path="/providers" element={<ProviderList />} />
                         <Route path="/provider/:providerId/service" element={<ProviderServiceAdd />} />
                         <Route path="/provider/service/:serviceId" element={<ProviderServiceDetail />} />
+                        <Route path="/providers/:providerId" element={<ProviderDetail />} />
+                        <Route path="/providers/:providerId/edit" element={<ProviderEdit />} />
+
 
                         <Route path="/speakers" element={<SpeakerList />} />
                         <Route path="/speakers/add" element={<SpeakerAdd />} />

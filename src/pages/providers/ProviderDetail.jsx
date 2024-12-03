@@ -15,19 +15,19 @@ import {
 
 
 
-// Tạo instance Axios
+
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080/man/provider/", // Base URL của Spring Boot
+  baseURL: "http://localhost:8080/man/provider/",
   headers: {
     Authorization: localStorage.getItem("token"),
   },
 });
 
 const ProviderDetail = () => {
-  const { providerId } = useParams(); // Lấy providerId từ URL
+  const { providerId } = useParams(); 
   const [provider, setProvider] = useState(null);
   const [error, setError] = useState(null);
-  const theme = useTheme(); // Lấy theme từ Material-UI
+  const theme = useTheme(); 
 
   useEffect(() => {
     const fetchProviderDetail = async () => {

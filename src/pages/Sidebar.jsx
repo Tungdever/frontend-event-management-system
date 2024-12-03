@@ -71,7 +71,7 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
       title: "Providers",
       
       submenu: [
-        { title: "Danh sách nhà cung cấp", path: "/providers/ProviderList", icon: <StorefrontOutlinedIcon />, },
+        { title: "Danh sách nhà cung cấp", path: "/providers", icon: <StorefrontOutlinedIcon />, },
       ],
     },
     {
