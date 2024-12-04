@@ -140,10 +140,9 @@ function App() {
                         <Route path="/speakers/:speakerId/detail" element={<SpeakerDetail />} />
                         <Route path="/mcs" element={<MCList />} />
                         <Route path="/mcs/addMc" element={<MCAdd />} />
-                        <Route path="/teams/TeamList" element={<TeamList />} />
-                        <Route path="/teams/TeamAdd" element={<TeamAdd />} />
                         <Route path="/tasks" element={<TaskList />} />
                         <Route path="/tasks/add" element={<TaskAdd />} />
+                        <Route path="/events/:eventId/team-detail" element={<TeamList />} />
                       </Routes>
                     </main>
                   </div>
