@@ -115,18 +115,19 @@ function App() {
                       <Routes>
                         {/* Các tuyến đường dành cho manager */}
                         <Route path="/home" element={<EventList setSelectedEvent={setSelectedEvent} />} />
-                        <Route path="/" element={<EventList setIsAuthenticated={setIsAuthenticated} />} />
+                        <Route path="/" element={<EventList setSelectedEvent={setSelectedEvent} />} />
                         <Route path="/login" element={<Navigate to="/" replace />} />
                         <Route path="" element={<EventList setSelectedEvent={setSelectedEvent} />} />
                         <Route path="/calendar/CalendarList" element={<CalendarList />} />
                         <Route path="/events/:eventId/tasks" element={<KanbanBoard />} />
                         <Route path="/dashboard" element={<EventList setSelectedEvent={setSelectedEvent} />} />
+                        <Route path="/event/eventList" element={<EventList setSelectedEvent={setSelectedEvent} />} />  
+                        <Route path="/event/create" element={<EventAdd setSelectedEvent={setSelectedEvent} />} />                                       
                         <Route path="/events/:eventId" element={<EventDetail />} />
                         <Route path="/events/:eventId/sponsors" element={<SponsorForEvent />} />
                         <Route path="/events/:eventId/providers" element={<AddProviderForEvent />} />
                         <Route path="/events/:eventId/teams" element={<AddTeamForEvent />} />
                         <Route path="/events/:eventId/subtask" element={<TaskSubTasks />} />
-                        <Route path="/events/add" element={<EventAdd />} />
                         <Route path="/events/:eventId/sessionList" element={<SessionList />} />
                         <Route path="/sponsors/SponsorList" element={<SponsorList />} />
                         <Route path="/sponsors/SponsorAdd" element={<SponsorAdd />} />

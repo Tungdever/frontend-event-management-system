@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, Typography, useTheme } from "@mui/material";
-import { Link, useLocation } from "react-router-dom";
+import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../theme";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
@@ -19,9 +19,13 @@ import ContactMailIcon from '@mui/icons-material/ContactMail';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import AddTaskOutlinedIcon from '@mui/icons-material/AddTaskOutlined';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
+import EventIcon from '@mui/icons-material/Event';
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
   return (
     <MenuItem
       active={selected === title}
@@ -37,6 +41,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
+
 const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -44,7 +49,11 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
   const [selected, setSelected] = useState("Dashboard");
 
   const location = useLocation(); // Để theo dõi thay đổi URL
-
+  const navigate = useNavigate();
+  const handleClickIcon = () => {
+    // Chuyển hướng khi nhấp vào icon
+    navigate("/");
+  };
   // Các menu mặc định
   const defaultMenuItems = [
     {
@@ -53,35 +62,39 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
       icon: <DashboardOutlinedIcon />,
     },
     {
+      title: "Events",
+      submenu: [{ title: "Danh sách sự kiện", path: "/event/eventList", icon: <EventIcon />, }],
+    },
+    {
       title: "Calendar",
-      
-      submenu: [{ title: "Xem lịch", path: "/calendar/CalendarList" , icon: <CalendarMonthOutlinedIcon />,}],
+
+      submenu: [{ title: "Xem lịch", path: "/calendar/CalendarList", icon: <CalendarMonthOutlinedIcon />, }],
     },
     {
       title: "Sponsors",
-      
-      submenu: [{ title: "Danh sách nhà tài trợ", path: "/sponsors" , icon: <BusinessOutlinedIcon />,}],
+
+      submenu: [{ title: "Danh sách nhà tài trợ", path: "/sponsors", icon: <BusinessOutlinedIcon />, }],
     },
     {
       title: "Sponsorships",
-      
+
       submenu: [{ title: "Mức độ nhà tài trợ", path: "/sponsorships/", icon: <HandshakeOutlinedIcon />, }],
     },
     {
       title: "Providers",
-      
+
       submenu: [
         { title: "Danh sách nhà cung cấp", path: "/providers", icon: <StorefrontOutlinedIcon />, },
       ],
     },
     {
       title: "Speakers",
-      
+
       submenu: [{ title: "Danh sách diễn giả", path: "/speakers", icon: <RecordVoiceOverOutlinedIcon />, }],
     },
     {
       title: "MCs",
-      
+
       submenu: [{ title: "Danh sách MC", path: "/mcs", icon: <CampaignOutlinedIcon />, }],
     },
   ];
@@ -90,7 +103,9 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
   const eventMenuItems = selectedEvent
     ? [
       {
-        title: "<Events",
+        title: "Events",
+        icon: <ArrowBackIcon />,
+        path: "/",
         submenu: [
           {
             title: "View Event",
@@ -111,7 +126,7 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
       },
       {
         title: "Sponsor",
-        
+
         submenu: [
           {
             title: "Add sponsor",
@@ -122,7 +137,7 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
       },
       {
         title: "Provider",
-        
+
         submenu: [
           {
             title: "Add Provider",
@@ -133,15 +148,15 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
       },
       {
         title: "Task",
-       
+
         submenu: [
-          { title: "Kanban", path: `/events/${selectedEvent.eventId}/tasks`,  icon: <AssignmentOutlinedIcon />, },
-          
+          { title: "Kanban", path: `/events/${selectedEvent.eventId}/tasks`, icon: <AssignmentOutlinedIcon />, },
+
         ],
       },
       {
         title: "SubTask",
-        
+
         submenu: [
           {
             title: "Add SubTask",
@@ -152,7 +167,7 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
       },
       {
         title: "Team",
-        
+
         submenu: [
           {
             title: "Team Detail",
@@ -197,23 +212,22 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
         "& .pro-inner-item": { padding: "5px 35px 5px 20px !important" },
         "& .pro-inner-item:hover": { color: "#868dfb !important" },
         "& .pro-menu-item.active": { color: "#6870fa !important" },
+        overflow: "hidden"
       }}
     >
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
-          <Link to={`/dashboard`} style={{ textDecoration: "none" }}>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              ml="15px"
-            >
-              <Typography variant="h3" color={colors.grey[100]}>
-                EVENT
-              </Typography>
+            <Box sx={{
+              marginLeft: 2,
+              color: "red",
+              maxWidth: 3,
+              maxHeight: 40,
+              cursor: 'pointer',
+              display: (location.pathname !== "/home" && location.pathname !== "/" && location.pathname !== "") ? 'block' : 'none'  
+            }}>
+              <ArrowBackIcon onClick = {handleClickIcon} />
             </Box>
-          </Link>
-
+         
           {/* Các menu items */}
           {menuItems.map((item, index) => (
             <div key={index}>
@@ -234,7 +248,8 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
                   >
                     {item.title}
                   </Typography>
-                  {item.submenu.map((subItem, subIndex) => (
+                  {
+                    item.submenu.map((subItem, subIndex) => (
                       <Item
                         key={subIndex}
                         title={subItem.title}
@@ -243,14 +258,15 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
                         selected={selected}
                         setSelected={setSelected}
                       />
-                    ))}
+                    ))
+                  }
                 </Box>
               )}
             </div>
           ))}
         </Menu>
-      </ProSidebar>
-    </Box>
+      </ProSidebar >
+    </Box >
   );
 };
 

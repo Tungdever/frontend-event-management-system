@@ -34,7 +34,7 @@ const SpeakerList = () => {
         const filtered = speakers.filter((speaker) =>
             speaker.name.toLowerCase().includes(value.toLowerCase())
         );
-        filteredSpeakers(filtered);
+        setFilteredSpeakers(filtered);
     };
     // Fetch data from API
     useEffect(() => {
@@ -49,6 +49,7 @@ const SpeakerList = () => {
                 console.log('API Response:', result);
                 if (Array.isArray(result.data)) {
                     setSpeakers(result.data);
+                    setFilteredSpeakers(result.data);
                 } else {
                     console.error('Unexpected API response format:', result);
                     setSpeakers([]);
@@ -143,7 +144,7 @@ const SpeakerList = () => {
                 />
             </Box>
             <Grid container spacing={2}>
-                {speakers.map((speaker) => (
+                {filteredSpeakers.map((speaker) => (
                     <Grid item xs={12} sm={6} md={4} key={speaker.id}>
                         <Card sx={{ position: 'relative' }}>
                             {/* Dots Menu */}

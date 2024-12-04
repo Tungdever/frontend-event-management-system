@@ -63,7 +63,7 @@ const SidebarEmployee = ({ selectedEvent, setSelectedEvent }) => {
   const eventMenuItems = selectedEvent
     ? [
       {
-        title: "<Events",
+        title: "Events",
         submenu: [
           {
             title: "View Event",
