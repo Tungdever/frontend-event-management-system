@@ -10,14 +10,16 @@ import {
   Button,
   Typography,
 } from "@mui/material";
+import {  Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import SponsorAdd from "./SponsorAdd";
 
-// URL mặc định nếu không có ảnh
-const defaultImage = "path/to/default/image.jpg"; // Thay bằng đường dẫn ảnh mặc định
+
+const defaultImage = "path/to/default/image.jpg"; 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080/man/sponsor", // Base URL của Spring Boot (đổi thành sponsor)
+  baseURL: "http://localhost:8080/man/sponsor", 
   headers: {
     Authorization: localStorage.getItem("token"),
   },
@@ -27,25 +29,26 @@ const SponsorList = () => {
   const [sponsors, setSponsors] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedSponsor, setSelectedSponsor] = useState(null);
-  const [searchTerm, setSearchTerm] = useState(""); // State tìm kiếm
-  const [filteredSponsors, setFilteredSponsors] = useState([]); // Danh sách đã lọc
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const [filteredSponsors, setFilteredSponsors] = useState([]); 
   const navigate = useNavigate();
   const [imageUrls, setImageUrls] = useState({});
   const [loading, setLoading] = useState(true);
-
-  // Fetch data sponsors từ API
+  const [openDialog, setOpenDialog] = useState(false);
+  
+  const fetchSponsors = async () => {
+    try {
+      const response = await axiosInstance.get();
+      setSponsors(response.data.data || []);
+      setFilteredSponsors(response.data.data || []); 
+    } catch (error) {
+      console.error("Lỗi khi tải danh sách Sponsor:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchSponsors = async () => {
-      try {
-        const response = await axiosInstance.get();
-        setSponsors(response.data.data || []);
-        setFilteredSponsors(response.data.data || []); // Lưu dữ liệu đã tải vào danh sách lọc
-      } catch (error) {
-        console.error("Lỗi khi tải danh sách Sponsor:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    
 
     fetchSponsors();
   }, []);
@@ -161,6 +164,13 @@ const SponsorList = () => {
       ),
     },
   ];
+  const handleDialogOpen = () => {
+    setOpenDialog(true);
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+  };
 
   return (
     <div style={{ width: "100%", padding: "20px" }}>
@@ -191,9 +201,7 @@ const SponsorList = () => {
             },
           }}
         />
-        <Link to="/sponsors/SponsorAdd" style={{ textDecoration: "none" }}>
-          <Button
-            type="submit"
+         <Button onClick={handleDialogOpen}type="submit"
             color="primary"
             variant="contained"
             sx={{
@@ -202,11 +210,9 @@ const SponsorList = () => {
               borderRadius: "20px",
               padding: "10px 20px",
               fontWeight: "bold",
-            }}
-          >
-            Add Sponsor
-          </Button>
-        </Link>
+            }}>
+          Add Sponsor
+        </Button>
       </Box>
 
       {loading ? (
@@ -229,6 +235,18 @@ const SponsorList = () => {
           </Menu>
         </>
       )}
+      {/* Dialog for adding Sponsor */}
+      <Dialog open={openDialog} onClose={handleDialogClose} sx={{ "& .MuiDialog-paper": { width: "800px", maxWidth: "none" } }} fullWidth>
+        <DialogTitle>Add MC</DialogTitle>
+        <DialogContent>
+          <SponsorAdd closeDialog={handleDialogClose}  fetchSponsors ={fetchSponsors}/> {/* Pass fetchMcList to McAdd */}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

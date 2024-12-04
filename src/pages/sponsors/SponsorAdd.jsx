@@ -7,18 +7,18 @@ import {
   FormHelperText,
   FormControl,
   Typography,
-  IconButton
+  IconButton,
+  Grid
 } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import Header from "../../components/Header";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 import { useNavigate } from "react-router-dom";
 
-const SponsorAdd = () => {
+const SponsorAdd = ({ closeDialog ,fetchSponsors }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [sponsorshipLevels, setSponsorshipLevels] = useState([]);
   const [previewImage, setPreviewImage] = useState(null);
@@ -77,7 +77,9 @@ const SponsorAdd = () => {
       alert("Sponsor added successfully!");
       console.log("Response:", response.data);
       resetForm();
-      setPreviewImage(null); // Reset preview image
+      closeDialog();
+      fetchSponsors();
+      setPreviewImage(null); 
     } catch (error) {
       console.error("Error adding sponsor:", error);
       alert("Failed to add sponsor. Please try again.");
@@ -85,232 +87,258 @@ const SponsorAdd = () => {
   };
 
   return (
-    <Box m="20px">
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <IconButton onClick={onBack}>
-          <ArrowBackOutlinedIcon style={{ color: '#3f51b5' }} />
-        </IconButton>
-        <Typography variant="h4" gutterBottom style={{ color: '#3f51b5', fontWeight: 'bold', marginLeft: '10px' }}>
-          Thêm Sponsors
-        </Typography>
-      </div>
-
-      <Formik
-        onSubmit={handleFormSubmit}
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-      >
-        {({
-          values,
-          errors,
-          touched,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-          setFieldValue,
-        }) => (
-          <form onSubmit={handleSubmit}>
-            <Box
-              display="grid"
-              gap="30px"
-              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              sx={{
-                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-              }}
-            >
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="flex-start" // Căn trái đúng
-                sx={{ gridColumn: "span 4" }}
-              >
-                {previewImage ? (
-                  <Box
-                    component="img"
-                    src={previewImage}
-                    alt="Preview"
-                    sx={{
-                      width: 120,
-                      height: 120,
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      mb: 2,
-                    }}
-                  />
-                ) : (
-                  <Box
-                    sx={{
-                      width: 120,
-                      height: 120,
-                      borderRadius: "50%",
-                      backgroundColor: "#e0e0e0",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      mb: 2,
-                    }}
-                  >
-                    <Typography variant="caption" color="textSecondary">
-                      No Image
-                    </Typography>
-                  </Box>
-                )}
-                <Button
-                  variant="contained"
-                  component="label"
+<Box m="20px">
+  <Formik
+    onSubmit={handleFormSubmit}
+    initialValues={initialValues}
+    validationSchema={validationSchema}
+  >
+    {({
+      values,
+      errors,
+      touched,
+      handleBlur,
+      handleChange,
+      handleSubmit,
+      setFieldValue,
+    }) => (
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Box display="flex" flexDirection="column" alignItems="flex-start">
+              {previewImage ? (
+                <Box
+                  component="img"
+                  src={previewImage}
+                  alt="Preview"
                   sx={{
-                    textTransform: "none",
-                    width: "fit-content", // Giới hạn chiều rộng
-                    padding: "6px 16px", // Giữ kích thước đẹp
+                    width: 120,
+                    height: 120,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    mb: 2,
+                  }}
+                />
+              ) : (
+                <Box
+                  sx={{
+                    width: 120,
+                    height: 120,
+                    borderRadius: "50%",
+                    backgroundColor: "#e0e0e0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    mb: 2,
                   }}
                 >
-                  Choose Logo
-                  <input
-                    type="file"
-                    accept="image/*"
-                    hidden
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      setFieldValue("sponsorLogo", file);
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onload = () => setPreviewImage(reader.result);
-                        reader.readAsDataURL(file);
-                      }
-                    }}
-                  />
-                </Button>
-                {touched.sponsorLogo && errors.sponsorLogo && (
-                  <FormHelperText error>{errors.sponsorLogo}</FormHelperText>
-                )}
-              </Box>
-
-              {/* Các trường input khác */}
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Sponsor Name"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.name}
-                name="name"
-                error={!!touched.name && !!errors.name}
-                helperText={touched.name && errors.name}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Contact"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.contact}
-                name="contact"
-                error={!!touched.contact && !!errors.contact}
-                helperText={touched.contact && errors.contact}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="email"
-                label="Email"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.email}
-                name="email"
-                error={!!touched.email && !!errors.email}
-                helperText={touched.email && errors.email}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Phone"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.phone}
-                name="phone"
-                error={!!touched.phone && !!errors.phone}
-                helperText={touched.phone && errors.phone}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Address"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.address}
-                name="address"
-                error={!!touched.address && !!errors.address}
-                helperText={touched.address && errors.address}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Website"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.website}
-                name="website"
-                error={!!touched.website && !!errors.website}
-                helperText={touched.website && errors.website}
-                sx={{ gridColumn: "span 4" }}
-              />
-              {/* Sponsorship Level Select */}
-              <FormControl
-                fullWidth
-                variant="filled"
-                error={!!touched.sponsorshipId && !!errors.sponsorshipId}
-                sx={{ gridColumn: "span 4" }}
+                  <Typography variant="caption" color="textSecondary">
+                    No Image
+                  </Typography>
+                </Box>
+              )}
+              <Button
+                variant="contained"
+                component="label"
+                sx={{
+                  textTransform: "none",
+                  width: "fit-content",
+                  padding: "6px 16px",
+                }}
               >
-                <Select
-                  value={values.sponsorshipId || ""}
+                Choose Logo
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
                   onChange={(e) => {
-                    const selected = sponsorshipLevels.find(
-                      (level) => level.sponsorShipID === e.target.value
-                    );
-                    setFieldValue("sponsorshipId", e.target.value);
-                    setFieldValue("sponsorshipLevel", selected?.level || "");
+                    const file = e.target.files[0];
+                    setFieldValue("sponsorLogo", file);
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = () => setPreviewImage(reader.result);
+                      reader.readAsDataURL(file);
+                    }
                   }}
-                  onBlur={handleBlur}
-                  name="sponsorshipId"
-                  displayEmpty
-                >
-                  <MenuItem value="" disabled>
-                    Select Sponsorship Level
-                  </MenuItem>
-                  {sponsorshipLevels.map((level) => (
-                    <MenuItem
-                      key={level.sponsorShipID}
-                      value={level.sponsorShipID}
-                    >
-                      {level.level}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <FormHelperText>
-                  {touched.sponsorshipId && errors.sponsorshipId}
-                </FormHelperText>
-              </FormControl>
-            </Box>
-
-            <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                Add Sponsor
+                />
               </Button>
+              {touched.sponsorLogo && errors.sponsorLogo && (
+                <FormHelperText error>{errors.sponsorLogo}</FormHelperText>
+              )}
             </Box>
-          </form>
-        )}
-      </Formik>
-    </Box>
+          </Grid>
+
+          {/* Các trường input khác */}
+          <Grid item xs={12}>
+            <input
+              type="text"
+              placeholder="Sponsor Name"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.name}
+              name="name"
+              style={{
+                width: '100%',
+                padding: '16px',
+                boxSizing: 'border-box',
+                borderRadius: '4px',
+                border: '1px solid #ccc',
+              }}
+            />
+            {touched.name && errors.name && (
+              <FormHelperText error>{errors.name}</FormHelperText>
+            )}
+          </Grid>
+          <Grid item xs={12}>
+            <input
+              type="text"
+              placeholder="Contact"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.contact}
+              name="contact"
+              style={{
+                width: '100%',
+                padding: '16px',
+                boxSizing: 'border-box',
+                borderRadius: '4px',
+                border: '1px solid #ccc',
+              }}
+            />
+            {touched.contact && errors.contact && (
+              <FormHelperText error>{errors.contact}</FormHelperText>
+            )}
+          </Grid>
+          <Grid item xs={12}>
+            <input
+              type="email"
+              placeholder="Email"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.email}
+              name="email"
+              style={{
+                width: '100%',
+                padding: '16px',
+                boxSizing: 'border-box',
+                borderRadius: '4px',
+                border: '1px solid #ccc',
+              }}
+            />
+            {touched.email && errors.email && (
+              <FormHelperText error>{errors.email}</FormHelperText>
+            )}
+          </Grid>
+          <Grid item xs={12}>
+            <input
+              type="text"
+              placeholder="Phone"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.phone}
+              name="phone"
+              style={{
+                width: '100%',
+                padding: '16px',
+                boxSizing: 'border-box',
+                borderRadius: '4px',
+                border: '1px solid #ccc',
+              }}
+            />
+            {touched.phone && errors.phone && (
+              <FormHelperText error>{errors.phone}</FormHelperText>
+            )}
+          </Grid>
+          <Grid item xs={12}>
+            <input
+              type="text"
+              placeholder="Address"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.address}
+              name="address"
+              style={{
+                width: '100%',
+                padding: '16px',
+                boxSizing: 'border-box',
+                borderRadius: '4px',
+                border: '1px solid #ccc',
+              }}
+            />
+            {touched.address && errors.address && (
+              <FormHelperText error>{errors.address}</FormHelperText>
+            )}
+          </Grid>
+          <Grid item xs={12}>
+            <input
+              type="text"
+              placeholder="Website"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              value={values.website}
+              name="website"
+              style={{
+                width: '100%',
+                padding: '16px',
+                boxSizing: 'border-box',
+                borderRadius: '4px',
+                border: '1px solid #ccc',
+              }}
+            />
+            {touched.website && errors.website && (
+              <FormHelperText error>{errors.website}</FormHelperText>
+            )}
+          </Grid>
+
+          {/* Sponsorship Level Select */}
+          <Grid item xs={12}>
+            <FormControl
+              fullWidth
+              variant="filled"
+              error={!!touched.sponsorshipId && !!errors.sponsorshipId}
+            >
+              <Select
+                value={values.sponsorshipId || ""}
+                onChange={(e) => {
+                  const selected = sponsorshipLevels.find(
+                    (level) => level.sponsorShipID === e.target.value
+                  );
+                  setFieldValue("sponsorshipId", e.target.value);
+                  setFieldValue("sponsorshipLevel", selected?.level || "");
+                }}
+                onBlur={handleBlur}
+                name="sponsorshipId"
+                displayEmpty
+              >
+                <MenuItem value="" disabled>
+                  Select Sponsorship Level
+                </MenuItem>
+                {sponsorshipLevels.map((level) => (
+                  <MenuItem
+                    key={level.sponsorShipID}
+                    value={level.sponsorShipID}
+                  >
+                    {level.level}
+                  </MenuItem>
+                ))}
+              </Select>
+              <FormHelperText>
+                {touched.sponsorshipId && errors.sponsorshipId}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+        </Grid>
+
+        <Box display="flex" justifyContent="end" mt="20px">
+          <Button type="submit" color="secondary" variant="contained">
+            Add Sponsor
+          </Button>
+        </Box>
+      </form>
+    )}
+  </Formik>
+</Box>
+
   );
 };
 

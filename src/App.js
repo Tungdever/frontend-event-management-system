@@ -31,7 +31,7 @@ import SpeakerDetail from './pages/speakers/SpeakerDetail';
 import MCList from './pages/mcs/MCList';
 import MCAdd from './pages/mcs/MCAdd'
 import TeamList from './pages/teams/TeamList';
-import TeamAdd from './pages/teams/TeamAdd';
+
 import AddTeamForEvent from "./pages/events/AddTeamForEvent";
 import TaskList from './pages/tasks/TaskList';
 import TaskAdd from './pages/tasks/TaskAdd';
