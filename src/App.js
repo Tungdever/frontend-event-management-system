@@ -82,7 +82,7 @@ function App() {
           {isAuthenticated && (
 
             <>
-              {userRoles.some(role => ["ROLE_ADMIN"].includes(role)) && ( 
+              {userRoles.length == 3 && ( 
                 <div className="app">
                   <div className="sidebar">
                     <Sidebar selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} />
@@ -102,7 +102,7 @@ function App() {
                 
               )}
 
-              {userRoles.some(role => ["ROLE_MANAGER"].includes(role)) && (
+              {userRoles.length == 2 && (
                 <div className="app">
                   <div className="sidebar">
                     <Sidebar selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} />
@@ -150,7 +150,7 @@ function App() {
                 </div>
               )}
 
-              {userRoles.some(role => ["ROLE_EMPLOYEE"].includes(role)) && (
+              {userRoles.length == 1 && (
                 // <></>
                 <div className="app">
                   <div className="sidebar">
@@ -163,7 +163,11 @@ function App() {
                     <main className="main-content">
                       <Routes>
                         {/* Các tuyến đường dành cho manager */}
-
+                        <Route path="/home" element={<EventList setSelectedEvent={setSelectedEvent} />} />
+                        <Route path="/" element={<EventList setIsAuthenticated={setIsAuthenticated} />} />
+                        <Route path="/login" element={<Navigate to="/" replace />} />
+                        <Route path="" element={<EventList setSelectedEvent={setSelectedEvent} />} />
+                        <Route path="/dashboard" element={<EventList setSelectedEvent={setSelectedEvent} />} />
                       </Routes>
                     </main>
                   </div>

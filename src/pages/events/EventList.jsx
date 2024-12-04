@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Card, CardContent, Typography, CardMedia, Grid, Box } from "@mui/material";
+import { Card, CardContent, Typography, CardMedia, Grid, Box, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import PlaceOutlined from '@mui/icons-material/PlaceOutlined';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
@@ -11,21 +11,21 @@ const EventList = ({ setSelectedEvent }) => {
     const [events, setEvents] = useState([]);
     const navigate = useNavigate();
     const [imageUrls, setImageUrls] = useState({});
-    // const token = ;
+    const token = localStorage.getItem("token");
     const defaultImage = 'https://static.vecteezy.com/system/resources/previews/006/692/205/non_2x/loading-icon-template-black-color-editable-loading-icon-symbol-flat-illustration-for-graphic-and-web-design-free-vector.jpg';
     useEffect(() => {
-        // if (token) {
-        // const payload = JSON.parse(atob(token.split(".")[1]));
-        // // Lấy thông tin roles từ payload
-        // const roles = payload.roles || [];
-        // if (userRoles.some(role => ["ROLE_MANAGER", "ROLE_ADMIN"].includes(role))){
-
-        // }
-        axios
+        if (token) {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        // Lấy thông tin roles từ payload
+        const roles = payload.roles || [];
+        const userId = payload.userId || null;
+        console.log(userId);
+        if (roles.some(role => ["ROLE_MANAGER", "ROLE_ADMIN"].includes(role))){
+            axios
             .get("http://localhost:8080/man/event", {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: localStorage.getItem("token"),
+                    Authorization: token,
                 },
             })
             .then((response) => {
@@ -36,7 +36,27 @@ const EventList = ({ setSelectedEvent }) => {
             .catch((error) => {
                 console.error("Error fetching data", error);
             });
-        // }
+        }
+        else {
+            axios
+            .get(`http://localhost:8080/emp/event/${userId}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token,
+                },
+            })
+            .then((response) => {
+                if (response.data.statusCode === 0) {
+                    setEvents(response.data.data);
+                }
+            })
+            .catch((error) => {
+                console.error("Error fetching data", error);
+            });
+        }
+    }
+        
+        
 
     }, []);
     useEffect(() => {
