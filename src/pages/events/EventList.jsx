@@ -11,7 +11,7 @@ const EventList = ({ setSelectedEvent }) => {
     const [events, setEvents] = useState([]);
     const navigate = useNavigate();
     const [imageUrls, setImageUrls] = useState({});
-    const defaultImage = 'https://static.vecteezy.com/system/resources/previews/006/692/205/non_2x/loading-icon-template-black-color-editable-loading-icon-symbol-flat-illustration-for-graphic-and-web-design-free-vector.jpg';
+    const defaultImage = 'https://www.shutterstock.com/image-vector/image-icon-600nw-211642900.jpg';
     useEffect(() => {
         axios
             .get("http://localhost:8080/man/event", {

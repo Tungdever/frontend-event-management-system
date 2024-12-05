@@ -9,6 +9,19 @@ import PhoneOutlined from "@mui/icons-material/PhoneOutlined";
 import HomeOutlined from "@mui/icons-material/HomeOutlined";
 import DescriptionOutlined from "@mui/icons-material/DescriptionOutlined";
 import McAdd from "./MCAdd"
+import DeleteOutlined from "@mui/icons-material/DeleteOutlined"; 
+export const deleteMc= async (mcId) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8080/man/mc/${mcId}`,
+        { headers: { Authorization: localStorage.getItem("token") } }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error delete provider:", error);
+      throw error;
+    }
+  };
 const McList = () => {
     const [mcList, setMcList] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -72,6 +85,16 @@ const McList = () => {
     const handleDialogClose = () => {
       setOpenDialog(false);
     };
+    const handleDeleteMc = async (mcId) => {
+        try {
+          console.log(`Attempting to delete MC with ID: ${mcId}`); // Debug log
+          await deleteMc(mcId);
+          console.log(`Successfully deleted MC with ID: ${mcId}`); // Debug log
+          setMcList((prevList) => prevList.filter(mc => mc.mcID !== mcId)); // Cập nhật lại danh sách
+        } catch (error) {
+          console.error("Error deleting MC:", error);
+        }
+      };
   return (
     <div style={{ padding: "20px" }}>
       <Box
@@ -94,6 +117,17 @@ const McList = () => {
             <Grid item xs={12} sm={6} md={4} key={mc.mcID}>
               <Card>
                 <Box sx={{ position: "relative" }}>
+                     {/* Delete icon */}
+                  <DeleteOutlined
+                    sx={{
+                      position: "absolute",
+                      top: 8,
+                      right: 8,
+                      cursor: "pointer",
+                    
+                    }}
+                    onClick={() => handleDeleteMc(mc.mcID)} 
+                  />
                   {/* Avatar tròn */}
                   <Box
                     component="img"

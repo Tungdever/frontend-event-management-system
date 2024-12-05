@@ -187,16 +187,17 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
   return (
     <Box
       sx={{
-        display: "flex", /* Đảm bảo toàn bộ ứng dụng sử dụng flexbox */
-        height: "100vh", /* Đảm bảo chiều cao bằng chiều cao của cửa sổ trình duyệt */
+        display: "flex", 
+        height: "100vh",
         "& .pro-sidebar-inner": {
           background: `${colors.primary[400]} !important`,
-          height: "100%", /* Đảm bảo chiều cao sidebar phủ đầy */
+          height: "100%",
         },
         "& .pro-icon-wrapper": { backgroundColor: "transparent !important" },
         "& .pro-inner-item": { padding: "5px 35px 5px 20px !important" },
         "& .pro-inner-item:hover": { color: "#868dfb !important" },
         "& .pro-menu-item.active": { color: "#6870fa !important" },
+        overflow: "hidden"
       }}
     >
       <ProSidebar collapsed={isCollapsed}>

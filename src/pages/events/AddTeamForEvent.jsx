@@ -130,7 +130,7 @@ const Contacts = () => {
       setLoading(false);
     }
   };
-  // Hàm fetch team members
+  
   const fetchTeams = async (eventId) => {
     try {
       setLoading(true);
@@ -157,10 +157,10 @@ const Contacts = () => {
       setLoading(false);
     }
   };
-  // Hàm fetch employees
+
   const fetchEmployees = async () => {
     try {
-      const response = await fetch("http://localhost:8080/man/employee", {
+      const response = await fetch(`http://localhost:8080/man/employee/${eventId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: localStorage.getItem("token"),
@@ -178,11 +178,11 @@ const Contacts = () => {
       throw error;
     }
   };
-  // useEffect để tải team members
+
   useEffect(() => {
     const loadTeams = async () => {
       try {
-        setError(null); // Reset error
+        setError(null); 
         const teamsData = await fetchTeams(eventId);
         setTeams(teamsData);
       } catch (err) {
@@ -195,7 +195,7 @@ const Contacts = () => {
     }
   }, [eventId]);
 
-  // useEffect để tải employees
+
   useEffect(() => {
     const loadEmployees = async () => {
       try {
@@ -211,7 +211,7 @@ const Contacts = () => {
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
-    setSearchTerm(""); // Reset search khi chuyển tab
+    setSearchTerm("");
   };
 
   const handleOpenDialog = () => {
@@ -238,8 +238,8 @@ const Contacts = () => {
       );
       if (response.ok) {
         alert("Member added successfully!");
-        setOpenDialog(false); // Close dialog
-        // Fetch lại dữ liệu team
+        setOpenDialog(false); 
+
         const updatedTeams = await fetch(
           `http://localhost:8080/man/event/${eventId}/team-member`,
           {

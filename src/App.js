@@ -41,6 +41,7 @@ import ResetPassword from "./pages/Auth/resetPassword";
 import SessionList from "./pages/session/sectionList"
 import './App.css';
 
+import ProviderTabs from "./pages/providers/AddProvider"
 function App() {
   const [theme, colorMode] = useMode();
   const [selectedEvent, setSelectedEvent] = useState(() => {
@@ -128,7 +129,7 @@ function App() {
                         <Route path="/tasks" element={<TaskList />} />
                         <Route path="/tasks/add" element={<TaskAdd />} />
 
-
+                        <Route path="/events/:eventId/providers/test" element={<ProviderTabs />} />
                       </>
                     )}
                   </Routes>
