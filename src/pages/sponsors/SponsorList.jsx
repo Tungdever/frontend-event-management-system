@@ -24,7 +24,18 @@ const axiosInstance = axios.create({
     Authorization: localStorage.getItem("token"),
   },
 });
-
+export const deleteSponsor = async (sponsorId) => {
+  try {
+    const response = await axios.delete(
+      `http://localhost:8080/man/sponsor/${sponsorId}`,
+      { headers: { Authorization: localStorage.getItem("token") } }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error delete provider:", error);
+    throw error;
+  }
+};
 const SponsorList = () => {
   const [sponsors, setSponsors] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -53,7 +64,7 @@ const SponsorList = () => {
     fetchSponsors();
   }, []);
 
-  // Hàm lọc danh sách nhà tài trợ dựa trên từ khóa tìm kiếm
+  
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);

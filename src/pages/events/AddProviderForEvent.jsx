@@ -25,6 +25,10 @@ import {
   PersonOutline,
 } from "@mui/icons-material";
 import axios from "axios";
+
+import ProviderTabs from "../providers/AddProvider";
+import ViewService from "../providers/ChooseService";
+
 export const deleteProviderEvent = async (eventId, providerId) => {
   try {
     const response = await axios.delete(
@@ -44,7 +48,17 @@ const AddProviderForEvent = () => {
   const [availableProviders, setAvailableProviders] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedProvider, setSelectedProvider] = useState(null);
+  const [isDialogDetailOpen, setIsDialogDetailOpen] = useState(false);
 
+  const handleDialogOpen = () => setDialogOpen(true);
+  const handleDialogClose = () => setDialogOpen(false);
+  const handleDialogDetailOpen = () => setIsDialogDetailOpen(true);
+  const handleDialogDetailClose = () => setIsDialogDetailOpen(false);
+
+  const handleProviderAdded = () => {
+    fetchAvailableProviders();
+    setDialogOpen(false);
+  };
   const fetchProviders = async () => {
     try {
       const response = await axios.get(
@@ -130,7 +144,7 @@ const AddProviderForEvent = () => {
         variant="contained"
         color="primary"
         onClick={() => {
-          setDialogOpen(true);
+          handleDialogOpen();
           fetchAvailableProviders();
         }}
         sx={{ marginBottom: "20px" }}
@@ -250,10 +264,11 @@ const AddProviderForEvent = () => {
         <MenuItem
           onClick={() => {
             handleMenuClose();
-            window.location.href = `/providers/${selectedProvider.id}`;
+            handleDialogDetailOpen(); // Mở dialog chi tiết
           }}
         >
-          <EditOutlined fontSize="small" /> View Details
+          {" "}
+          <EditOutlined fontSize="small" /> View Details{" "}
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -267,116 +282,45 @@ const AddProviderForEvent = () => {
 
       <Dialog
         open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        fullWidth={true}
-        maxWidth="md"
+        onClose={handleDialogClose}
+        sx={{
+          "& .MuiDialog-paper": {
+            width: "900px",
+            maxWidth: "none",
+          },
+        }}
+        fullWidth
       >
-        <DialogTitle>Select Provider to Add</DialogTitle>
-        <DialogContent dividers={true}>
-          <Box
-            sx={{
-              display: "flex",
-              gap: "16px",
-              padding: "8px",
-              overflowX: "auto",
-              maxWidth: "100%", 
-            }}
-          >
-            {availableProviders.map((provider) => (
-              <Card
-                key={provider.id}
-                sx={{
-                  minWidth: "300px", 
-                  maxWidth: "350px",
-                  cursor: "pointer",
-                  border: "1px solid #ccc",
-                  "&:hover": {
-                    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-                  },
-                }}
-                onClick={() => addProvider(provider.id)}
-              >
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    sx={{ fontSize: "1.2rem", fontWeight: "bold" }}
-                  >
-                    {provider.name}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{ display: "flex", alignItems: "center" }}
-                  >
-                    <PersonOutline
-                      sx={{
-                        marginRight: "8px",
-                        fontSize: "16px",
-                        color: "#A3B8D0",
-                      }}
-                    />
-                    Contact: {provider.contact}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{ display: "flex", alignItems: "center" }}
-                  >
-                    <EmailOutlined
-                      sx={{
-                        marginRight: "8px",
-                        fontSize: "16px",
-                        color: "#A3B8D0",
-                      }}
-                    />
-                    Email: {provider.email}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{ display: "flex", alignItems: "center" }}
-                  >
-                    <PhoneOutlined
-                      sx={{
-                        marginRight: "8px",
-                        fontSize: "16px",
-                        color: "#A3B8D0",
-                      }}
-                    />
-                    Phone: {provider.phone}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{ display: "flex", alignItems: "center" }}
-                  >
-                    <LocationOnOutlined
-                      sx={{
-                        marginRight: "8px",
-                        fontSize: "16px",
-                        color: "#A3B8D0",
-                      }}
-                    />
-                    Address: {provider.address}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{ display: "flex", alignItems: "center" }}
-                  >
-                    <LanguageOutlined
-                      sx={{
-                        marginRight: "8px",
-                        fontSize: "16px",
-                        color: "#A3B8D0",
-                      }}
-                    />
-                    Website: <a href={provider.website}>{provider.website}</a>
-                  </Typography>
-                </CardContent>
-              </Card>
-            ))}
-          </Box>
+        <DialogTitle>Add Provider</DialogTitle>
+        <DialogContent>
+          <ProviderTabs
+            onClose={handleDialogClose}
+            onProviderAdded={handleProviderAdded}
+          />
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={() => setDialogOpen(false)} color="secondary">
-            Close
+          <Button onClick={handleDialogClose} color="primary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/*Dialog view detail */}
+      <Dialog
+        open={isDialogDetailOpen}
+        onClose={handleDialogDetailClose}
+        sx={{ "& .MuiDialog-paper": { width: "900px", maxWidth: "none" } }}
+        fullWidth
+      >
+        <DialogTitle>Provider Details</DialogTitle>
+        <DialogContent>
+          {selectedProvider && (
+            <ViewService eventid={eventId} providerid={selectedProvider.id} />
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogDetailClose} color="primary">
+            Cancel
           </Button>
         </DialogActions>
       </Dialog>

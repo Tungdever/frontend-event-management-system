@@ -43,7 +43,8 @@ function EmployeeList({ teamId, employees, onTeamUpdate }) {
           },
         }
       );
-      if (response.ok) {
+      if (response.statusCode === 0) {
+        console.log(response.data.data)
         alert("Member added successfully!");
         setOpenDialog(false);
         onTeamUpdate(); 
@@ -88,7 +89,7 @@ function EmployeeList({ teamId, employees, onTeamUpdate }) {
 
   const fetchMembers = async () => {
     try {
-      const response = await fetch("http://localhost:8080/man/employee", {
+      const response = await fetch(`http://localhost:8080/man/employee/${eventId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: localStorage.getItem("token"),

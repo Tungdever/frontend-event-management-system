@@ -42,6 +42,7 @@ import ResetPassword from "./pages/Auth/resetPassword";
 import SessionList from "./pages/session/sectionList"
 import './App.css';
 
+import ProviderTabs from "./pages/providers/AddProvider"
 function App() {
   const [theme, colorMode] = useMode();
   const [selectedEvent, setSelectedEvent] = useState(() => {
@@ -134,13 +135,26 @@ function App() {
                         <Route path="/sponsors/:sponsorId" element={<SponsorDetail />} />
                         <Route path="/sponsorships/" element={<SponsorshipList />} />
                         <Route path="/sponsorships/add" element={<SponsorshipAdd />} />
+
+                        <Route path="/sponsors" element={<SponsorList />} />
+                        <Route path="/sponsors/SponsorAdd" element={<SponsorAdd />} />
+                        <Route path="/sponsors/:sponsorId" element={<SponsorDetail />} />
+
+                        <Route path="/providers" element={<ProviderList />} />
                         <Route path="/provider/:providerId/service" element={<ProviderServiceAdd />} />
                         <Route path="/provider/service/:serviceId" element={<ProviderServiceDetail />} />
+                        <Route path="/providers/:providerId" element={<ProviderDetail />} />
+                        <Route path="/providers/:providerId/edit" element={<ProviderEdit />} />
+
+
                         <Route path="/speakers" element={<SpeakerList />} />
                         <Route path="/speakers/add" element={<SpeakerAdd />} />
                         <Route path="/speakers/:speakerId/detail" element={<SpeakerDetail />} />
                         <Route path="/mcs" element={<MCList />} />
                         <Route path="/mcs/addMc" element={<MCAdd />} />
+
+                        <Route path="/events/:eventId/team-detail" element={<TeamList />} />
+
                         <Route path="/tasks" element={<TaskList />} />
                         <Route path="/tasks/add" element={<TaskAdd />} />
                         <Route path="/events/:eventId/team-detail" element={<TeamList />} />

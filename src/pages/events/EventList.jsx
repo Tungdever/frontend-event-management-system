@@ -17,7 +17,6 @@ const EventList = ({ setSelectedEvent }) => {
     const navigate = useNavigate();
     const [imageUrls, setImageUrls] = useState({});
     const token = localStorage.getItem("token");
-    const defaultImage = 'https://static.vecteezy.com/system/resources/previews/006/692/205/non_2x/loading-icon-template-black-color-editable-loading-icon-symbol-flat-illustration-for-graphic-and-web-design-free-vector.jpg';
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredEvents, setFilteredEvents] = useState([]);
     const handleSearchChange = (e) => {
@@ -28,6 +27,7 @@ const EventList = ({ setSelectedEvent }) => {
         );
         setFilteredEvents(filtered);
     };
+    const defaultImage = 'https://www.shutterstock.com/image-vector/image-icon-600nw-211642900.jpg';
     useEffect(() => {
         if (token) {
             const payload = JSON.parse(atob(token.split(".")[1]));
