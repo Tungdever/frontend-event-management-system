@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Card, CardContent, Typography, CardMedia, Grid, Box, TextField, Button, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import PlaceOutlined from '@mui/icons-material/PlaceOutlined';
+
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import { display } from "@mui/system";
+
+import EditOutlined from '@mui/icons-material/EditOutlined';
+import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
+import PlaceOutlined from '@mui/icons-material/PlaceOutlined';
 
 
 const EventList = ({ setSelectedEvent }) => {
@@ -30,7 +34,6 @@ const EventList = ({ setSelectedEvent }) => {
             // Lấy thông tin roles từ payload
             const roles = payload.roles || [];
             const userId = payload.userId || null;
-
             console.log(userId);
             if (roles.some(role => ["ROLE_MANAGER", "ROLE_ADMIN"].includes(role))) {
                 axios
@@ -123,7 +126,7 @@ const EventList = ({ setSelectedEvent }) => {
                         "& .MuiInputLabel-root": {
                             lineHeight: "45px", // Căn chỉnh nhãn
                         },
-                        marginLeft: 1                       
+                        marginLeft: 1
                     }}
                 />
                 <div
@@ -171,6 +174,7 @@ const EventList = ({ setSelectedEvent }) => {
                                 '&:hover': {
                                     transform: 'scale(1.05)', // Hiệu ứng phóng to khi hover
                                 },
+                                position: 'relative', // Để căn option ở góc
                             }}
                         >
                             {/* Event Image */}
@@ -233,10 +237,52 @@ const EventList = ({ setSelectedEvent }) => {
                                     </Typography>
                                 </Box>
                             </CardContent>
+
+                            {/* Option Buttons */}
+                            <Box
+                                sx={{
+                                    position: 'absolute',
+                                    bottom: '8px',
+                                    right: '8px',
+                                    display: 'flex',
+                                    gap: '8px',
+                                }}
+                            >
+                                {/* Edit Button */}
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation(); // Ngăn click vào Card
+                                        // handleEdit(event.eventId); // Hàm xử lý chỉnh sửa
+                                    }}
+                                    style={{
+                                        border: 'none',
+                                        background: 'none',
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    <EditOutlined sx={{ fontSize: 20, color: '#1976d2' }} />
+                                </button>
+
+                                {/* Delete Button */}
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation(); // Ngăn click vào Card
+                                        // handleDelete(event.eventId); // Hàm xử lý xóa
+                                    }}
+                                    style={{
+                                        border: 'none',
+                                        background: 'none',
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    <DeleteOutlined sx={{ fontSize: 20, color: '#d32f2f' }} />
+                                </button>
+                            </Box>
                         </Card>
                     </Grid>
                 ))}
             </Grid>
+
         </Box>
     );
 };

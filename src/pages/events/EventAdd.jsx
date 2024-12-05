@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect  } from "react";
+import { useNavigate } from "react-router-dom";
 import {
     Box,
     TextField,
@@ -11,46 +12,155 @@ import {
     Switch,
     Grid,
 } from "@mui/material";
-import Datetime from 'react-datetime';
-const CreateEventForm = () => {
 
+import './event.css'
+import axios from "axios";
+import { format } from 'date-fns';
+const CreateEventForm = () => {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         eventName: "",
         eventType: "",
         eventHost: "",
         eventStatus: "",
         eventDescription: "",
-        eventImg: "",
+        image: "",
         eventLocation: "",
         eventStart: "",
         eventEnd: "",
-        eventDetail: "",
+        eventStatus: "",
+        manId: "",
+        mcId: "1"
     });
+    const token = localStorage.getItem("token");
     useEffect(() => {
         // Lấy ngày giờ hiện tại và chuyển thành định dạng 'yyyy-MM-ddThh:mm'
         const currentDate = new Date();
         const formattedDate = currentDate.toISOString().slice(0, 16); // Lấy đến phần ngày và giờ
+        const formattedDateTime = format(new Date(formattedDate), "yyyy-MM-dd HH:mm:ss");
         setFormData({
             ...formData,
-            eventStart: formattedDate,
+            eventStart: formattedDateTime,
         });
     }, []);
-    
+
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    const handleImageChange = (event) => {
+        if (event.target.files && event.target.files[0]) {
+            const file = event.target.files[0]; // Lấy file từ input
+            setSelectedImage(URL.createObjectURL(file)); // Hiển thị ảnh preview
+            setFormData((prev) => ({
+                ...prev,
+                image: file, // Gán file vào formData
+            }));
+        }
+    };
+
+    const handleChangeTime = (event) => {
+        const { name, value } = event.target;
+        const formattedDateTime = format(new Date(value), "yyyy-MM-dd HH:mm:ss");
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: formattedDateTime,
+        }));
+
+    };
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData((prevFormData) => ({
             ...prevFormData,
             [name]: value,
         }));
-       
+
     };
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState(""); // Lưu thông báo
+    const [showDialog, setShowDialog] = useState(false); // Hiển thị dialog
+   
+
+    const handleSubmit = async (check) => {
+        
+        setMessage(""); // Reset thông báo
+        const requiredFields = [
+            "eventName", "eventType", "eventStart", "eventEnd", "eventLocation", "eventHost", "eventDescription"
+        ];
+
+        // Kiểm tra xem có trường nào chưa được điền
+        const missingFields = requiredFields.filter(field => !formData[field]);
+
+        if (missingFields.length > 0) {
+            // Hiển thị thông báo lỗi cho các trường thiếu
+            alert(`Vui lòng điền đầy đủ các trường: ${missingFields.join(", ")}`);
+            return; // Dừng lại nếu có trường thiếu
+        }
+
+        // Kiểm tra thời gian bắt đầu và thời gian kết thúc
+        const startTime = new Date(formData.eventStart);
+        const endTime = new Date(formData.eventEnd);
+
+        if (startTime >= endTime) {
+            // Thời gian kết thúc phải sau thời gian bắt đầu
+            alert("Thời gian kết thúc phải sau thời gian bắt đầu.");
+            return;
+        }
+        if (check) {
+            formData.eventStatus = "Public";
+        }
+        else {
+            formData.eventStatus = "Draft";
+        }
+        console.log(formData);
+        if (token) {
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            // Lấy thông tin roles từ payload
+            const userId = payload.userId || null;
+            console.log(userId);
+            formData.manId = userId;
+            const data = new FormData();
+            data.append("eventName", formData.eventName);
+            data.append("eventType", formData.eventType);
+            data.append("eventHost", formData.eventHost);
+            data.append("eventStatus", formData.eventStatus);
+            data.append("eventDescription", formData.eventDescription);
+            data.append("image", formData.image); // `image` phải là một đối tượng File
+            data.append("eventLocation", formData.eventLocation);
+            data.append("eventStart", formData.eventStart);
+            data.append("eventEnd", formData.eventEnd);
+            data.append("manId", formData.manId);
+            data.append("mcId", formData.mcId);
+            try {             
+                setTimeout(() => {
+                setLoading(true); // Bật loading
+                }, 1000);
+                const response = await axios.post(
+                    "http://localhost:8080/man/event",
+                    data, // Gửi dưới dạng FormData
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                            Authorization: token,
+                        },
+                    }
+                );
+                setTimeout(() => {
+                    navigate("/"); // Chuyển hướng về trang chủ
+                }, 1500);
+            }
+            catch (error) {
+                setMessage("Tạo sự kiện thất bại");
+                console.error("Lỗi khi thêm event:", error);
+                setShowDialog(true); // Hiển thị dialog lỗi
+            } finally {
+                setLoading(false); // Tắt loading
+            }
+        }
+    }
 
 
-    useEffect(() => {
-        console.log(formData); 
-    }, [formData]);
 
     return (
+
         <Box
             sx={{
                 maxWidth: "800px",
@@ -86,7 +196,11 @@ const CreateEventForm = () => {
                 <span style={{ color: "red", marginLeft: 1 }}>*</span>
             </Typography>
             <FormControl fullWidth sx={{ marginBottom: "20px" }}>
-                <Select defaultValue={"default"} onChange={handleChange}>
+                <Select
+                    name="eventType"  // Đảm bảo rằng tên của Select là `eventType` để phù hợp với formData
+                    value={formData.eventType}
+                    onChange={handleChange}
+                >
                     <MenuItem value="default">Select</MenuItem>
                     <MenuItem value="conference">Conference</MenuItem>
                     <MenuItem value="workshop">Workshop</MenuItem>
@@ -116,7 +230,7 @@ const CreateEventForm = () => {
                         type="datetime-local"
                         name="eventStart"
                         value={formData.eventStart}
-                        onChange={handleChange}
+                        onChange={handleChangeTime}
                         fullWidth
                         margin="normal"
                         sx={{ shrink: true }}
@@ -131,7 +245,7 @@ const CreateEventForm = () => {
                         type="datetime-local"
                         name="eventEnd"
                         value={formData.eventEnd}
-                        onChange={handleChange}
+                        onChange={handleChangeTime}
                         fullWidth
                         margin="normal"
                         sx={{ shrink: true }}
@@ -140,13 +254,55 @@ const CreateEventForm = () => {
                 </Grid>
             </Grid>
             <Typography variant="h6" sx={{ color: "#9b9b9b", marginLeft: 1, marginBottom: 1 }}>
+                Add a cover image for your event
+                <span style={{ color: "red", marginLeft: 1 }}>*</span>
+            </Typography>
+            <Box
+                sx={{
+                    border: "2px dashed #ccc",
+                    borderRadius: 2,
+                    padding: 2,
+                    textAlign: "center",
+                    backgroundColor: "#f9f9f9",
+                    cursor: "pointer",
+                    marginTop: 2,
+
+                }}
+                onClick={() => document.getElementById("upload-image").click()}
+            >
+                <input
+                    type="file"
+                    accept="image/*"
+                    id="upload-image"
+                    style={{ display: "none" }}
+                    onChange={handleImageChange}
+                />
+                <label htmlFor="upload-image" variant="contained" color="primary" component="span">
+
+                    Upload Image
+
+                </label>
+                {selectedImage && (
+                    <Box sx={{ marginTop: 2 }}>
+                        <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                            Preview:
+                        </Typography>
+                        <img
+                            src={selectedImage}
+                            alt="Selected"
+                            style={{ maxWidth: "100%", maxHeight: 200, borderRadius: 8 }}
+                        />
+                    </Box>
+                )}
+            </Box>
+            <Typography variant="h6" sx={{ color: "#9b9b9b", marginLeft: 1, marginBottom: 1 }}>
                 Location
                 <span style={{ color: "red", marginLeft: 1 }}>*</span>
             </Typography>
             <TextField
                 fullWidth
                 placeholder="Enter location"
-                name = "eventLocation"
+                name="eventLocation"
                 value={formData.eventLocation}
                 onChange={handleChange}
                 sx={{ marginBottom: "20px" }}
@@ -155,6 +311,7 @@ const CreateEventForm = () => {
                 Event host
                 <span style={{ color: "red", marginLeft: 1 }}>*</span>
             </Typography>
+
             <TextField
                 fullWidth
                 placeholder="Enter host name"
@@ -179,15 +336,89 @@ const CreateEventForm = () => {
             />
 
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Button variant="outlined" onClick={handleDraftClick}>Save & Finish Later</Button>
-                <Button variant="contained" onClick={handlePublicClick} color="primary" sx={{
-                    backgroundColor: "#1c7de8",
-                    color: "white",
-                    "&:hover": { backgroundColor: "#1565c0" },
-                }}>
-                    Save & Continue
-                </Button>
+                <div>
+                    <Button variant="outlined" onClick={() => handleSubmit(false)}>Save & Finish Later</Button>
+                </div>
+                <div>
+                    <Button variant="contained" onClick={() => handleSubmit(true)} color="primary" sx={{
+                        backgroundColor: "#1c7de8",
+                        color: "white",
+                        "&:hover": { backgroundColor: "#1565c0" },
+                    }}>
+                        Save & Continue
+                    </Button>
+                </div>
+                {loading && (
+                    <div
+                        style={{
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            zIndex: 9999,
+                        }}
+                    >
+                        <div
+                            style={{
+                                border: "4px solid #f3f3f3",
+                                borderRadius: "50%",
+                                borderTop: "4px solid #3498db",
+                                width: "50px",
+                                height: "50px",
+                                animation: "spin 1s linear infinite",
+                            }}
+                        ></div>
+                    </div>
+                )}
+                {showDialog && (
+                    <div
+                        style={{
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            zIndex: 10000,
+                        }}
+                    >
+                        <div
+                            style={{
+                                backgroundColor: "white",
+                                padding: "20px",
+                                borderRadius: "8px",
+                                textAlign: "center",
+                                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                            }}
+                        >
+                            <p>{message}</p>
+                            <button
+                                onClick={() => setShowDialog(false)} // Đóng dialog
+                                style={{
+                                    marginTop: "10px",
+                                    padding: "10px 20px",
+                                    backgroundColor: "#3498db",
+                                    color: "white",
+                                    border: "none",
+                                    borderRadius: "5px",
+                                    cursor: "pointer",
+                                }}
+                            >
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                )}
             </Box>
+
         </Box>
     );
 };
