@@ -132,7 +132,7 @@ const SpeakerAdd = ({ onAdd }) => {
                 }}
 
             >
-                Add a speaker
+                Thêm diễn giả
             </Button>
             <Dialog
                 open={open} onClose={handleClose}
@@ -162,7 +162,7 @@ const SpeakerAdd = ({ onAdd }) => {
                                     <CardMedia
                                         component="img"
                                         image={imagePreview}
-                                        alt="Diễn Giả Image Preview"
+                                        alt="Ảnh xem trước diễn giả"
                                         style={{
                                             width: "150px",
                                             height: "150px",
@@ -302,13 +302,13 @@ const SpeakerAdd = ({ onAdd }) => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} variant="outlined">
-                        Cancel
+                        Hủy
                     </Button>
                     <Button onClick={handleSubmit} variant="contained" sx={{
                         backgroundColor: "#1c7de8",
                         "&:hover": { backgroundColor: "#1565c0" },
                     }}>
-                        Save Speaker
+                        Lưu
                     </Button>
                 </DialogActions>
             </Dialog>

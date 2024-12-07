@@ -38,9 +38,9 @@ const AddTaskDialog = ({ onClose, onSave, eventId }) => {
   return (
     <div style={dialogOverlayStyle}>
       <div style={dialogContainerStyle}>
-        <h3>Add New Task</h3>
+        <h3>Tạo công việc mới</h3>
         <div>
-          <label>Task Name</label>
+          <label>Tên công việc</label>
           <input
             type="text"
             value={taskName}
@@ -49,7 +49,7 @@ const AddTaskDialog = ({ onClose, onSave, eventId }) => {
           />
         </div>
         <div>
-          <label>Task Description</label>
+          <label>Mô tả</label>
           <input
             type="text"
             value={taskDesc}
@@ -58,7 +58,7 @@ const AddTaskDialog = ({ onClose, onSave, eventId }) => {
           />
         </div>
         <div>
-          <label>Task Deadline </label>
+          <label>Thời hạn </label>
           <input
             type="datetime-local"
             value={taskDl}
@@ -67,24 +67,24 @@ const AddTaskDialog = ({ onClose, onSave, eventId }) => {
           />
         </div>
         <div>
-          <label>Task Status</label>
+          <label>Trạng thái</label>
           <select
             value={taskStatus}
             onChange={(e) => setTaskStatus(e.target.value)}
             style={selectStyle}
           >
-            <option value="to do">To Do</option>
-            <option value="doing">Doing</option>
-            <option value="done">Done</option>
+            <option value="to do">Chuẩn bị</option>
+            <option value="doing">Đang làm</option>
+            <option value="done">Đã hoàn thành</option>
           </select>
         </div>
 
         <div style={buttonContainerStyle}>
           <button onClick={onClose} style={cancelButtonStyle}>
-            Cancel
+            Hủy
           </button>
           <button onClick={handleSave} style={saveButtonStyle}>
-            Save
+            Lưu
           </button>
         </div>
       </div>
@@ -230,7 +230,7 @@ const KanbanBoard = () => {
                   margin: "6px",
                 }}
               >
-                <strong style={{ marginRight: "28px" }}>Name:</strong>
+                <strong style={{ marginRight: "28px" }}>Tên:</strong>
                 <span>{task.taskName}</span>
               </div>
               <div
@@ -240,7 +240,7 @@ const KanbanBoard = () => {
                   margin: "6px",
                 }}
               >
-                <strong style={{ marginRight: "30px" }}>Desc:</strong>
+                <strong style={{ marginRight: "30px" }}>Mô tả:</strong>
                 <span>{task.taskDesc}</span>
               </div>
               <div
@@ -250,7 +250,7 @@ const KanbanBoard = () => {
                   margin: "6px",
                 }}
               >
-                <strong style={{ marginRight: "8px" }}>Deadline:</strong>
+                <strong style={{ marginRight: "8px" }}>Thời hạn:</strong>
                 <span>
                   {new Date(task.taskDl).toLocaleString("en-GB", {
                     hour: "2-digit",
@@ -307,7 +307,7 @@ const KanbanBoard = () => {
                     </option>
                   ) : (
                     <>
-                      <option value="">Select a team</option>
+                      <option value="">Chọn team</option>
                       {teams.map((team) => (
                         <option
                           key={team.teamId}
@@ -325,12 +325,12 @@ const KanbanBoard = () => {
                 onClick={() => handleDelete(task.taskId, columnId)}
                 style={{ ...deleteButtonStyle }}
               >
-                Delete
+                Xóa
               </button>
             </div>
           ))}
           <button onClick={handleAddTask} style={{ ...addButtonStyle }}>
-            Add Task
+            Tạo công việc mới
           </button>
         </div>
       ))}{" "}

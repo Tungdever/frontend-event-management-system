@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Card, CardContent, Typography, CardMedia, Grid, Box, TextField, Button, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import {Dialog, DialogTitle, DialogContentText, DialogContent, DialogActions, Card, CardContent, Typography, CardMedia, Grid, Box, TextField, Button, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
@@ -9,8 +9,8 @@ import { display } from "@mui/system";
 import EditOutlined from '@mui/icons-material/EditOutlined';
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
 import PlaceOutlined from '@mui/icons-material/PlaceOutlined';
-
-
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import CloseIcon from '@mui/icons-material/Close'
 const EventList = ({ setSelectedEvent }) => {
     console.log(setSelectedEvent);
     const [events, setEvents] = useState([]);
@@ -19,6 +19,8 @@ const EventList = ({ setSelectedEvent }) => {
     const token = localStorage.getItem("token");
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredEvents, setFilteredEvents] = useState([]);
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [selected, setSelected] = useState(null);
     const handleSearchChange = (e) => {
         const value = e.target.value;
         setSearchTerm(value);
@@ -74,7 +76,7 @@ const EventList = ({ setSelectedEvent }) => {
 
 
 
-    }, []);
+    }, [filteredEvents]);
     useEffect(() => {
         const fetchImages = async () => {
             const urls = {};
@@ -106,10 +108,30 @@ const EventList = ({ setSelectedEvent }) => {
         setSelectedEvent(event);
         navigate(`/events/${event.eventId}`);
     };
-    const handleClickCreate = (event) => {
+    const handleClickCreate = () => {
         navigate("/event/create");
     };
-
+    const handleCancelDelete = () => {
+        setConfirmOpen(false); // Đóng hộp thoại khi người dùng chọn "No"
+    };
+    const handleDelete = async () => {
+        setConfirmOpen(true);
+    };
+    const handleConfirmDelete = async () =>  {
+        try {
+            const resp = await axios.delete(`http://localhost:8080/man/event/${selected.eventId}`, {
+                headers: {
+                    Authorization: localStorage.getItem("token"),
+                },
+            });
+          } catch (error) {
+            console.error("Error deleting event:", error);
+            console.log("eventId:", selected.eventId);
+            alert("Failed to delete event. Please try again later.");
+          } finally {
+            setConfirmOpen(false); // Đóng hộp thoại sau khi xử lý
+          }
+    }
     return (
         <Box sx={{ padding: 2 }}>
             <Box display="flex" justifyContent="space-between" alignItems="center" >
@@ -248,26 +270,14 @@ const EventList = ({ setSelectedEvent }) => {
                                     gap: '8px',
                                 }}
                             >
-                                {/* Edit Button */}
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation(); // Ngăn click vào Card
-                                        // handleEdit(event.eventId); // Hàm xử lý chỉnh sửa
-                                    }}
-                                    style={{
-                                        border: 'none',
-                                        background: 'none',
-                                        cursor: 'pointer',
-                                    }}
-                                >
-                                    <EditOutlined sx={{ fontSize: 20, color: '#1976d2' }} />
-                                </button>
+                                
 
                                 {/* Delete Button */}
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation(); // Ngăn click vào Card
-                                        // handleDelete(event.eventId); // Hàm xử lý xóa
+                                        handleDelete(); // Hàm xử lý xóa
+                                        setSelected(event);
                                     }}
                                     style={{
                                         border: 'none',
@@ -282,7 +292,91 @@ const EventList = ({ setSelectedEvent }) => {
                     </Grid>
                 ))}
             </Grid>
+            <Dialog
+                open={confirmOpen}
+                onClose={handleCancelDelete}
+                aria-labelledby="confirm-dialog-title"
+                aria-describedby="confirm-dialog-description"
+                PaperProps={{
+                    sx: {
+                        borderRadius: 3,
+                        padding: 2,
+                        width: "500px",
+                        bgcolor: "#f9f9f9",
+                        boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.3)",
+                    },
+                }}
+            >
+                <DialogTitle
+                    id="confirm-dialog-title"
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 1,
+                        fontWeight: "bold",
+                        color: "#333",
+                        fontSize: "20px",
+                        marginBottom: 1,
+                    }}
+                >
+                    <WarningAmberIcon sx={{ color: "#f57c00", fontSize: 28 }} />
+                    Confirm Delete
+                </DialogTitle>
+                <DialogContent
 
+                >
+                    <DialogContentText
+                        id="confirm-dialog-description"
+                        sx={{
+                            textAlign: "center",
+                            color: "#555",
+                            fontSize: "16px",
+                            marginBottom: 2,
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                        }}
+                    >
+                        Bạn có chắc chắn muốn xóa phần thuyết trình này? <br />
+                        <strong>Hành động này không thể hoàn tác.</strong>
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions
+                    sx={{
+                        justifyContent: "center",
+                        gap: 2,
+                        paddingBottom: 2,
+                    }}
+                >
+                    <Button
+                        onClick={handleCancelDelete}
+                        variant="outlined"
+                        startIcon={<CloseIcon />}
+                        sx={{
+                            color: "#333",
+                            borderColor: "#bbb",
+                            "&:hover": {
+                                borderColor: "#999",
+                                backgroundColor: "#f2f2f2",
+                            },
+                        }}
+                    >
+                        No
+                    </Button>
+                    <Button
+                        onClick={handleConfirmDelete}
+                        variant="contained"
+                        startIcon={<WarningAmberIcon />}
+                        sx={{
+                            backgroundColor: "#e53935",
+                            color: "white",
+                            "&:hover": { backgroundColor: "#d32f2f" },
+                        }}
+                    >
+                        Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };

@@ -2,137 +2,210 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import {
+  Button,
+  IconButton,
   Box,
   Typography,
   Grid,
   Divider,
+  DialogActions,
+  DialogContent,
+  Dialog,
+  useTheme,
+  Card,
+  CardMedia,
+  CardContent
 } from "@mui/material";
+import { tokens } from "../../theme";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import DescriptionIcon from "@mui/icons-material/Description";
 import InfoIcon from "@mui/icons-material/Info";
 import EventNoteIcon from "@mui/icons-material/EventNote";
-
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import EditOutlined from '@mui/icons-material/EditOutlined';
+import CreateEventForm from './EventAdd'
 const EventDetail = () => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   const { eventId } = useParams(); // Lấy eventId từ URL
   const [event, setEvent] = useState(null);
   const [eventImage, setEventImage] = useState(null); // Trạng thái URL ảnh
+  const [isDialogEditOpen, setIsDialogEditOpen] = useState(false);
+  const handleDialogEditOpen = () => setIsDialogEditOpen(true);
+  const handleDialogEditClose = () => setIsDialogEditOpen(false);
+  const handleFetch = () => {
+    fetchAPI();
+  };
+  const formatDateTime = (dateTimeString) => {
+    // Tách chuỗi dựa trên khoảng trắng và dấu hai chấm
+    const [date, time] = dateTimeString.split(" ");
+    const [hours, minutes] = time.split(":");
 
+    // Ghép lại chuỗi theo định dạng mong muốn
+    return `${date} ${hours}:${minutes}`;
+  };
+  const fetchAPI = async () => {
+    try {
+      axios
+        .get(`http://localhost:8080/man/event/${eventId}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: localStorage.getItem("token"),
+          },
+        })
+        .then((response) => {
+          if (response.data.statusCode === 0) {
+            setEvent(response.data.data);
+            console.log(response.data.data);
+            // Lấy ảnh từ API
+            const imageUrl = `http://localhost:8080/file/${response.data.data.eventImg}`;
+            axios
+              .get(imageUrl, {
+                headers: {
+                  Authorization: localStorage.getItem("token"),
+                },
+                responseType: "blob", // Lấy dữ liệu ảnh dưới dạng blob
+              })
+              .then((imageResponse) => {
+                const blobUrl = URL.createObjectURL(imageResponse.data);
+                setEventImage(blobUrl); // Lưu URL tạm thời của ảnh
+              })
+              .catch((imageError) => {
+                console.error("Error fetching event image", imageError);
+              });
+          }
+        })
+    }
+    catch (error) {
+      console.error("Error fetching event details", error);
+    }
+    finally {
+
+    }
+
+  }
   useEffect(() => {
-    // Lấy thông tin sự kiện
-    axios
-      .get(`http://localhost:8080/man/event/${eventId}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("token"),
-        },
-      })
-      .then((response) => {
-        if (response.data.statusCode === 0) {
-          setEvent(response.data.data);
-
-          // Lấy ảnh từ API
-          const imageUrl = `http://localhost:8080/file/${response.data.data.eventImg}`;
-          axios
-            .get(imageUrl, {
-              headers: {
-                Authorization: localStorage.getItem("token"),
-              },
-              responseType: "blob", // Lấy dữ liệu ảnh dưới dạng blob
-            })
-            .then((imageResponse) => {
-              const blobUrl = URL.createObjectURL(imageResponse.data);
-              setEventImage(blobUrl); // Lưu URL tạm thời của ảnh
-            })
-            .catch((imageError) => {
-              console.error("Error fetching event image", imageError);
-            });
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching event details", error);
-      });
-  }, [eventId]); // Khi eventId thay đổi, useEffect sẽ được gọi lại
+    fetchAPI()
+  }, [eventId]);
 
   if (!event) {
     return <div>Loading...</div>;
   }
 
   return (
-    <Box sx={{ maxWidth: "100%", margin: "0 auto", padding: 3 }}>
+    <Card
+    fullWidth
+      sx={{
+        margin: "0 auto",
+        borderRadius: 2,
+        boxShadow: 5,
+        overflow: "hidden",
+        marginTop: 3,
+        padding: 3
+      }}
+    >
       {/* Event Image */}
       {eventImage && (
-        <Box
+        <CardMedia
           component="img"
-          src={eventImage} // URL tạm thời của ảnh
+          height="200"
+          image={eventImage} // URL tạm thời của ảnh
           alt={event.eventName}
-          sx={{
-            width: "100%", // Fullwidth
-            maxHeight: "200px", // Giới hạn chiều cao
-            objectFit: "cover", // Giữ chất lượng và cắt ảnh theo khung
-            borderRadius: 2,
-            boxShadow: 3,
-            marginBottom: 3,
-          }}
+          sx={{ objectFit: "cover" }}
         />
       )}
 
-      {/* Event Name */}
-      <Typography variant="h4" sx={{ marginBottom: 2 }}>
-        {event.eventName}
-      </Typography>
-
-      {/* Event Location */}
-      <Grid container alignItems="center" sx={{ marginBottom: 2 }}>
-        <Grid item>
-          <LocationOnIcon sx={{ color: "primary.main", marginRight: 1 }} />
-        </Grid>
-        <Grid item>
-          <Typography variant="h6">Location: {event.eventLocation}</Typography>
-        </Grid>
-      </Grid>
-
-      {/* Event Date */}
-      <Grid container alignItems="center" sx={{ marginBottom: 2 }}>
-        <Grid item>
-          <EventNoteIcon sx={{ color: "primary.main", marginRight: 1 }} />
-        </Grid>
-        <Grid item>
-          <Typography variant="h6">
-            Date: {event.eventDate ? event.eventDate : "TBD"}
+      {/* Event Content */}
+      <CardContent sx={{ padding: 3}}>
+        {/* Event Name */}
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+            {event.eventName}
           </Typography>
-        </Grid>
-      </Grid>
+          <IconButton onClick={handleDialogEditOpen}>
+            <EditOutlinedIcon />
+          </IconButton>
+        </Box>
 
-      <Divider sx={{ marginBottom: 3 }} />
+        <Divider sx={{ marginY: 2 }} />
 
-      {/* Event Description */}
-      <Grid container alignItems="flex-start" sx={{ marginBottom: 2 }}>
-        <Grid item>
-          <DescriptionIcon sx={{ color: "primary.main", marginRight: 1 }} />
+        {/* Event Date */}
+        <Grid container alignItems="flex-start" sx={{ marginBottom: 2 }}>
+          <Grid item>
+            <EventNoteIcon sx={{ color: "primary.main", marginRight: 1 }} />
+          </Grid>
+          <Grid item xs>
+            <Typography variant="body1">
+              <strong>Date:</strong> {`${formatDateTime(event.eventStart)} - ${formatDateTime(event.eventEnd)}`}
+            </Typography>
+          </Grid>
         </Grid>
-        <Grid item xs>
-          <Typography variant="h6">Description:</Typography>
-          <Typography variant="body1" sx={{ whiteSpace: "pre-line" }}>
-            {event.eventDescription}
-          </Typography>
-        </Grid>
-      </Grid>
 
-      <Divider sx={{ marginBottom: 3 }} />
+        {/* Event Location */}
+        <Grid container alignItems="center" sx={{ marginBottom: 2 }}>
+          <Grid item>
+            <LocationOnIcon sx={{ color: "primary.main", marginRight: 1 }} />
+          </Grid>
+          <Grid item>
+            <Typography variant="body1">
+              <strong>Location:</strong> {event.eventLocation}
+            </Typography>
+          </Grid>
+        </Grid>
 
-      {/* Event Detail */}
-      <Grid container alignItems="flex-start">
-        <Grid item>
-          <InfoIcon sx={{ color: "primary.main", marginRight: 1 }} />
+        {/* Event Host */}
+        <Grid container alignItems="flex-start" sx={{ marginBottom: 2 }}>
+          <Grid item>
+            <DescriptionIcon sx={{ color: "primary.main", marginRight: 1 }} />
+          </Grid>
+          <Grid item xs>
+            <Typography variant="body1">
+              <strong>Host:</strong> {event.eventHost}
+            </Typography>
+          </Grid>
         </Grid>
-        <Grid item xs>
-          <Typography variant="h6">Event Detail:</Typography>
-          <Typography variant="body1" sx={{ whiteSpace: "pre-line" }}>
-            {event.eventDetail}
-          </Typography>
+
+        {/* Event Description */}
+        <Grid container alignItems="flex-start">
+          <Grid item>
+            <DescriptionIcon sx={{ color: "primary.main", marginRight: 1 }} />
+          </Grid>
+          <Grid item xs>
+            <Typography variant="body1">
+              <strong>Description:</strong> {event.eventDescription}
+            </Typography>
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
+      </CardContent>
+      {/* Dialog for Editing */}
+      <Dialog
+        open={isDialogEditOpen}
+        onClose={handleDialogEditClose}
+        sx={{
+          "& .MuiDialog-paper": {
+            width: "900px",
+            maxWidth: "none",
+          },
+        }}
+        fullWidth
+
+      >
+        <DialogContent>
+          <CreateEventForm
+            onClose={handleDialogEditClose}
+            eventId={eventId}
+            event={event}
+            eventImage={eventImage}
+            handleFetch={handleFetch}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogEditClose} color="primary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Card>
   );
 };
 

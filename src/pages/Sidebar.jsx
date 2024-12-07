@@ -9,7 +9,7 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
 import HandshakeOutlinedIcon from "@mui/icons-material/HandshakeOutlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
-import RecordVoiceOverOutlinedIcon from "@mui/icons-material/RecordVoiceOverOutlined";
+import ConnectWithoutContactOutlinedIcon from '@mui/icons-material/ConnectWithoutContactOutlined';
 import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
@@ -20,8 +20,9 @@ import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
 import AddTaskOutlinedIcon from '@mui/icons-material/AddTaskOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-
+import RecordVoiceOverOutlinedIcon from '@mui/icons-material/RecordVoiceOverOutlined';
 import EventIcon from '@mui/icons-material/Event';
+import { color, fontSize } from "@mui/system";
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -52,7 +53,13 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
   const navigate = useNavigate();
   const handleClickIcon = () => {
     // Chuyển hướng khi nhấp vào icon
-    navigate("/");
+    if (location.pathname.includes("event")) {
+      navigate("/");
+    }
+    else {
+      navigate(-1);
+    }
+
   };
   // Các menu mặc định
   const defaultMenuItems = [
@@ -109,7 +116,7 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
         submenu: [
           {
             title: "View Event",
-            path: `/events/1`,
+            path: `/events/${selectedEvent.eventId}`,
             icon: <CalendarMonthOutlinedIcon />
           },
           {
@@ -118,69 +125,38 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
             icon: <PendingActionsOutlinedIcon />
           },
           {
-            title: "Invite attendee",
+            title: "Mc",
+            path: `/events/${selectedEvent.eventId}/mc`,
+            icon: <CampaignOutlinedIcon />
+          },
+          {
+            title: "Attendees",
             path: `/events/${selectedEvent.eventId}/participants`,
             icon: <ContactMailIcon />
           },
-        ],
-      },
-      {
-        title: "Sponsor",
-
-        submenu: [
           {
             title: "Add sponsor",
             path: `/events/${selectedEvent.eventId}/sponsors`,
             icon: <CurrencyExchangeIcon />,
           },
-        ],
-      },
-      {
-        title: "Provider",
-
-        submenu: [
           {
             title: "Add Provider",
             path: `/events/${selectedEvent.eventId}/providers`,
             icon: <AddBusinessOutlinedIcon />,
           },
-        ],
-      },
-      {
-        title: "Task",
-
-        submenu: [
-          { title: "Kanban", path: `/events/${selectedEvent.eventId}/tasks`, icon: <AssignmentOutlinedIcon />, },
-
-        ],
-      },
-      {
-        title: "SubTask",
-
-        submenu: [
           {
-            title: "Add SubTask",
-            path: `/events/${selectedEvent.eventId}/subtask`,
-            icon: <AddTaskOutlinedIcon />,
+            title: "Kanban",
+            path: `/events/${selectedEvent.eventId}/tasks`,
+            icon: <AssignmentOutlinedIcon />,
           },
-        ],
-      },
-      {
-        title: "Team",
-
-        submenu: [
           {
             title: "Team Detail",
             path: `/events/${selectedEvent.eventId}/team-detail`,
             icon: <GroupsOutlinedIcon />,
           },
-          {
-            title: "Add Team",
-            path: `/events/${selectedEvent.eventId}/teams`,
-            icon: <GroupAddOutlinedIcon />,
-          },
         ],
       },
+
     ]
     : [];
   const [menuItems, setMenuItems] = useState(defaultMenuItems);
@@ -202,66 +178,69 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
   return (
     <Box
       sx={{
-        display: "flex", 
+        display: "flex",
         height: "100vh",
         "& .pro-sidebar-inner": {
-          background: `${colors.primary[400]} !important`,
+          background: `${colors.background[100]} !important`,
           height: "100%",
         },
         "& .pro-icon-wrapper": { backgroundColor: "transparent !important" },
         "& .pro-inner-item": { padding: "5px 35px 5px 20px !important" },
-        "& .pro-inner-item:hover": { color: "#868dfb !important" },
-        "& .pro-menu-item.active": { color: "#6870fa !important" },
-        overflow: "hidden"
+        "& .pro-inner-item:hover": { backgroundColor: `${colors.hover[100]} !important`, color: `${colors.active[100]} !important` },
+        "& .pro-menu-item.active": {
+          color: `${colors.active[100]} !important`,
+          backgroundColor: `${colors.hover[100]} !important`,
+          "& .pro-icon": {
+            color: `${colors.activeIcon[100]} !important`, // Đổi màu icon
+          },
+        },
+        overflow: "hidden",
+        border: 1,
+        borderColor: colors.background[300]
       }}
     >
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
-            <Box sx={{
-              marginLeft: 2,
-              color: "red",
-              maxWidth: 3,
-              maxHeight: 40,
-              cursor: 'pointer',
-              display: (location.pathname !== "/home" && location.pathname !== "/" && location.pathname !== "") ? 'block' : 'none'  
-            }}>
-              <ArrowBackIcon onClick = {handleClickIcon} />
-            </Box>
-         
+          <Box sx={{
+            marginLeft: 2,
+            color: "red",
+            maxWidth: 3,
+            maxHeight: 40,
+            cursor: 'pointer',
+            display: (location.pathname !== "/home" && location.pathname !== "/" && location.pathname !== "") ? 'block' : 'none'
+          }}>
+            <ArrowBackIcon onClick={handleClickIcon} />
+          </Box>
+
           {/* Các menu items */}
           {menuItems.map((item, index) => (
             <div key={index}>
-              {!item.submenu ? (
-                <Item
-                  title={item.title}
-                  to={item.path}
-                  icon={item.icon}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-              ) : (
+              {item.submenu &&
                 <Box>
                   <Typography
                     variant="h6"
-                    color={colors.grey[300]}
-                    sx={{ m: "15px 0 5px 20px" }}
+                    color={colors.background[200]}
+                    fontSize={12}
+                    sx={{ m: "15px 0 20px 20px" }}
                   >
                     {item.title}
                   </Typography>
                   {
                     item.submenu.map((subItem, subIndex) => (
-                      <Item
-                        key={subIndex}
-                        title={subItem.title}
-                        to={subItem.path}
-                        icon={subItem.icon} // Use submenu icon
-                        selected={selected}
-                        setSelected={setSelected}
-                      />
+                      <Box sx={{ mt: "10px" }}>
+                        <Item
+                          key={subIndex}
+                          title={subItem.title}
+                          to={subItem.path}
+                          icon={subItem.icon}
+                          selected={selected}
+                          setSelected={setSelected}
+                        />
+                      </Box>
                     ))
                   }
                 </Box>
-              )}
+              }
             </div>
           ))}
         </Menu>

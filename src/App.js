@@ -9,6 +9,7 @@ import Dashboard from './pages/dashboard/Dashboard';
 import CalendarList from './pages/calendar/CalendarList';
 import CalendarAdd from './pages/calendar/CalendarAdd';
 import KanbanBoard from "./pages/tasks/Kanban";
+import AttendeeList from './pages/attendee/attendeeList';
 import EventList from './pages/events/EventList';
 import EventAdd from './pages/events/EventAdd';
 import EventDetail from "./pages/events/EventDetail";
@@ -130,6 +131,7 @@ function App() {
                         <Route path="/events/:eventId/teams" element={<AddTeamForEvent />} />
                         <Route path="/events/:eventId/subtask" element={<TaskSubTasks />} />
                         <Route path="/events/:eventId/sessionList" element={<SessionList />} />
+                        <Route path="/events/:eventId/participants" element={<AttendeeList />} />
                         <Route path="/sponsors/SponsorList" element={<SponsorList />} />
                         <Route path="/sponsors/SponsorAdd" element={<SponsorAdd />} />
                         <Route path="/sponsors/:sponsorId" element={<SponsorDetail />} />

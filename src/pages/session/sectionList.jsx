@@ -169,7 +169,7 @@ const SectionList = () => {
                     fontFamily: "Poppins, sans-serif",
                 }}
             >
-                List of Sections
+                Sắp xếp phần thuyết trình
             </Typography>
             <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="20px">
                 <TextField
@@ -236,8 +236,8 @@ const SectionList = () => {
                 </Box>
             )}
             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-                <MenuItem onClick={handleEdit}>Edit</MenuItem>
-                <MenuItem onClick={handleDelete}>Delete</MenuItem>
+                <MenuItem onClick={handleEdit}>Cập nhật</MenuItem>
+                <MenuItem onClick={handleDelete}>Xóa</MenuItem>
             </Menu>
             <Dialog
                 open={confirmOpen}
@@ -268,7 +268,7 @@ const SectionList = () => {
                     }}
                 >
                     <WarningAmberIcon sx={{ color: "#f57c00", fontSize: 28 }} />
-                    Confirm Delete
+                    Xác nhận xóa
                 </DialogTitle>
                 <DialogContent
 
@@ -308,7 +308,7 @@ const SectionList = () => {
                             },
                         }}
                     >
-                        No
+                        Không
                     </Button>
                     <Button
                         onClick={handleConfirmDelete}
@@ -320,7 +320,7 @@ const SectionList = () => {
                             "&:hover": { backgroundColor: "#d32f2f" },
                         }}
                     >
-                        Yes
+                        Đồng ý
                     </Button>
                 </DialogActions>
             </Dialog>

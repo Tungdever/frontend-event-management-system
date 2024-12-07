@@ -130,7 +130,7 @@ const SpeakerDetail = () => {
                         style={{ width: "150px", height: "150px", objectFit: "cover", borderRadius: "8px" }}
                     />
                 ) : (
-                    <Typography>No image available</Typography>
+                    <Typography>Ảnh không khả dụng</Typography>
                 )}
             </div>
 
@@ -152,7 +152,7 @@ const SpeakerDetail = () => {
             <div style={{ marginBottom: "20px" }}>
                 <div style={{ marginBottom: "15px" }}>
                     <Typography variant="h6" style={{ fontWeight: "600", marginBottom: "5px", fontSize: "15px" }}>
-                        Title
+                        Chức danh
                     </Typography>
                     <TextField
                         fullWidth
@@ -178,7 +178,7 @@ const SpeakerDetail = () => {
 
                 <div style={{ marginBottom: "15px" }}>
                     <Typography variant="h6" style={{ fontWeight: "600", marginBottom: "5px", fontSize: "15px" }}>
-                        Phone
+                        SĐT
                     </Typography>
                     <TextField
                         fullWidth
@@ -191,7 +191,7 @@ const SpeakerDetail = () => {
 
                 <div style={{ marginBottom: "15px" }}>
                     <Typography variant="h6" style={{ fontWeight: "600", marginBottom: "5px", fontSize: "15px" }}>
-                        Address
+                        Địa chỉ
                     </Typography>
                     <TextField
                         fullWidth
@@ -204,7 +204,7 @@ const SpeakerDetail = () => {
 
                 <div style={{ marginBottom: "15px" }}>
                     <Typography variant="h6" style={{ fontWeight: "600", marginBottom: "5px", fontSize: "15px" }}>
-                        Description
+                        Mô tả
                     </Typography>
                     <TextField
                         fullWidth
@@ -229,12 +229,12 @@ const SpeakerDetail = () => {
                 onClick={handleEditClick}
                 style={{ marginTop: "20px" }}
             >
-                Edit Speaker
+                Cập nhật diễn giả
             </Button>
 
             {/* Popup Edit */}
             <Dialog open={isEditOpen} onClose={handleEditClose}>
-                <DialogTitle>Edit Speaker</DialogTitle>
+                <DialogTitle>Cập nhật diễn giả</DialogTitle>
                 <DialogContent>
                     <TextField
                         fullWidth
@@ -293,14 +293,14 @@ const SpeakerDetail = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleEditClose} color="secondary">
-                        Cancel
+                        Hủy
                     </Button>
                     <Button
                         onClick={handleFormSubmit}
                         color="primary"
                         variant="contained"
                     >
-                        Save Changes
+                        Lưu thay đổi
                     </Button>
                 </DialogActions>
             </Dialog>

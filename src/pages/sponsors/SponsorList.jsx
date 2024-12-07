@@ -186,7 +186,7 @@ const SponsorList = () => {
   return (
     <div style={{ width: "100%", padding: "20px" }}>
       <Typography variant="h4" style={{ fontWeight: "bold", color: "#3f51b5", textAlign: "left", marginBottom: "20px" }}>
-        LIST SPONSORS
+        Danh sách nhà tài trợ
       </Typography>
       <Box display="flex" justifyContent="space-between" mb="20px">
         <TextField
@@ -216,13 +216,13 @@ const SponsorList = () => {
             color="primary"
             variant="contained"
             sx={{
-              backgroundColor: "#3f51b5",
+              backgroundColor: "#1c7de8",
               color: "#ffffff",
-              borderRadius: "20px",
-              padding: "10px 20px",
               fontWeight: "bold",
+              maxHeight: 45,
+              "&:hover": { backgroundColor: "#1565c0" },
             }}>
-          Add Sponsor
+          Thêm nhà tài trợ
         </Button>
       </Box>
 
@@ -241,20 +241,20 @@ const SponsorList = () => {
             />
           </div>
           <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-            <MenuItem onClick={handleViewDetail}>View Detail</MenuItem>
-            <MenuItem onClick={handleDelete}>Delete</MenuItem>
+            <MenuItem onClick={handleViewDetail}>Xem chi tiết</MenuItem>
+            <MenuItem onClick={handleDelete}>Xóa</MenuItem>
           </Menu>
         </>
       )}
       {/* Dialog for adding Sponsor */}
       <Dialog open={openDialog} onClose={handleDialogClose} sx={{ "& .MuiDialog-paper": { width: "800px", maxWidth: "none" } }} fullWidth>
-        <DialogTitle>Add MC</DialogTitle>
+        <DialogTitle>Thêm MC</DialogTitle>
         <DialogContent>
           <SponsorAdd closeDialog={handleDialogClose}  fetchSponsors ={fetchSponsors}/> {/* Pass fetchMcList to McAdd */}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose} color="primary">
-            Cancel
+            Hủy
           </Button>
         </DialogActions>
       </Dialog>

@@ -53,17 +53,14 @@ const Topbar = ({ setIsAuthenticated }) => {
   
 
   return (
-    <Box display="flex" justifyContent="space-between" p={2}>
-      {/* SEARCH BAR */}
-      <Box
-        display="flex"
-        backgroundColor={colors.primary[400]}
-        borderRadius="3px"
-      >
-         
-      </Box>
-
-      {/* ICONS */}
+    <Box display="flex" justifyContent="flex-end" p={2}
+    sx = {{
+      bgcolor: colors.background[100],
+      borderBottom: 1,
+      borderColor: colors.background[300],
+      margin:0,
+    }}>
+     
       <Box display="flex">
         <IconButton onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === "dark" ? (

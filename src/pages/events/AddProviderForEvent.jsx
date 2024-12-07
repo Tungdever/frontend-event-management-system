@@ -147,7 +147,14 @@ const AddProviderForEvent = () => {
           handleDialogOpen();
           fetchAvailableProviders();
         }}
-        sx={{ marginBottom: "20px" }}
+        sx={{
+          backgroundColor: "#1c7de8",
+          color: "#ffffff",
+          fontWeight: "bold",
+          maxHeight: 45,
+          "&:hover": { backgroundColor: "#1565c0" },
+          marginBottom: "20px"
+        }}
       >
         Add Provider
       </Button>

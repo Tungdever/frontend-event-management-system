@@ -158,7 +158,7 @@ const SponsorDetail = () => {
                         style={{ width: "150px", height: "150px", objectFit: "cover", borderRadius: "8px" }}
                     />
                 ) : (
-                    <Typography>No logo available</Typography>
+                    <Typography>Ảnh không khả dụng</Typography>
                 )}
             </div>
 
@@ -180,7 +180,7 @@ const SponsorDetail = () => {
             <div style={{ marginBottom: "20px" }}>
                 <div style={{ marginBottom: "15px" }}>
                     <Typography variant="h6" style={{ fontWeight: "600", marginBottom: "5px", fontSize: "15px" }}>
-                        Contact
+                        Liên hệ
                     </Typography>
                     <TextField
                         fullWidth
@@ -206,7 +206,7 @@ const SponsorDetail = () => {
 
                 <div style={{ marginBottom: "15px" }}>
                     <Typography variant="h6" style={{ fontWeight: "600", marginBottom: "5px", fontSize: "15px" }}>
-                        Phone
+                        SĐT
                     </Typography>
                     <TextField
                         fullWidth
@@ -219,7 +219,7 @@ const SponsorDetail = () => {
 
                 <div style={{ marginBottom: "15px" }}>
                     <Typography variant="h6" style={{ fontWeight: "600", marginBottom: "5px", fontSize: "15px" }}>
-                        Address
+                        Địa chỉ
                     </Typography>
                     <TextField
                         fullWidth
@@ -245,7 +245,7 @@ const SponsorDetail = () => {
 
                 <div style={{ marginBottom: "15px" }}>
                     <Typography variant="h6" style={{ fontWeight: "600", marginBottom: "5px", fontSize: "15px" }}>
-                        Sponsorship Level
+                        Mức độ tài trợ
                     </Typography>
                     <TextField
                         fullWidth
@@ -267,7 +267,7 @@ const SponsorDetail = () => {
                     fontSize: "24px",
                 }}
             >
-                Sponsored Events
+                Danh sách sự kiện tài trợ
             </Typography>
             <CardActions>
                 <Link to={`/sponsor/${sponsor.id}/event`} style={{ textDecoration: "none" }}>
@@ -277,7 +277,7 @@ const SponsorDetail = () => {
                         variant="contained"
                         style={{ fontWeight: "bold" }}
                     >
-                        Add Event
+                        Tạo sự kiện mới
                     </Button>
                 </Link>
             </CardActions>
@@ -311,7 +311,7 @@ const SponsorDetail = () => {
                                             variant="contained"
                                             style={{ fontWeight: "bold" }}
                                         >
-                                            Learn More
+                                            Tìm hiểu thêm
                                         </Button>
                                     </Link>
                                 </CardActions>
@@ -320,7 +320,7 @@ const SponsorDetail = () => {
                     ))}
                 </Grid>
             ) : (
-                <Typography>No events available.</Typography>
+                <Typography>Không có sự kiện nào</Typography>
             )}
             {/* Nút chỉnh sửa */}
             <Button
@@ -336,12 +336,12 @@ const SponsorDetail = () => {
                 }}
                 onClick={handleEditClick} // Mở popup chỉnh sửa
             >
-                Edit Sponsor
+                Cập nhật
             </Button>
 
             {/* Dialog Form chỉnh sửa */}
             <Dialog open={isEditOpen} onClose={handleEditClose}>
-                <DialogTitle>Edit Sponsor</DialogTitle>
+                <DialogTitle>Cập nhật nhà tài nhợ</DialogTitle>
                 <DialogContent>
                     <TextField
                         label="Name"
@@ -397,7 +397,7 @@ const SponsorDetail = () => {
 
                     <div style={{ marginBottom: "15px" }}>
                         <Typography variant="h6" style={{ fontWeight: "600", marginBottom: "5px", fontSize: "15px" }}>
-                            Sponsorship Level
+                            Mức độ tài trợ
                         </Typography>
                         <TextField
                             fullWidth
@@ -423,7 +423,7 @@ const SponsorDetail = () => {
                         </TextField>
                     </div>
 
-                    <Typography style={{ marginBottom: "10px" }}>Upload Logo</Typography>
+                    <Typography style={{ marginBottom: "10px" }}>Cập nhật logo</Typography>
                     <div style={{ marginBottom: "20px" }}>
                         {logoUrl ? (
                             <img
@@ -437,7 +437,7 @@ const SponsorDetail = () => {
                                 }}
                             />
                         ) : (
-                            <Typography>No logo available</Typography>
+                            <Typography>Logo không khả dụng</Typography>
                         )}
                     </div>
                     <input
@@ -449,10 +449,10 @@ const SponsorDetail = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleEditClose} color="secondary">
-                        Cancel
+                        Hủy
                     </Button>
                     <Button onClick={handleFormSubmit} color="primary" variant="contained">
-                        Save Changes
+                        Lưu thay đổi
                     </Button>
                 </DialogActions>
             </Dialog>

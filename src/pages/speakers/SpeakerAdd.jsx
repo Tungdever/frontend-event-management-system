@@ -114,9 +114,11 @@ const SpeakerAdd = () => {
           backgroundColor: "#1c7de8",
           color: "white",
           "&:hover": { backgroundColor: "#1565c0" },
+          minHeight: 45,
+          marginRight:2
         }}
       >
-        Add speaker
+        Thêm diễn giả
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle sx={{ color: "#4c4c4c", fontSize: 20, display: "flex", alignItems: "center", justifyContent: "center" }}>Speaker Details</DialogTitle>
@@ -274,13 +276,13 @@ const SpeakerAdd = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} variant="outlined">
-            Cancel
+            Hủy
           </Button>
           <Button onClick={handleSubmit} variant="contained" sx={{
             backgroundColor: "#1c7de8",
             "&:hover": { backgroundColor: "#1565c0" },
           }}>
-            Save Speaker
+            Lưu
           </Button>
         </DialogActions>
       </Dialog>

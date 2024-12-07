@@ -104,7 +104,7 @@ const McList = () => {
         marginBottom="20px"
         marginRight="10px"
       >
-        <Button onClick={handleDialogOpen} type="submit" color="secondary" variant="contained">
+        <Button onClick={handleDialogOpen} type="submit" color="secondary" variant="contained" sx={{minHeight : 45, minWidth:30, backgroundColor: "#1c7de8", color:"#ffffff",  "&:hover": { backgroundColor: "#1565c0" },}}>
           Add MC
         </Button>
       </Box>

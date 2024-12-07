@@ -126,7 +126,7 @@ const SpeakerList = () => {
                 variant="h4"
                 style={{ fontWeight: "bold", color: "#333", textAlign: "left", marginBottom: "20px" }}
             >
-                LIST SPEAKERS
+                Danh sách diễn giả
             </Typography>
             <Box display="flex" justifyContent="space-between" marginBottom="20px">
                 <TextField
@@ -161,7 +161,7 @@ const SpeakerList = () => {
                                     onClose={handleMenuClose}
                                 >
                                     {/* <MenuItem onClick={handleViewDetail}>View detail</MenuItem> */}
-                                    <MenuItem onClick={handleDelete}>Delete</MenuItem>
+                                    <MenuItem onClick={handleDelete}>Xóa</MenuItem>
                                 </Menu>
                             </div>
 
@@ -210,7 +210,7 @@ const SpeakerList = () => {
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end', padding: 1 }}>
                                 <Link to={`/speakers/${speaker.id}/detail`} style={{ textDecoration: 'none' }}>
                                     <Button variant="outlined" size="small">
-                                        Preview
+                                        Xem thử
                                     </Button>
                                 </Link>
                             </Box>

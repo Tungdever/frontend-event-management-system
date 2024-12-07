@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     Box,
@@ -16,7 +16,7 @@ import {
 import './event.css'
 import axios from "axios";
 import { format } from 'date-fns';
-const CreateEventForm = () => {
+const CreateEventForm = ({ onClose, eventId, event, eventImage, handleFetch }) => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         eventName: "",
@@ -30,7 +30,6 @@ const CreateEventForm = () => {
         eventEnd: "",
         eventStatus: "",
         manId: "",
-        mcId: "1"
     });
     const token = localStorage.getItem("token");
     useEffect(() => {
@@ -43,9 +42,27 @@ const CreateEventForm = () => {
             eventStart: formattedDateTime,
         });
     }, []);
-
+    useEffect(() => {
+        //setSelectedImage(eventImage);
+        if (event != null) {
+            console.log(event);
+            setFormData({
+                eventName: event.eventName,
+                eventType: event.eventType,
+                eventHost: event.eventHost,
+                eventStatus: event.eventStatus,
+                eventDescription: event.eventDescription,
+                image: eventImage,
+                eventLocation: event.eventLocation,
+                eventStart: event.eventStart,
+                eventEnd: event.eventEnd,
+                eventStatus: event.eventStatus,
+                manId: event.manId,
+            });
+        }
+        
+    }, [event]);
     const [selectedImage, setSelectedImage] = useState(null);
-
     const handleImageChange = (event) => {
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0]; // Lấy file từ input
@@ -77,10 +94,10 @@ const CreateEventForm = () => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState(""); // Lưu thông báo
     const [showDialog, setShowDialog] = useState(false); // Hiển thị dialog
-   
+
 
     const handleSubmit = async (check) => {
-        
+
         setMessage(""); // Reset thông báo
         const requiredFields = [
             "eventName", "eventType", "eventStart", "eventEnd", "eventLocation", "eventHost", "eventDescription"
@@ -118,6 +135,7 @@ const CreateEventForm = () => {
             console.log(userId);
             formData.manId = userId;
             const data = new FormData();
+            
             data.append("eventName", formData.eventName);
             data.append("eventType", formData.eventType);
             data.append("eventHost", formData.eventHost);
@@ -128,24 +146,39 @@ const CreateEventForm = () => {
             data.append("eventStart", formData.eventStart);
             data.append("eventEnd", formData.eventEnd);
             data.append("manId", formData.manId);
-            data.append("mcId", formData.mcId);
-            try {             
-                setTimeout(() => {
-                setLoading(true); // Bật loading
-                }, 1000);
-                const response = await axios.post(
-                    "http://localhost:8080/man/event",
-                    data, // Gửi dưới dạng FormData
-                    {
-                        headers: {
-                            "Content-Type": "multipart/form-data",
-                            Authorization: token,
-                        },
-                    }
-                );
-                setTimeout(() => {
-                    navigate("/"); // Chuyển hướng về trang chủ
-                }, 1500);
+            setLoading(true);
+            try {
+               
+                if (event == null) {
+                    const response = await axios.post(
+                        "http://localhost:8080/man/event",
+                        data,
+                        {
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                                Authorization: token,
+                            },
+                        }
+                    );
+                    setTimeout(() => {
+                        navigate("/");
+                    }, 1500);
+                }
+                else {
+                    data.append("eventId", eventId);
+                    const response = await axios.put(
+                        "http://localhost:8080/man/event",
+                        data,
+                        {
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                                Authorization: token,
+                            },
+                        }
+                    );
+                    onClose();
+                    handleFetch();
+                }
             }
             catch (error) {
                 setMessage("Tạo sự kiện thất bại");
@@ -172,7 +205,7 @@ const CreateEventForm = () => {
             }}
         >
             <Typography variant="h4" sx={{ marginBottom: "20px" }}>
-                Create an Event
+                {event == null ? "Create an Event" : "Edit event"}
             </Typography>
 
             <Typography variant="h6" sx={{ marginBottom: "10px" }}>
@@ -202,21 +235,14 @@ const CreateEventForm = () => {
                     onChange={handleChange}
                 >
                     <MenuItem value="default">Select</MenuItem>
-                    <MenuItem value="conference">Conference</MenuItem>
+                    <MenuItem value="conference">Hội nghị</MenuItem>
                     <MenuItem value="workshop">Workshop</MenuItem>
-                    <MenuItem value="webinar">Webinar</MenuItem>
-                    <MenuItem value="corporate">Corporate or Business Meeting</MenuItem>
-                    <MenuItem value="convention">Convention</MenuItem>
-                    <MenuItem value="party">Party or Social Gathering</MenuItem>
-                    <MenuItem value="concert">Concert or Performance</MenuItem>
-                    <MenuItem value="screening">Screening</MenuItem>
-                    <MenuItem value="liveMusic">Live Music</MenuItem>
-                    <MenuItem value="presentation">Presentation</MenuItem>
-                    <MenuItem value="tradeshow">Tradeshow</MenuItem>
-                    <MenuItem value="seminar">Seminar or Talk</MenuItem>
-                    <MenuItem value="expo">Tradeshow or Expo</MenuItem>
-                    <MenuItem value="fair">Fair or Festival</MenuItem>
-                    <MenuItem value="ceremony">Ceremony</MenuItem>
+                    <MenuItem value="concert">Buổi buổi diễn</MenuItem>
+                    <MenuItem value="liveMusic">Buổi hòa nhạc</MenuItem>
+                    <MenuItem value="presentation">Giới thiệu sản phẩm</MenuItem>
+                    <MenuItem value="tradeshow">Trình diễn</MenuItem>
+                    <MenuItem value="seminar">Hội thảo</MenuItem>
+                    <MenuItem value="ceremony">Lễ kỉ niểm</MenuItem>
                 </Select>
             </FormControl>
 

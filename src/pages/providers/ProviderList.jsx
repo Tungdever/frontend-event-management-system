@@ -112,7 +112,7 @@ const ProviderList = () => {
           marginRight: "auto",
         }}
       >
-        LIST PROVIDER
+        Danh nhà cung cấp dịch vụ
       </Typography>
       <Box
         display="flex"
@@ -125,8 +125,9 @@ const ProviderList = () => {
           onClick={handleDialogOpen}
           color="secondary"
           variant="contained"
+          sx={{minHeight : 45, backgroundColor: "#1c7de8", color:"#ffffff",  "&:hover": { backgroundColor: "#1565c0" }, marginRight: 2}}
         >
-          Add Provider
+          Thêm nhà cung cấp dịch vụ
         </Button>
       </Box>
       <DataGrid
@@ -142,9 +143,9 @@ const ProviderList = () => {
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
-        <MenuItem onClick={handleViewDetail}>View Detail</MenuItem>
-        <MenuItem onClick={handleEdit}>Edit</MenuItem>
-        <MenuItem onClick={handleDelete}>Delete</MenuItem>
+        <MenuItem onClick={handleViewDetail}>Chi tiết</MenuItem>
+        <MenuItem onClick={handleEdit}>Cập nhật</MenuItem>
+        <MenuItem onClick={handleDelete}>Xóa</MenuItem>
       </Menu>
       <Dialog
         open={isDialogOpen}
@@ -157,13 +158,13 @@ const ProviderList = () => {
         }}
         fullWidth
       >
-        <DialogTitle>Add Provider</DialogTitle>
+        <DialogTitle>Thêm nhà cung cấp dịch vụ</DialogTitle>
         <DialogContent>
         <ProviderAddForm onClose={handleDialogClose} onProviderAdded={handleProviderAdded} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose} color="primary">
-            Cancel
+            Hủy
           </Button>
         </DialogActions>
       </Dialog>

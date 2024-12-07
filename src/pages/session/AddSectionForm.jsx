@@ -225,7 +225,7 @@ const AddSectionForm = ({ id, onAdd, openEdit, onClose }) => {
                     "&:hover": { backgroundColor: "#1565c0" },
                 }}
             >
-                Add Section
+                Tạo lịch
             </Button>
 
             {/* Popup chính */}
@@ -237,7 +237,7 @@ const AddSectionForm = ({ id, onAdd, openEdit, onClose }) => {
                         <Grid item xs={3}>
                             <FormControl fullWidth>
                                 <Typography variant="h6" sx={{ color: "#9b9b9b" }}>
-                                    Start Time
+                                    Thời gian bắt đầu
                                     <span style={{ color: "red", marginLeft: 1 }}>*</span>
                                 </Typography>
                                 <Select name="startTime" value={formData.startTime} onChange={handleChange} sx={{ marginTop: 1 }}>
@@ -261,7 +261,7 @@ const AddSectionForm = ({ id, onAdd, openEdit, onClose }) => {
                         <Grid item xs={3}>
                             <FormControl fullWidth>
                                 <Typography variant="h6" sx={{ color: "#9b9b9b" }}>
-                                    End Time
+                                Thời gian kết thúc
                                     <span style={{ color: "red", marginLeft: 1 }}>*</span>
                                 </Typography>
                                 <Select name="endTime" value={formData.endTime} onChange={handleChange} sx={{ marginTop: 1 }}>
@@ -284,7 +284,7 @@ const AddSectionForm = ({ id, onAdd, openEdit, onClose }) => {
                         {/* Section Title */}
                         <Grid item xs={12}>
                             <Typography variant="h6" sx={{ color: "#9b9b9b" }}>
-                                Section Title
+                                Tiêu đề
                                 <span style={{ color: "red", marginLeft: 1 }}>*</span>
                             </Typography>
                             <TextField
@@ -361,7 +361,7 @@ const AddSectionForm = ({ id, onAdd, openEdit, onClose }) => {
                             {/* Các trường khác trong form */}
                             <Grid item xs={12}>
                                 <Typography variant="h6" sx={{ color: "#9b9b9b", marginBottom: 1 }}>
-                                    Upload File
+                                    Upload file 
                                 </Typography>
 
                                 {/* Hiển thị nút "Choose File" khi chưa chọn file */}
@@ -375,7 +375,7 @@ const AddSectionForm = ({ id, onAdd, openEdit, onClose }) => {
                                             sx={{ display: "none",  }}  // Ẩn Input, chỉ hiển thị dưới dạng button
                                         />
                                         <Button variant="contained" component="span" sx={{ backgroundColor: "#109c7b" }}>
-                                            Choose File
+                                            Chọn file
                                         </Button>
                                     </label>
                                 )}
@@ -384,7 +384,7 @@ const AddSectionForm = ({ id, onAdd, openEdit, onClose }) => {
                                 {file && (
                                     <div style={{ display: "flex", alignItems: "center" }}>
                                         <Typography variant="body1" sx={{ marginRight: 2 }}>
-                                            Selected File: {file.name}
+                                            File đã chọn: {file.name}
                                         </Typography>
                                         <IconButton onClick={handleRemoveFile} color="error">
                                             <CloseOutlinedIcon />
@@ -399,7 +399,7 @@ const AddSectionForm = ({ id, onAdd, openEdit, onClose }) => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} variant="outlined">
-                        Cancel
+                        Hủy
                     </Button>
                     <Button
                         onClick={handleSubmit}
@@ -408,7 +408,7 @@ const AddSectionForm = ({ id, onAdd, openEdit, onClose }) => {
                             backgroundColor: "#1c7de8",
                             "&:hover": { backgroundColor: "#1565c0" },
                         }}>
-                        Save Section
+                        Lưu
                     </Button>
                 </DialogActions>
             </Dialog>

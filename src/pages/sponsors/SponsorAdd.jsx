@@ -133,7 +133,7 @@ const SponsorAdd = ({ closeDialog ,fetchSponsors }) => {
                   }}
                 >
                   <Typography variant="caption" color="textSecondary">
-                    No Image
+                    Ảnh không khả dụng
                   </Typography>
                 </Box>
               )}
@@ -146,7 +146,7 @@ const SponsorAdd = ({ closeDialog ,fetchSponsors }) => {
                   padding: "6px 16px",
                 }}
               >
-                Choose Logo
+                Chọn logo
                 <input
                   type="file"
                   accept="image/*"
@@ -311,7 +311,7 @@ const SponsorAdd = ({ closeDialog ,fetchSponsors }) => {
                 displayEmpty
               >
                 <MenuItem value="" disabled>
-                  Select Sponsorship Level
+                  Chọn mức độ tài trợ
                 </MenuItem>
                 {sponsorshipLevels.map((level) => (
                   <MenuItem
@@ -331,7 +331,7 @@ const SponsorAdd = ({ closeDialog ,fetchSponsors }) => {
 
         <Box display="flex" justifyContent="end" mt="20px">
           <Button type="submit" color="secondary" variant="contained">
-            Add Sponsor
+            Thêm nhà tài trợ
           </Button>
         </Box>
       </form>

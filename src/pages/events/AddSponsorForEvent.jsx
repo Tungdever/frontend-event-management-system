@@ -156,6 +156,11 @@ const SponsorForEvent = () => {
             fetchAvailableSponsors();
             setOpenAddDialog(true);
           }}
+          sx={{
+            backgroundColor: "#1c7de8",
+            color: "#ffffff",
+            "&:hover": { backgroundColor: "#1565c0" },
+          }}
         >
           Add Sponsor
         </Button>

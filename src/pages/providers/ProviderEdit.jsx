@@ -64,7 +64,7 @@ const EditProviderForm = ({onClose,providerid,handleFetch}) => {
 
   if (!initialValues) {
     // Hiển thị loading khi đang tải dữ liệu
-    return <div>Loading provider details...</div>;
+    return <div>Tải nhà cung cấp dịch vụ...</div>;
   }
 
   return (
@@ -176,7 +176,7 @@ const EditProviderForm = ({onClose,providerid,handleFetch}) => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Update Provider
+                Cập nhật nhà cung cấp dịch vụ
               </Button>
             </Box>
           </form>
@@ -190,15 +190,15 @@ const phoneRegExp =
   /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
 const validationSchema = yup.object().shape({
-  name: yup.string().required("Provider name is required"),
-  contact: yup.string().required("Contact person is required"),
-  email: yup.string().email("Invalid email").required("Email is required"),
+  name: yup.string().required("Tên không được trống"),
+  contact: yup.string().required("Người liên hệ không được để trống"),
+  email: yup.string().email("Email không hợp lệ").required("Email không được để trống"),
   phone: yup
     .string()
-    .matches(phoneRegExp, "Phone number is not valid")
-    .required("Phone is required"),
-  address: yup.string().required("Address is required"),
-  website: yup.string().url("Invalid URL").required("Website is required"),
+    .matches(phoneRegExp, "SĐT không hợp lệ")
+    .required("SĐT không được để trống"),
+  address: yup.string().required("Địa chỉ không được để trống"),
+  website: yup.string().url("URL không hợp lệ").required("Website không được để trống"),
 });
 
 export default EditProviderForm;
