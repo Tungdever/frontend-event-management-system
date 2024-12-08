@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -10,6 +10,8 @@ import {
 import { Email, Lock } from "@mui/icons-material";
 import axios from "axios";
 import { Link, Navigate } from "react-router-dom";
+import bgImage from './bg.jpeg';
+
 function Login({ setIsAuthenticated }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,11 +21,9 @@ function Login({ setIsAuthenticated }) {
   const token = localStorage.getItem("token");
 
   if (token) {
-    // Người dùng đã đăng nhập, chuyển hướng đến dashboard
     return <Navigate to="/" replace />;
   }
 
-  // Xử lý đăng nhập
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -34,14 +34,10 @@ function Login({ setIsAuthenticated }) {
         password,
       });
       const token = response.data.data;
-      localStorage.setItem("token", "Bearer " + token); // Lưu token vào localStorage
+      localStorage.setItem("token", "Bearer " + token);
       setIsAuthenticated(true);
-      console.log("Đăng nhập thành công:", response.data);
-
-      console.log("Token:", "Bearer " + token);
-      window.location.href = "/home"; // Điều hướng tới dashboard
+      window.location.href = "/home";
     } catch (error) {
-      console.error("Đăng nhập thất bại:", error);
       setError("Email hoặc mật khẩu không đúng!");
     } finally {
       setLoading(false);
@@ -51,27 +47,29 @@ function Login({ setIsAuthenticated }) {
   return (
     <Box
       display="flex"
-      alignItems="center"
-      justifyContent="center"
       height="100vh"
       width="100vw"
-      bgcolor="#f0f0f0"
+      
     >
+      {/* Khung đăng nhập */}
       <Box
-        width="100%"
-        maxWidth="400px"
+        width="400px"
         p={3}
-        bgcolor="#f9f8ff"
-        borderRadius={2}
-        boxShadow={3}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        sx={{
+          marginLeft: "235px", // Khoảng cách với phần bên phải
+          marginRight: "190px"
+        }}
       >
         <Typography variant="h4" color="#000000" textAlign="center" mb={3}>
           Đăng Nhập
         </Typography>
-        <form onSubmit={handleSubmit}>
-          {/* Email Field */}
+        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+          {/* Email */}
           <TextField
-
             placeholder="Email"
             fullWidth
             variant="outlined"
@@ -86,29 +84,10 @@ function Login({ setIsAuthenticated }) {
                 </InputAdornment>
               ),
             }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                color: "#171316",
-                "& fieldset": {
-                  borderColor: "#d5cbff",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#76c7c0",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#76c7c0",
-                },
-                "& input:-webkit-autofill": {
-                  backgroundColor: "##ffffff !important", // Màu nền khi autofill
-                  WebkitBoxShadow: "0 0 0px 1000px #ffffff inset !important", // Đảm bảo màu nền không bị ghi đè
-                },
-              },
-            }}
           />
 
-          {/* Password Field */}
+          {/* Mật khẩu */}
           <TextField
-
             placeholder="Mật khẩu"
             type="password"
             fullWidth
@@ -124,24 +103,6 @@ function Login({ setIsAuthenticated }) {
                 </InputAdornment>
               ),
             }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                color: "#171316",
-                "& fieldset": {
-                  borderColor: "#d5cbff",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#76c7c0",
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "#76c7c0",
-                },
-                "& input:-webkit-autofill": {
-                  backgroundColor: "#ffffff !important", // Màu nền khi autofill
-                  WebkitBoxShadow: "0 0 0px 1000px #ffffff inset !important", // Đảm bảo màu nền không bị ghi đè
-                },
-              },
-            }}
           />
 
           {/* Hiển thị lỗi nếu có */}
@@ -152,29 +113,35 @@ function Login({ setIsAuthenticated }) {
           )}
 
           {/* Nút đăng nhập */}
-          <Box display="flex" justifyContent="center" mt={3} bgcolor="#3b71cb" color = "#ffffff">
-            <Button
-              type="submit"
-              variant="contained"
-              color="#333333;"
-
-              disabled={loading}
-              fullWidth
-            >
-              {loading ? <CircularProgress size={24} color="inherit" /> : "Đăng Nhập"}
-            </Button>
-          </Box>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 3 }}
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={24} color="inherit" /> : "Đăng Nhập"}
+          </Button>
         </form>
 
-        {/* Link quên mật khẩu */}
-        <Typography color="#333333" textAlign="center" mt={2}>
-          <Box display="flex" justifyContent="flex-end">
-            <Link to="/forgot" style={{ color: "#333333", textDecoration: "line" }}>
-              Quên mật khẩu
-            </Link>
-          </Box>
+        {/* Quên mật khẩu */}
+        <Typography textAlign="center" mt={2}>
+          <Link to="/forgot" style={{ color: "#333333", textDecoration: "none" }}>
+            Quên mật khẩu
+          </Link>
         </Typography>
       </Box>
+
+      {/* Ảnh nền bên phải */}
+      <Box
+        flex={1}
+        sx={{
+          backgroundImage: `url(${bgImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
     </Box>
   );
 }

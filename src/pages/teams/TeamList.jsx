@@ -96,7 +96,7 @@ function TeamList() {
 
   return (
     <>
-    <Header title="TEAM DETAIL" subtitle="List of  Team" />
+    <Header title="CHI TIẾT NHÓM"/>
       {teams.map((team) => (
         <Accordion key={team.teamId}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -104,8 +104,8 @@ function TeamList() {
           </AccordionSummary>
           <AccordionDetails>
             <Tabs value={tabValue} onChange={handleChange}>
-              <Tab label="Employees" />
-              <Tab label="Tasks" />
+              <Tab label="Nhân viên" />
+              <Tab label="Công việc" />
             </Tabs>
             <TabPanel value={tabValue} index={0}>
               <EmployeeList employees={team.listEmployees || []} teamId={team.teamId} onTeamUpdate={handleTeamUpdate} />

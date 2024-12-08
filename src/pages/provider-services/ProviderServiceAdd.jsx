@@ -147,11 +147,11 @@ const ServiceAddForm = ({onClose,providerid,handleFetch}) => {
 };
 
 const validationSchema = yup.object().shape({
-  serviceType: yup.string().required("Service type is required"),
-  serviceName: yup.string().required("Service name is required"),
-  serviceDesc: yup.string().required("Service description is required"),
-  price: yup.string().required("Price is required"),
-  duration: yup.string().required("Duration is required"),
+  serviceType: yup.string().required("Loại dịch vụ không được để trống"),
+  serviceName: yup.string().required("Tên dịch vụ không được để trống"),
+  serviceDesc: yup.string().required("Chi tiết dịch vụ không được để trống"),
+  price: yup.string().required("Giá không được để trống"),
+  duration: yup.string().required("Thời gian sử dụng không được để trống"),
 });
 
 const initialValues = {

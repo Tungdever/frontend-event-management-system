@@ -49,7 +49,7 @@ const AddTaskDialog = ({ onClose, onSave, eventId }) => {
           />
         </div>
         <div>
-          <label>Mô tả</label>
+          <label>Chi tiết</label>
           <input
             type="text"
             value={taskDesc}
@@ -240,7 +240,7 @@ const KanbanBoard = () => {
                   margin: "6px",
                 }}
               >
-                <strong style={{ marginRight: "30px" }}>Mô tả:</strong>
+                <strong style={{ marginRight: "30px" }}>Chi tiết:</strong>
                 <span>{task.taskDesc}</span>
               </div>
               <div

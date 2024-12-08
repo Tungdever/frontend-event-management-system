@@ -136,7 +136,7 @@ const EventDetail = () => {
           </Grid>
           <Grid item xs>
             <Typography variant="body1">
-              <strong>Date:</strong> {`${formatDateTime(event.eventStart)} - ${formatDateTime(event.eventEnd)}`}
+              <strong>Thời gian:</strong> {`${formatDateTime(event.eventStart)} - ${formatDateTime(event.eventEnd)}`}
             </Typography>
           </Grid>
         </Grid>
@@ -148,7 +148,7 @@ const EventDetail = () => {
           </Grid>
           <Grid item>
             <Typography variant="body1">
-              <strong>Location:</strong> {event.eventLocation}
+              <strong>Địa điểm:</strong> {event.eventLocation}
             </Typography>
           </Grid>
         </Grid>
@@ -160,7 +160,7 @@ const EventDetail = () => {
           </Grid>
           <Grid item xs>
             <Typography variant="body1">
-              <strong>Host:</strong> {event.eventHost}
+              <strong>Chủ sự kiện:</strong> {event.eventHost}
             </Typography>
           </Grid>
         </Grid>
@@ -172,7 +172,7 @@ const EventDetail = () => {
           </Grid>
           <Grid item xs>
             <Typography variant="body1">
-              <strong>Description:</strong> {event.eventDescription}
+              <strong>Mô tả:</strong> {event.eventDescription}
             </Typography>
           </Grid>
         </Grid>
@@ -201,7 +201,7 @@ const EventDetail = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogEditClose} color="primary">
-            Cancel
+            Hủy
           </Button>
         </DialogActions>
       </Dialog>

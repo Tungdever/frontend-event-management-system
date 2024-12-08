@@ -94,10 +94,10 @@ const SponsorshipTabs = () => {
                             {activeTab === index && (
                                 <>
                                     <Typography variant="h6" gutterBottom>
-                                        Benefit: {sponsorship.benefit}
+                                        Lợi ích: {sponsorship.benefit}
                                     </Typography>
                                     <Box
-                                        height="300px"
+                                        height="500px"
                                         sx={{
                                             "& .MuiDataGrid-root": {
                                                 border: "none",

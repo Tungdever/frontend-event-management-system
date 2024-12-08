@@ -148,7 +148,7 @@ const SponsorForEvent = () => {
   return (
     <Box sx={{ padding: 4 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
-        <Typography variant="h4">Sponsors for Event {eventId}</Typography>
+        <Typography variant="h4">Nhà tài cho sự kiện</Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
@@ -162,7 +162,7 @@ const SponsorForEvent = () => {
             "&:hover": { backgroundColor: "#1565c0" },
           }}
         >
-          Add Sponsor
+          Thêm nhà tài trợ
         </Button>
       </Box>
       {loading ? (
@@ -185,7 +185,7 @@ const SponsorForEvent = () => {
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle>Available Sponsors</DialogTitle>
+        <DialogTitle>Thêm nhà tài trợ cho sự kiện</DialogTitle>
         <DialogContent>
           <Grid container spacing={2}>
             {availableSponsors.map((sponsor) => (

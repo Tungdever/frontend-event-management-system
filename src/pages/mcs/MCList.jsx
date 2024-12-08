@@ -105,7 +105,7 @@ const McList = () => {
         marginRight="10px"
       >
         <Button onClick={handleDialogOpen} type="submit" color="secondary" variant="contained" sx={{minHeight : 45, minWidth:30, backgroundColor: "#1c7de8", color:"#ffffff",  "&:hover": { backgroundColor: "#1565c0" },}}>
-          Add MC
+          Thêm MC
         </Button>
       </Box>
 
@@ -165,19 +165,19 @@ const McList = () => {
                     <Box display="flex" alignItems="center" marginTop={1}>
                       <BadgeOutlined sx={{ fontSize: 20, marginRight: 1 }} />
                       <Typography variant="body2" color="text.secondary">
-                        Title: {mc.title || "N/A"}
+                        Chức danh: {mc.title || "N/A"}
                       </Typography>
                     </Box>
                     <Box display="flex" alignItems="center" marginTop={1}>
                       <PhoneOutlined sx={{ fontSize: 20, marginRight: 1 }} />
                       <Typography variant="body2" color="text.secondary">
-                        Phone: {mc.phone || "N/A"}
+                        SĐT: {mc.phone || "N/A"}
                       </Typography>
                     </Box>
                     <Box display="flex" alignItems="center" marginTop={1}>
                       <HomeOutlined sx={{ fontSize: 20, marginRight: 1 }} />
                       <Typography variant="body2" color="text.secondary">
-                        Address: {mc.address || "N/A"}
+                        Địa chỉ: {mc.address || "N/A"}
                       </Typography>
                     </Box>
                     <Box display="flex" alignItems="center" marginTop={1}>
@@ -185,7 +185,7 @@ const McList = () => {
                         sx={{ fontSize: 20, marginRight: 1 }}
                       />
                       <Typography variant="body2" color="text.secondary">
-                        Description: {mc.description || "N/A"}
+                        Chi tiết: {mc.description || "N/A"}
                       </Typography>
                     </Box>
                   </CardContent>
@@ -197,13 +197,13 @@ const McList = () => {
       )}
        {/* Dialog for adding MC */}
        <Dialog open={openDialog} onClose={handleDialogClose} sx={{ "& .MuiDialog-paper": { width: "800px", maxWidth: "none" } }} fullWidth>
-        <DialogTitle>Add MC</DialogTitle>
+        <DialogTitle>Thêm MC</DialogTitle>
         <DialogContent>
           <McAdd closeDialog={handleDialogClose} fetchMcList={fetchMcList} /> {/* Pass fetchMcList to McAdd */}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose} color="primary">
-            Cancel
+            Thoát
           </Button>
         </DialogActions>
       </Dialog>

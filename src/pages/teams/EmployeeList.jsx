@@ -142,7 +142,7 @@ function EmployeeList({ teamId, employees, onTeamUpdate }) {
             marginLeft: "1010px",
           }}
         >
-          Add Member
+          Thêm thành viên
         </Button>
         <Table>
           <TableHead>

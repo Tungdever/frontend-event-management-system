@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {Dialog, DialogTitle, DialogContentText, DialogContent, DialogActions, Card, CardContent, Typography, CardMedia, Grid, Box, TextField, Button, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { Dialog, DialogTitle, DialogContentText, DialogContent, DialogActions, Card, CardContent, Typography, CardMedia, Grid, Box, TextField, Button, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
@@ -30,14 +30,13 @@ const EventList = ({ setSelectedEvent }) => {
         setFilteredEvents(filtered);
     };
     const defaultImage = 'https://www.shutterstock.com/image-vector/image-icon-600nw-211642900.jpg';
-    useEffect(() => {
+    const fetchEvents = () => {
         if (token) {
             const payload = JSON.parse(atob(token.split(".")[1]));
-            // Lấy thông tin roles từ payload
             const roles = payload.roles || [];
             const userId = payload.userId || null;
-            console.log(userId);
-            if (roles.some(role => ["ROLE_MANAGER", "ROLE_ADMIN"].includes(role))) {
+
+            if (roles.some((role) => ["ROLE_MANAGER", "ROLE_ADMIN"].includes(role))) {
                 axios
                     .get("http://localhost:8080/man/event", {
                         headers: {
@@ -54,8 +53,7 @@ const EventList = ({ setSelectedEvent }) => {
                     .catch((error) => {
                         console.error("Error fetching data", error);
                     });
-            }
-            else {
+            } else {
                 axios
                     .get(`http://localhost:8080/emp/event/${userId}`, {
                         headers: {
@@ -66,6 +64,7 @@ const EventList = ({ setSelectedEvent }) => {
                     .then((response) => {
                         if (response.data.statusCode === 0) {
                             setEvents(response.data.data);
+                            setFilteredEvents(response.data.data);
                         }
                     })
                     .catch((error) => {
@@ -73,10 +72,11 @@ const EventList = ({ setSelectedEvent }) => {
                     });
             }
         }
-
-
-
-    }, [filteredEvents]);
+    };
+    useEffect(() => {
+        fetchEvents();
+    }, []);
+    
     useEffect(() => {
         const fetchImages = async () => {
             const urls = {};
@@ -117,26 +117,29 @@ const EventList = ({ setSelectedEvent }) => {
     const handleDelete = async () => {
         setConfirmOpen(true);
     };
-    const handleConfirmDelete = async () =>  {
+    const handleConfirmDelete = async () => {
         try {
-            const resp = await axios.delete(`http://localhost:8080/man/event/${selected.eventId}`, {
+            await axios.delete(`http://localhost:8080/man/event/${selected.eventId}`, {
                 headers: {
                     Authorization: localStorage.getItem("token"),
                 },
             });
-          } catch (error) {
+            // Xóa thành công, gọi lại API để tải danh sách mới
+            fetchEvents();
+            alert("Xóa sự kiện thành công!");
+        } catch (error) {
             console.error("Error deleting event:", error);
-            console.log("eventId:", selected.eventId);
-            alert("Failed to delete event. Please try again later.");
-          } finally {
+            alert("Xóa thất bại. Thử lại sau");
+        } finally {
             setConfirmOpen(false); // Đóng hộp thoại sau khi xử lý
-          }
-    }
+        }
+    };
+
     return (
         <Box sx={{ padding: 2 }}>
             <Box display="flex" justifyContent="space-between" alignItems="center" >
                 <TextField
-                    placeholder="Search event"
+                    placeholder="Tìm kiếm sự kiện"
                     variant="outlined"
                     value={searchTerm}
                     onChange={handleSearchChange}
@@ -160,10 +163,10 @@ const EventList = ({ setSelectedEvent }) => {
                 >
                     <FormControl fullWidth style={{ minWidth: "150px" }}>
                         <Select defaultValue={"All"} style={{ height: "45px", lineHeight: "45px" }}>
-                            <MenuItem value="All">All event</MenuItem>
-                            <MenuItem value="Live">Live</MenuItem>
-                            <MenuItem value="Draft">Draft</MenuItem>
-                            <MenuItem value="Completed">Completed</MenuItem>
+                            <MenuItem value="All">Tất cả</MenuItem>
+                            <MenuItem value="Incoming">Sắp diễn ra</MenuItem>
+                            <MenuItem value="Draft">Bản nháp</MenuItem>
+                            <MenuItem value="Completed">Hoàn thành</MenuItem>
                         </Select>
                     </FormControl>
                     <Button
@@ -177,7 +180,7 @@ const EventList = ({ setSelectedEvent }) => {
                             minHeight: 45
                         }}
                     >
-                        Create event
+                        Tạo sự kiện
                     </Button>
                 </div>
 
@@ -243,7 +246,7 @@ const EventList = ({ setSelectedEvent }) => {
                                         color="text.secondary"
                                         sx={{ fontSize: '13px' }}
                                     >
-                                        <strong>Location:</strong> {event.eventLocation}
+                                        <strong>Địa điểm:</strong> {event.eventLocation}
                                     </Typography>
                                 </Box>
 
@@ -255,7 +258,7 @@ const EventList = ({ setSelectedEvent }) => {
                                         color="text.secondary"
                                         sx={{ fontSize: '13px' }}
                                     >
-                                        <strong>Details:</strong> {event.eventDetail}
+                                        <strong>Chi tiết:</strong> {event.eventDetail}
                                     </Typography>
                                 </Box>
                             </CardContent>
@@ -270,7 +273,7 @@ const EventList = ({ setSelectedEvent }) => {
                                     gap: '8px',
                                 }}
                             >
-                                
+
 
                                 {/* Delete Button */}
                                 <button
@@ -321,7 +324,7 @@ const EventList = ({ setSelectedEvent }) => {
                     }}
                 >
                     <WarningAmberIcon sx={{ color: "#f57c00", fontSize: 28 }} />
-                    Confirm Delete
+                    Xác nhận xóa
                 </DialogTitle>
                 <DialogContent
 
@@ -337,7 +340,7 @@ const EventList = ({ setSelectedEvent }) => {
                             overflow: "hidden",
                         }}
                     >
-                        Bạn có chắc chắn muốn xóa phần thuyết trình này? <br />
+                        Bạn có chắc chắn muốn xóa sự kiện này? <br />
                         <strong>Hành động này không thể hoàn tác.</strong>
                     </DialogContentText>
                 </DialogContent>

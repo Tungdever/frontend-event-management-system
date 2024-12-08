@@ -5,6 +5,7 @@ import { ColorModeContext, useMode } from './theme';
 import TaskSubTasks from "./pages/events/AddSubtaskForEvent"
 import Sidebar from './pages/Sidebar';
 import SidebarEmployee from './pages/Sidebar_employee';
+import AdminSidebar from './pages/AdminSidebar';
 import Dashboard from './pages/dashboard/Dashboard';
 import CalendarList from './pages/calendar/CalendarList';
 import CalendarAdd from './pages/calendar/CalendarAdd';
@@ -42,7 +43,7 @@ import ForgotPassword from "./pages/Auth/forgot";
 import ResetPassword from "./pages/Auth/resetPassword";
 import SessionList from "./pages/session/sectionList"
 import './App.css';
-
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import ProviderTabs from "./pages/providers/AddProvider"
 function App() {
   const [theme, colorMode] = useMode();
@@ -84,10 +85,10 @@ function App() {
           {isAuthenticated && (
 
             <>
-              {userRoles.length == 3 && ( 
+              {userRoles.length == 3 && (
                 <div className="app">
                   <div className="sidebar">
-                    <Sidebar selectedEvent={selectedEvent} setSelectedEvent={setSelectedEvent} />
+                    <AdminSidebar />
                   </div>
                   <div className="content-wrapper">
                     <div className="topbar">
@@ -95,13 +96,13 @@ function App() {
                     </div>
                     <main className="main-content">
                       <Routes>
-                        {/* Các tuyến đường dành cho manager */}
 
+                        <Route path="/admin/dashboard" element={<AdminDashboard />} />
                       </Routes>
                     </main>
                   </div>
                 </div>
-                
+
               )}
 
               {userRoles.length == 2 && (
@@ -111,7 +112,7 @@ function App() {
                   </div>
                   <div className="content-wrapper">
                     <div className="topbar">
-                      <Topbar setIsAuthenticated={setIsAuthenticated} />
+                      <Topbar />
                     </div>
                     <main className="main-content">
                       <Routes>
@@ -123,8 +124,8 @@ function App() {
                         <Route path="/calendar/CalendarList" element={<CalendarList />} />
                         <Route path="/events/:eventId/tasks" element={<KanbanBoard />} />
                         <Route path="/dashboard" element={<EventList setSelectedEvent={setSelectedEvent} />} />
-                        <Route path="/event/eventList" element={<EventList setSelectedEvent={setSelectedEvent} />} />  
-                        <Route path="/event/create" element={<EventAdd setSelectedEvent={setSelectedEvent} />} />                                       
+                        <Route path="/event/eventList" element={<EventList setSelectedEvent={setSelectedEvent} />} />
+                        <Route path="/event/create" element={<EventAdd setSelectedEvent={setSelectedEvent} />} />
                         <Route path="/events/:eventId" element={<EventDetail />} />
                         <Route path="/events/:eventId/sponsors" element={<SponsorForEvent />} />
                         <Route path="/events/:eventId/providers" element={<AddProviderForEvent />} />
@@ -174,7 +175,7 @@ function App() {
                   </div>
                   <div className="content-wrapper">
                     <div className="topbar">
-                      <Topbar setIsAuthenticated={setIsAuthenticated} />
+                      <Topbar />
                     </div>
                     <main className="main-content">
                       <Routes>

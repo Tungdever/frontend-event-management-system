@@ -303,6 +303,7 @@ const AddSectionForm = ({ id, onAdd, openEdit, onClose }) => {
                                 fullWidth
                                 name="sectionDescription"
                                 value={formData.sectionDescription}
+                                multiline
                                 onChange={handleChange}
                                 sx={{ marginTop: 1 }}
                             />

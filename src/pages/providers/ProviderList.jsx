@@ -81,10 +81,10 @@ const ProviderList = () => {
   };
 
   const columns = [
-    { field: "name", headerName: "Provider Name", width: 250 },
-    { field: "contact", headerName: "Contact Person", width: 230 },
+    { field: "name", headerName: "Tên nhà cung cấp dịch vụ", width: 250 },
+    { field: "contact", headerName: "Người liên hệ", width: 230 },
     { field: "email", headerName: "Email", width: 250 },
-    { field: "phone", headerName: "Phone", width: 160 },
+    { field: "phone", headerName: "SĐT", width: 160 },
     {
       field: "actions",
       headerName: "Actions",

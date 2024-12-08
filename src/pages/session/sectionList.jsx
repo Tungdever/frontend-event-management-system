@@ -98,11 +98,11 @@ const SectionList = () => {
 
 
     const columns = [
-        { field: "time", headerName: "Time", width: 180 },
+        { field: "time", headerName: "Thời gian", width: 180 },
         { field: "speakerId", headerName: "SpeakerId", width: 200, hide: true },
-        { field: "speakerName", headerName: "Speaker/Presenter(s)", width: 200 },
-        { field: "sectionTitle", headerName: "Title", width: 250 },
-        { field: "sectionDescription", headerName: "Description", width: 200 },
+        { field: "speakerName", headerName: "Diễn giả", width: 200 },
+        { field: "sectionTitle", headerName: "Tiêu đề", width: 250 },
+        { field: "sectionDescription", headerName: "Mô tả", width: 200 },
         {
             field: "handOut",
             headerName: "Tài liệu",

@@ -280,7 +280,7 @@ const Contacts = () => {
 
   return (
     <Box m="20px">
-      <Header title="TEAMS" subtitle="List of Teams and Employees" />
+      <Header title="TEAMS" subtitle="Danh sách nhóm và nhân viên" />
 
       <Button
         type="submit"
@@ -298,7 +298,7 @@ const Contacts = () => {
 
       {teams.length === 0 ? (
         <Box textAlign="center" m="20px">
-          <Typography>No teams available.</Typography>
+          <Typography>Không có team khả dụng.</Typography>
         </Box>
       ) : (
         <>
@@ -330,11 +330,11 @@ const Contacts = () => {
                     marginLeft:"1010px"
                   }}
                 >
-                  Add Member
+                  Thêm thành viên nhóm
                 </Button>
 
                 <TextField
-                  label="Search Employees"
+                  label="Tìm kiếm nhân viên"
                   variant="outlined"
                   fullWidth
                   margin="normal"
@@ -374,10 +374,10 @@ const Contacts = () => {
                     }))}
                     columns={[
                       { field: "id", headerName: "ID", flex: 0.5 },
-                      { field: "fullName", headerName: "Name", flex: 1 },
+                      { field: "fullName", headerName: "Tên", flex: 1 },
                       { field: "email", headerName: "Email", flex: 1 },
-                      { field: "phone", headerName: "Phone", flex: 1 },
-                      { field: "address", headerName: "Address", flex: 1 },
+                      { field: "phone", headerName: "SĐT", flex: 1 },
+                      { field: "address", headerName: "Địa chỉ", flex: 1 },
                       {
                         field: "action",
                         headerName: "Action",
@@ -415,7 +415,7 @@ const Contacts = () => {
                     marginLeft:"1010px"
                   }}
                 >
-                  Delete team
+                  Xóa nhóm
                 </Button>
               </Box>
             ) : null
@@ -430,9 +430,9 @@ const Contacts = () => {
         fullWidth
         maxWidth="sm"
       >
-        <DialogTitle>Add Member to Team</DialogTitle>
+        <DialogTitle>Thêm thành viên vào team</DialogTitle>
         <DialogContent>
-          <Typography>Team ID: {teams[selectedTab]?.teamId}</Typography>
+          <Typography>Mã nhóm: {teams[selectedTab]?.teamId}</Typography>
           <Box mt={2}>
             {employees.map((employee) => (
               <Box
@@ -457,7 +457,7 @@ const Contacts = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">
-            Cancel
+            Thoát
           </Button>
         </DialogActions>
       </Dialog>
@@ -469,7 +469,7 @@ const Contacts = () => {
         fullWidth
         maxWidth="sm"
       >
-        <DialogTitle>Add Team</DialogTitle>
+        <DialogTitle>Thêm team</DialogTitle>
         <DialogContent>
           <TextField
             margin="normal"
@@ -484,7 +484,7 @@ const Contacts = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialogCreateTeam} color="secondary">
-            Cancel
+            Hủy
           </Button>
           <Button
             onClick={handleSubmit}
@@ -492,7 +492,7 @@ const Contacts = () => {
             disabled={loading}
             startIcon={loading && <CircularProgress size={20} />}
           >
-            Save
+            Lưu
           </Button>
         </DialogActions>
       </Dialog>

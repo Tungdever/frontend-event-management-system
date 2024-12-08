@@ -83,7 +83,7 @@ const ProviderDetail = () => {
   const removeProviderService = async (serviceId) => {
     try {
       await deleteProviderService(serviceId);
-      alert("Service deleted successfully!");
+      alert("Xóa thành công");
       fetchProviderDetail();
     } catch (error) {
       console.error("Error deleting provider:", error);
@@ -147,7 +147,7 @@ const ProviderDetail = () => {
               variant="h6"
               sx={{ fontWeight: "600", display: "flex", alignItems: "center" }}
             >
-              <Phone sx={{ mr: 1, color: "#42D2EC" }} /> Contact
+              <Phone sx={{ mr: 1, color: "#42D2EC" }} /> Liên hệ
             </Typography>
             <Typography variant="body1" sx={{ fontSize: "16px", ml: 3 }}>
               {provider.contact}
@@ -171,7 +171,7 @@ const ProviderDetail = () => {
               variant="h6"
               sx={{ fontWeight: "600", display: "flex", alignItems: "center" }}
             >
-              <Phone sx={{ mr: 1, color: "#42D2EC" }} /> Phone
+              <Phone sx={{ mr: 1, color: "#42D2EC" }} /> Số điện thoại
             </Typography>
             <Typography variant="body1" sx={{ fontSize: "16px", ml: 3 }}>
               {provider.phone}
@@ -183,7 +183,7 @@ const ProviderDetail = () => {
               variant="h6"
               sx={{ fontWeight: "600", display: "flex", alignItems: "center" }}
             >
-              <Home sx={{ mr: 1, color: "#42D2EC" }} /> Address
+              <Home sx={{ mr: 1, color: "#42D2EC" }} /> Địa chỉ
             </Typography>
             <Typography variant="body1" sx={{ fontSize: "16px", ml: 3 }}>
               {provider.address}
@@ -212,7 +212,7 @@ const ProviderDetail = () => {
         }}
       >
         <Typography variant="h5" sx={{ fontWeight: "bold", fontSize: "22px" }}>
-          Provider Services
+          Danh sách dịch vụ
         </Typography>
 
         <Button
@@ -220,7 +220,7 @@ const ProviderDetail = () => {
           color="secondary"
           variant="contained"
         >
-          Add New Service
+          Thêm dịch vụ
         </Button>
       </Box>
 
@@ -255,19 +255,19 @@ const ProviderDetail = () => {
                     variant="body2"
                     sx={{ color: "#555", mb: 0.5, fontSize: "0.875rem" }}
                   >
-                    <strong>Type:</strong> {service.serviceType}
+                    <strong>Loại:</strong> {service.serviceType}
                   </Typography>
                   <Typography
                     variant="body2"
                     sx={{ color: "#555", mb: 0.5, fontSize: "0.875rem" }}
                   >
-                    <strong>Price:</strong> {service.price}
+                    <strong>Giá:</strong> {service.price}
                   </Typography>
                   <Typography
                     variant="body2"
                     sx={{ color: "#555", mb: 0.5, fontSize: "0.875rem" }}
                   >
-                    <strong>Duration:</strong> {service.duration}
+                    <strong>Thời gian sử dụng:</strong> {service.duration}
                   </Typography>
                 </CardContent>
                 <Box
@@ -299,7 +299,7 @@ const ProviderDetail = () => {
           ))}
         </Grid>
       ) : (
-        <Typography>No services available.</Typography>
+        <Typography>Dịch vụ này không khả dụng</Typography>
       )}
       {/*Dialog add service  */}
       <Dialog
@@ -313,7 +313,7 @@ const ProviderDetail = () => {
         }}
         fullWidth
       >
-        <DialogTitle>Add Service</DialogTitle>
+        <DialogTitle>Thêm dịch vụ</DialogTitle>
         <DialogContent>
           <ServiceAddForm
             onClose={handleDialogAddClose}
@@ -323,7 +323,7 @@ const ProviderDetail = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogAddClose} color="primary">
-            Cancel
+            Thoát
           </Button>
         </DialogActions>
       </Dialog>
@@ -349,7 +349,7 @@ const ProviderDetail = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogEditClose} color="primary">
-            Cancel
+          Thoát
           </Button>
         </DialogActions>
       </Dialog>
@@ -371,7 +371,7 @@ const ProviderDetail = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogServiceClose} color="primary">
-            Cancel
+          Thoát
           </Button>
         </DialogActions>
       </Dialog>

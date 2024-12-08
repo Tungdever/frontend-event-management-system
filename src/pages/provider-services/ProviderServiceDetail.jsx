@@ -52,7 +52,7 @@ const ProviderServiceDetail = ({serviceid}) => {
   if (error) {
     return (
       <Box sx={{ padding: '20px', textAlign: 'center', color: 'red' }}>
-        <Typography variant="h6">Error: {error}</Typography>
+        <Typography variant="h6">Lỗi: {error}</Typography>
       </Box>
     );
   }
@@ -66,14 +66,14 @@ const ProviderServiceDetail = ({serviceid}) => {
 
       <Paper sx={{ padding: '20px', boxShadow: 2 }}>
         <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-          Service Type:
+          Loại dịch vụ:
         </Typography>
         <Typography sx={{ marginBottom: '10px' }}>
           {serviceData?.serviceType}
         </Typography>
 
         <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-          Description:
+          Chi tiết:
         </Typography>
         <Typography sx={{ marginBottom: '10px' }}>
           {serviceData?.serviceDesc}

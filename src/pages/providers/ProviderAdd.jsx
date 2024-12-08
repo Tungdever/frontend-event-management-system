@@ -31,9 +31,9 @@ const ProviderAddForm = ({ onClose ,onProviderAdded }) => {
       );
       console.log("Response:", response.data);
       if (response.data.statusCode === 0 && response.data.data === true) {
-        alert("Provider added successfully!");
+        alert("Thêm thành công");
       } else {
-        alert("Failed to add provider. Unexpected response.");
+        alert("Thêm thất bại");
       }
 
       resetForm();
@@ -46,21 +46,21 @@ const ProviderAddForm = ({ onClose ,onProviderAdded }) => {
   };
 
   const validationSchema = yup.object().shape({
-    name: yup.string().required("Provider name is required"),
-    contact: yup.string().required("Contact is required"),
+    name: yup.string().required("Tên không được để trống"),
+    contact: yup.string().required("Liên hệ không được để trống"),
     email: yup
       .string()
-      .email("Invalid email address")
-      .required("Email is required"),
+      .email("Email không hợp lệ")
+      .required("Email không được để trống"),
     phone: yup
       .string()
       .matches(
         /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/,
-        "Invalid phone number"
+        "SĐT không hợp lệ"
       )
-      .required("Phone is required"),
-    address: yup.string().required("Address is required"),
-    website: yup.string().url("Invalid URL").required("Website is required"),
+      .required("Phone không được để trống"),
+    address: yup.string().required("Địa chỉ không được để trống"),
+    website: yup.string().url(" URL không hợp lệ").required("Website không được để trống"),
   });
 
   const initialValues = {
@@ -82,7 +82,7 @@ const ProviderAddForm = ({ onClose ,onProviderAdded }) => {
       mx="auto"
     >
       <Typography variant="h3" textAlign="center" mb={3} fontWeight="bold">
-        Add New Provider
+        Thêm nhà cung cấp dịch vụ
       </Typography>
       <Typography
         variant="subtitle1"
@@ -90,7 +90,7 @@ const ProviderAddForm = ({ onClose ,onProviderAdded }) => {
         color="textSecondary"
         mb={5}
       >
-        Fill out the form below to add a new provider.
+        Điền vào mẫu dưới đây để thêm nhà cung cấp mới.
       </Typography>
 
       <Formik
@@ -122,7 +122,7 @@ const ProviderAddForm = ({ onClose ,onProviderAdded }) => {
                 fullWidth
                 variant="outlined"
                 size="large"
-                label="Provider Name"
+                label="Tên nhà cung cấp dịch vụ"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.name}
@@ -134,7 +134,7 @@ const ProviderAddForm = ({ onClose ,onProviderAdded }) => {
                 fullWidth
                 variant="outlined"
                 size="large"
-                label="Contact"
+                label="Người liên hệ"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.contact}
@@ -207,7 +207,7 @@ const ProviderAddForm = ({ onClose ,onProviderAdded }) => {
                   "&:hover": { backgroundColor: "#0056b3" },
                 }}
               >
-                Add Provider
+                Thêm
               </Button>
             </Box>
           </form>

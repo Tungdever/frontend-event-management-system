@@ -70,7 +70,7 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
     },
     {
       title: "Events",
-      submenu: [{ title: "Danh sách sự kiện", path: "/event/eventList", icon: <EventIcon />, }],
+      submenu: [{ title: "Sự kiện", path: "/event/eventList", icon: <EventIcon />, }],
     },
     {
       title: "Calendar",
@@ -80,7 +80,7 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
     {
       title: "Sponsors",
 
-      submenu: [{ title: "Danh sách nhà tài trợ", path: "/sponsors", icon: <BusinessOutlinedIcon />, }],
+      submenu: [{ title: "Nhà tài trợ", path: "/sponsors", icon: <BusinessOutlinedIcon />, }],
     },
     {
       title: "Sponsorships",
@@ -91,18 +91,18 @@ const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
       title: "Providers",
 
       submenu: [
-        { title: "Danh sách nhà cung cấp", path: "/providers", icon: <StorefrontOutlinedIcon />, },
+        { title: "Nhà cung cấp", path: "/providers", icon: <StorefrontOutlinedIcon />, },
       ],
     },
     {
       title: "Speakers",
 
-      submenu: [{ title: "Danh sách diễn giả", path: "/speakers", icon: <RecordVoiceOverOutlinedIcon />, }],
+      submenu: [{ title: "Diễn giả", path: "/speakers", icon: <RecordVoiceOverOutlinedIcon />, }],
     },
     {
       title: "MCs",
 
-      submenu: [{ title: "Danh sách MC", path: "/mcs", icon: <CampaignOutlinedIcon />, }],
+      submenu: [{ title: "MC", path: "/mcs", icon: <CampaignOutlinedIcon />, }],
     },
   ];
 

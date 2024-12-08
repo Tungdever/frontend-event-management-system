@@ -138,7 +138,7 @@ const AddProviderForEvent = () => {
   return (
     <Box sx={{ marginLeft: "20px", marginTop: "20px" }}>
       <Typography variant="h4" gutterBottom>
-        Providers for Event
+        Nhà cung cấp dịch vụ cho sự kiện
       </Typography>
       <Button
         variant="contained"
@@ -156,7 +156,7 @@ const AddProviderForEvent = () => {
           marginBottom: "20px"
         }}
       >
-        Add Provider
+        Thêm nhà cung cấp dịch vụ
       </Button>
 
       <Box
@@ -198,7 +198,7 @@ const AddProviderForEvent = () => {
                     color: "#A3B8D0",
                   }}
                 />
-                Contact: {provider.contact}
+                Liên hệ: {provider.contact}
               </Typography>
               <Typography
                 variant="body2"
@@ -224,7 +224,7 @@ const AddProviderForEvent = () => {
                     color: "#A3B8D0",
                   }}
                 />
-                Phone: {provider.phone}
+                SĐT: {provider.phone}
               </Typography>
               <Typography
                 variant="body2"
@@ -237,7 +237,7 @@ const AddProviderForEvent = () => {
                     color: "#A3B8D0",
                   }}
                 />
-                Address: {provider.address}
+                Địa chỉ: {provider.address}
               </Typography>
               <Typography
                 variant="body2"
@@ -275,7 +275,7 @@ const AddProviderForEvent = () => {
           }}
         >
           {" "}
-          <EditOutlined fontSize="small" /> View Details{" "}
+          <EditOutlined fontSize="small" /> Xem chi tiết{" "}
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -283,7 +283,7 @@ const AddProviderForEvent = () => {
             removeProvider(selectedProvider.id);
           }}
         >
-          <DeleteOutline fontSize="small" sx={{ color: "#A3B8D0" }} /> Delete
+          <DeleteOutline fontSize="small" sx={{ color: "#A3B8D0" }} /> Xóa
         </MenuItem>
       </Menu>
 
@@ -298,7 +298,7 @@ const AddProviderForEvent = () => {
         }}
         fullWidth
       >
-        <DialogTitle>Add Provider</DialogTitle>
+        <DialogTitle>Thêm nhà cung cấp dịch vụ</DialogTitle>
         <DialogContent>
           <ProviderTabs
             onClose={handleDialogClose}
@@ -308,7 +308,7 @@ const AddProviderForEvent = () => {
 
         <DialogActions>
           <Button onClick={handleDialogClose} color="primary">
-            Cancel
+            Hủy
           </Button>
         </DialogActions>
       </Dialog>
@@ -319,7 +319,7 @@ const AddProviderForEvent = () => {
         sx={{ "& .MuiDialog-paper": { width: "900px", maxWidth: "none" } }}
         fullWidth
       >
-        <DialogTitle>Provider Details</DialogTitle>
+        <DialogTitle>Chi tiết nhà cung cấp dịch vụ</DialogTitle>
         <DialogContent>
           {selectedProvider && (
             <ViewService eventid={eventId} providerid={selectedProvider.id} />
@@ -327,7 +327,7 @@ const AddProviderForEvent = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogDetailClose} color="primary">
-            Cancel
+            Hủy
           </Button>
         </DialogActions>
       </Dialog>

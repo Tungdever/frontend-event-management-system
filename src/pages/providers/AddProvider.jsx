@@ -106,13 +106,13 @@ const handleSave = async () => {
         await addServiceForEvent(eventId, serviceId);
       }
     }
-    alert("Services and providers have been successfully saved!");
+    alert("Lưu dịch vụ và nhà cung cấp dịch vụ thành công");
     fetchProviders()
     onProviderAdded()
     onClose()
   } catch (error) {
     console.error("Error saving services and providers:", error);
-    alert("An error occurred while saving. Please try again.");
+    alert("Lưu thất bại. Thử lại sau");
   }
 };
 
@@ -148,11 +148,11 @@ const handleSave = async () => {
             {activeTab === provider.id && (
               <>
                 <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold", mb: 2 }}>
-                  Provider Details:
+                  Chi tiết nhà cung cấp dịch vụ
                 </Typography>
                 <Typography>Email: {provider.email}</Typography>
-                <Typography>Phone: {provider.phone}</Typography>
-                <Typography>Address: {provider.address}</Typography>
+                <Typography>SĐT: {provider.phone}</Typography>
+                <Typography>Địa chỉ: {provider.address}</Typography>
 
                 {/* List of Services */}
                 <Grid container spacing={2} sx={{ mt: 2 }}>
@@ -167,16 +167,16 @@ const handleSave = async () => {
                           />
                           <CardContent>
                             <Typography variant="h6" sx={{ fontWeight: "600" }}>{service.serviceName}</Typography>
-                            <Typography>Type: {service.serviceType}</Typography>
-                            <Typography>Description: {service.serviceDesc}</Typography>
-                            <Typography>Price: {service.price}</Typography>
-                            <Typography>Duration: {service.duration}</Typography>
+                            <Typography>Loại: {service.serviceType}</Typography>
+                            <Typography>Chi tiết: {service.serviceDesc}</Typography>
+                            <Typography>Giá: {service.price}</Typography>
+                            <Typography>Thời gian sử dụng: {service.duration}</Typography>
                           </CardContent>
                         </Card>
                       </Grid>
                     ))
                   ) : (
-                    <Typography>No services available for this provider.</Typography>
+                    <Typography>Không có dịch vụ nào khả dụng cho nhà cung cấp dịch vụ này</Typography>
                   )}
                 </Grid>
               </>
@@ -188,7 +188,7 @@ const handleSave = async () => {
       {/* Save Button */}
       <Box sx={{ textAlign: "right", mt: 4, pr: 3 }}>
         <Button variant="contained" sx={{ backgroundColor: "#42D2EC", color: "#fff", fontWeight: "bold" }} onClick={handleSave}>
-          Save
+          Lưu
         </Button>
       </Box>
     </Box>

@@ -114,7 +114,7 @@ const AttendeeList = () => {
                     fontFamily: "Poppins, sans-serif",
                 }}
             >
-                List of attendees
+                Danh sách người tham dự
             </Typography>
             <Box display="flex" justifyContent="space-between" alignItems="center" marginBottom="20px">
                 <TextField

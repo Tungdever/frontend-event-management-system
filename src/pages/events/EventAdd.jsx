@@ -205,27 +205,27 @@ const CreateEventForm = ({ onClose, eventId, event, eventImage, handleFetch }) =
             }}
         >
             <Typography variant="h4" sx={{ marginBottom: "20px" }}>
-                {event == null ? "Create an Event" : "Edit event"}
+                {event == null ? "Tạo sự kiện" : "Cập nhật sự kiện"}
             </Typography>
 
             <Typography variant="h6" sx={{ marginBottom: "10px" }}>
-                Event title and description
+                Tiêu đề sự kiện và mô tả
             </Typography>
 
             <Typography variant="h6" sx={{ color: "#9b9b9b", marginLeft: 1, marginBottom: 1 }}>
-                Event name
+                Tên sự kiện
                 <span style={{ color: "red", marginLeft: 1 }}>*</span>
             </Typography>
             <TextField
                 fullWidth
-                placeholder="Title of event (example: Tech conference 2024)"
+                placeholder="Tiêu đề sự kiện (ví dụ: Hội nghị công nghệ 2024)"
                 name="eventName"
                 value={formData.eventName}
                 onChange={handleChange}
                 sx={{ marginBottom: "20px" }}
             />
             <Typography variant="h6" sx={{ color: "#9b9b9b", marginLeft: 1, marginBottom: 1 }}>
-                Event type
+                Loại sự kiện
                 <span style={{ color: "red", marginLeft: 1 }}>*</span>
             </Typography>
             <FormControl fullWidth sx={{ marginBottom: "20px" }}>
@@ -236,6 +236,7 @@ const CreateEventForm = ({ onClose, eventId, event, eventImage, handleFetch }) =
                 >
                     <MenuItem value="default">Select</MenuItem>
                     <MenuItem value="conference">Hội nghị</MenuItem>
+                    <MenuItem value="exhibition">Triển lãm</MenuItem>
                     <MenuItem value="workshop">Workshop</MenuItem>
                     <MenuItem value="concert">Buổi buổi diễn</MenuItem>
                     <MenuItem value="liveMusic">Buổi hòa nhạc</MenuItem>
@@ -249,7 +250,7 @@ const CreateEventForm = ({ onClose, eventId, event, eventImage, handleFetch }) =
             <Grid container spacing={2} sx={{ marginBottom: "20px" }}>
                 <Grid item xs={3}>
                     <Typography variant="h6" sx={{ color: "#9b9b9b" }}>
-                        Event start
+                        Bắt đầu
                         <span style={{ color: "red", marginLeft: 1 }}>*</span>
                     </Typography>
                     <TextField
@@ -264,7 +265,7 @@ const CreateEventForm = ({ onClose, eventId, event, eventImage, handleFetch }) =
                 </Grid>
                 <Grid item xs={3}>
                     <Typography variant="h6" sx={{ color: "#9b9b9b" }}>
-                        Event end
+                        Kết thúc
                         <span style={{ color: "red", marginLeft: 1 }}>*</span>
                     </Typography>
                     <TextField
@@ -280,7 +281,7 @@ const CreateEventForm = ({ onClose, eventId, event, eventImage, handleFetch }) =
                 </Grid>
             </Grid>
             <Typography variant="h6" sx={{ color: "#9b9b9b", marginLeft: 1, marginBottom: 1 }}>
-                Add a cover image for your event
+                Thêm ảnh sự kiện
                 <span style={{ color: "red", marginLeft: 1 }}>*</span>
             </Typography>
             <Box
@@ -305,13 +306,13 @@ const CreateEventForm = ({ onClose, eventId, event, eventImage, handleFetch }) =
                 />
                 <label htmlFor="upload-image" variant="contained" color="primary" component="span">
 
-                    Upload Image
+                    Upload ảnh
 
                 </label>
                 {selectedImage && (
                     <Box sx={{ marginTop: 2 }}>
                         <Typography variant="body2" sx={{ marginBottom: 1 }}>
-                            Preview:
+                            Xem trước:
                         </Typography>
                         <img
                             src={selectedImage}
@@ -322,39 +323,39 @@ const CreateEventForm = ({ onClose, eventId, event, eventImage, handleFetch }) =
                 )}
             </Box>
             <Typography variant="h6" sx={{ color: "#9b9b9b", marginLeft: 1, marginBottom: 1 }}>
-                Location
+                Địa điểm
                 <span style={{ color: "red", marginLeft: 1 }}>*</span>
             </Typography>
             <TextField
                 fullWidth
-                placeholder="Enter location"
+                placeholder="Nhập địa điểm"
                 name="eventLocation"
                 value={formData.eventLocation}
                 onChange={handleChange}
                 sx={{ marginBottom: "20px" }}
             />
             <Typography variant="h6" sx={{ color: "#9b9b9b", marginLeft: 1, marginBottom: 1 }}>
-                Event host
+                Chủ sự kiện
                 <span style={{ color: "red", marginLeft: 1 }}>*</span>
             </Typography>
 
             <TextField
                 fullWidth
-                placeholder="Enter host name"
+                placeholder="Nhập chủ sự kiện"
                 name="eventHost"
                 value={formData.eventHost}
                 onChange={handleChange}
                 sx={{ marginBottom: "20px" }}
             />
             <Typography variant="h6" sx={{ color: "#9b9b9b", marginLeft: 1, marginBottom: 1 }}>
-                Event description
+                Mô tả sự kiện
                 <span style={{ color: "red", marginLeft: 1 }}>*</span>
             </Typography>
             <TextField
                 fullWidth
                 multiline
                 rows={6}
-                placeholder="Enter details about your event - agenda, speakers, sponsor info, etc."
+                placeholder="Nhập thông tin chi tiết về sự kiện - chương trình nghị sự, diễn giả, thông tin nhà tài trợ, v.v."
                 name="eventDescription"
                 value={formData.eventDescription}
                 onChange={handleChange}
@@ -363,7 +364,7 @@ const CreateEventForm = ({ onClose, eventId, event, eventImage, handleFetch }) =
 
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <div>
-                    <Button variant="outlined" onClick={() => handleSubmit(false)}>Save & Finish Later</Button>
+                    <Button variant="outlined" onClick={() => handleSubmit(false)}>Lưu bản nháp</Button>
                 </div>
                 <div>
                     <Button variant="contained" onClick={() => handleSubmit(true)} color="primary" sx={{
@@ -371,7 +372,7 @@ const CreateEventForm = ({ onClose, eventId, event, eventImage, handleFetch }) =
                         color: "white",
                         "&:hover": { backgroundColor: "#1565c0" },
                     }}>
-                        Save & Continue
+                        Lưu
                     </Button>
                 </div>
                 {loading && (

@@ -180,9 +180,9 @@ const TaskSubTasks = () => {
   };
   return (
     <Box sx={{ width: "100%", typography: "body1", marginLeft: "15px" }}>
-      <Header title="TASK FOR EVENT" subtitle="List of Tasks and subtask" />
+      <Header title="Công việc cho sự kiện" subtitle="Danh sách công việc" />
       {/* Tabs for Tasks */}
-      <Tabs value={activeTab} onChange={handleTabChange} aria-label="Task Tabs">
+      <Tabs value={activeTab} onChange={handleTabChange} aria-label="tab công việc">
         {tasks.map((task, index) => (
           <Tab label={task.taskName} key={task.taskId} />
         ))}
@@ -200,41 +200,41 @@ const TaskSubTasks = () => {
           {activeTab === index && (
             <>
               <Box sx={{ mt: 2 }}>
-                <Typography variant="h6">Task Details</Typography>
+                <Typography variant="h6">Chi tiết công việc</Typography>
                 <Box sx={{ display: "flex", mb: 1 }}>
                   <Typography sx={{ fontWeight: "bold", minWidth: "150px" }}>
-                    Name:
+                    Tên:
                   </Typography>
                   <Typography>{task.taskName}</Typography>
                 </Box>
                 <Box sx={{ display: "flex", mb: 1 }}>
                   <Typography sx={{ fontWeight: "bold", minWidth: "150px" }}>
-                    Description:
+                    Mô tả:
                   </Typography>
                   <Typography>{task.taskDesc}</Typography>
                 </Box>
                 <Box sx={{ display: "flex", mb: 1 }}>
                   <Typography sx={{ fontWeight: "bold", minWidth: "150px" }}>
-                    Deadline:
+                    Thời hạn:
                   </Typography>
                   <Typography>{task.taskDl}</Typography>
                 </Box>
                 <Box sx={{ display: "flex", mb: 1 }}>
                   <Typography sx={{ fontWeight: "bold", minWidth: "150px" }}>
-                    Status:
+                    Trạng thái:
                   </Typography>
                   <Typography>{task.taskStatus}</Typography>
                 </Box>
                 <Box sx={{ display: "flex", mb: 1 }}>
                   <Typography sx={{ fontWeight: "bold", minWidth: "150px" }}>
-                    Team:
+                    Nhóm:
                   </Typography>
                   <Typography>{task.teamName || "N/A"}</Typography>
                 </Box>
               </Box>
 
               <Typography variant="h6" sx={{ mt: 2 }}>
-                Sub-Tasks
+                Công việc nhánh
               </Typography>
               <Button
                 variant="contained"
@@ -242,19 +242,19 @@ const TaskSubTasks = () => {
                 sx={{ mt: 2 }}
                 onClick={handleOpenDialog}
               >
-                Add Subtask
+                Thêm công việc nhánh 
               </Button>
               {task.listSubTasks && task.listSubTasks.length > 0 ? (
                 <TableContainer component={Paper}>
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell>SubTask Name</TableCell>
-                        <TableCell>Description</TableCell>
-                        <TableCell>Start Date</TableCell>
-                        <TableCell>Deadline</TableCell>
-                        <TableCell>Status</TableCell>
-                        <TableCell>Employee ID</TableCell>
+                        <TableCell>Tên công việc nhánh</TableCell>
+                        <TableCell>Mô tả</TableCell>
+                        <TableCell>Thời gian bắt đầu</TableCell>
+                        <TableCell>Thời hạn</TableCell>
+                        <TableCell>Trạng thái</TableCell>
+                        <TableCell>Mã nhân viên</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -272,7 +272,7 @@ const TaskSubTasks = () => {
                   </Table>
                 </TableContainer>
               ) : (
-                <Typography>No Sub-Tasks available</Typography>
+                <Typography>Không có công việc nhánh khả dụng</Typography>
               )}
             </>
           )}
@@ -285,7 +285,7 @@ const TaskSubTasks = () => {
         fullWidth
         maxWidth="sm"
       >
-        <DialogTitle>Add Subtask</DialogTitle>
+        <DialogTitle>Thêm công việc nhánh</DialogTitle>
         <DialogContent>
           <TextField
             margin="normal"
@@ -344,7 +344,7 @@ const TaskSubTasks = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">
-            Cancel
+            Hủy
           </Button>
           <Button
             onClick={handleSubmit}
@@ -352,7 +352,7 @@ const TaskSubTasks = () => {
             disabled={loading}
             startIcon={loading && <CircularProgress size={20} />}
           >
-            Save
+            Lưu
           </Button>
         </DialogActions>
       </Dialog>

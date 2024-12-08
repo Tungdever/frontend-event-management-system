@@ -132,19 +132,19 @@ const ViewService = ({eventid, providerid}) => {
                     variant="body2"
                     sx={{ color: "#555", mb: 0.5, fontSize: "0.875rem" }}
                   >
-                    <strong>Type:</strong> {service.serviceType}
+                    <strong>Loại:</strong> {service.serviceType}
                   </Typography>
                   <Typography
                     variant="body2"
                     sx={{ color: "#555", mb: 0.5, fontSize: "0.875rem" }}
                   >
-                    <strong>Price:</strong> {service.price}
+                    <strong>Giá:</strong> {service.price}
                   </Typography>
                   <Typography
                     variant="body2"
                     sx={{ color: "#555", mb: 0.5, fontSize: "0.875rem" }}
                   >
-                    <strong>Duration:</strong> {service.duration}
+                    <strong>Thời gian sử dụng:</strong> {service.duration}
                   </Typography>
                 </CardContent>
               </CustomCard>
@@ -152,7 +152,7 @@ const ViewService = ({eventid, providerid}) => {
           ))}
         </Grid>
       ) : (
-        <Typography>No services available.</Typography>
+        <Typography>Dịch vụ không khả dụng.</Typography>
       )}
     </Container>
   );

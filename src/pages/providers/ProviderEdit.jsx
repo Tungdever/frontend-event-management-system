@@ -52,13 +52,13 @@ const EditProviderForm = ({onClose,providerid,handleFetch}) => {
           Authorization: localStorage.getItem("token"),
         },
       });
-      alert("Provider updated successfully!");
+      alert("Cập nhật thành công!");
       console.log("Response:", response.data);
       onClose();
       handleFetch();
     } catch (error) {
       console.error("Error updating provider:", error);
-      alert("Failed to update provider. Please try again.");
+      alert("Cập nhật thất bại. Thử lại sau");
     }
   };
 

@@ -254,7 +254,7 @@ const SpeakerAdd = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
-                    label="Mô Tả"
+                    label="Chi tiết"
                     variant="outlined"
                     fullWidth
                     multiline

@@ -230,7 +230,7 @@ const SponsorList = () => {
         <CircularProgress />
       ) : (
         <>
-          <div style={{ height: filteredSponsors.length * 52 + 100, width: '100%' }}>
+          <div style={{ height: 390, width: '100%' }}>
             <DataGrid
               rows={filteredSponsors}
               columns={columns}
@@ -248,7 +248,7 @@ const SponsorList = () => {
       )}
       {/* Dialog for adding Sponsor */}
       <Dialog open={openDialog} onClose={handleDialogClose} sx={{ "& .MuiDialog-paper": { width: "800px", maxWidth: "none" } }} fullWidth>
-        <DialogTitle>Thêm MC</DialogTitle>
+        <DialogTitle>Thêm nhà tài trợ</DialogTitle>
         <DialogContent>
           <SponsorAdd closeDialog={handleDialogClose}  fetchSponsors ={fetchSponsors}/> {/* Pass fetchMcList to McAdd */}
         </DialogContent>

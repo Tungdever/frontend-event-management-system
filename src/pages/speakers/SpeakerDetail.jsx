@@ -14,7 +14,8 @@ import {
     DialogContent,
     DialogTitle,
     CircularProgress,
-    MenuItem
+    MenuItem,
+    CardMedia
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
@@ -100,6 +101,7 @@ const SpeakerDetail = () => {
         formDataToSubmit.append("phone", formData.phone);
         formDataToSubmit.append("address", formData.address);
         formDataToSubmit.append("description", formData.description);
+        formDataToSubmit.append("imageSpeaker", formData.imageUrl);
         try {
             await axios.put("http://localhost:8080/man/speaker", formDataToSubmit, {
                 headers: {
@@ -204,7 +206,7 @@ const SpeakerDetail = () => {
 
                 <div style={{ marginBottom: "15px" }}>
                     <Typography variant="h6" style={{ fontWeight: "600", marginBottom: "5px", fontSize: "15px" }}>
-                        Mô tả
+                        Chi tiết
                     </Typography>
                     <TextField
                         fullWidth
@@ -236,6 +238,19 @@ const SpeakerDetail = () => {
             <Dialog open={isEditOpen} onClose={handleEditClose}>
                 <DialogTitle>Cập nhật diễn giả</DialogTitle>
                 <DialogContent>
+                <CardMedia
+                    component="img"
+                    image={imageUrl}
+                    alt="Diễn Giả Image Preview"
+                    style={{
+                      width: "150px",
+                      height: "150px",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                      margin: "0",
+                    }}
+                    />
                     <TextField
                         fullWidth
                         label="Name"
