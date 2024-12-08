@@ -45,6 +45,8 @@ import SessionList from "./pages/session/sectionList"
 import './App.css';
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ProviderTabs from "./pages/providers/AddProvider"
+import AdminDeviceManagement from "./pages/admin/AdminDeviceManagement";
+import AdminUserManagement from "./pages/admin/AdminUserManagement ";
 function App() {
   const [theme, colorMode] = useMode();
   const [selectedEvent, setSelectedEvent] = useState(() => {
@@ -96,8 +98,13 @@ function App() {
                     </div>
                     <main className="main-content">
                       <Routes>
-
                         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                        <Route path="/admin/service" element={<AdminDeviceManagement />} />
+                        <Route path="/admin/user" element={<AdminUserManagement />} />
+                        <Route path="/home" element={<AdminDashboard />} />
+                        <Route path="/" element={<AdminDashboard />} />
+
+                        <Route path="" element={<AdminDashboard/>} />
                       </Routes>
                     </main>
                   </div>
@@ -112,7 +119,7 @@ function App() {
                   </div>
                   <div className="content-wrapper">
                     <div className="topbar">
-                      <Topbar />
+                      <Topbar setIsAuthenticated={setIsAuthenticated} />
                     </div>
                     <main className="main-content">
                       <Routes>
@@ -175,7 +182,7 @@ function App() {
                   </div>
                   <div className="content-wrapper">
                     <div className="topbar">
-                      <Topbar />
+                      <Topbar setIsAuthenticated={setIsAuthenticated} />
                     </div>
                     <main className="main-content">
                       <Routes>
@@ -199,8 +206,10 @@ function App() {
               <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
               <Route path="/forgot" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+
             </Routes>
           )}
+         
         </Router>
       </ThemeProvider>
     </ColorModeContext.Provider>
