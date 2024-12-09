@@ -1,22 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box,  Typography, useTheme } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Box, Typography, useTheme } from "@mui/material";
+import { Link, useLocation } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../theme";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
-import CelebrationOutlinedIcon from "@mui/icons-material/CelebrationOutlined";
 import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
 import HandshakeOutlinedIcon from "@mui/icons-material/HandshakeOutlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
-import HomeRepairServiceOutlinedIcon from "@mui/icons-material/HomeRepairServiceOutlined";
 import RecordVoiceOverOutlinedIcon from "@mui/icons-material/RecordVoiceOverOutlined";
 import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
-
-
+import AddBusinessOutlinedIcon from '@mui/icons-material/AddBusinessOutlined';
+import PendingActionsOutlinedIcon from '@mui/icons-material/PendingActionsOutlined';
+import ContactMailIcon from '@mui/icons-material/ContactMail';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
+import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
+import AddTaskOutlinedIcon from '@mui/icons-material/AddTaskOutlined';
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -35,172 +37,218 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
-const Sidebar = () => {
+const Sidebar = ({ selectedEvent, setSelectedEvent }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
 
-  const menuItems = [
+  const location = useLocation(); // Để theo dõi thay đổi URL
+
+  // Các menu mặc định
+  const defaultMenuItems = [
     {
-      title: 'Dashboard',
-      path: '/dashboard/Dashboard',
-      icon: <DashboardOutlinedIcon />
+      title: "Dashboard",
+      path: "/dashboard",
+      icon: <DashboardOutlinedIcon />,
     },
     {
-      title: 'Calendar',
-      icon: <CalendarMonthOutlinedIcon />,
-      submenu: [
-        { title: 'Xem lịch', path: '/calendar/CalendarList' },
-        // { title: 'Thêm lịch', path: '/calendar/CalendarAdd' },
-      ]
-    },
-    // {
-    //   title: 'Events',
-    //   icon: <CelebrationOutlinedIcon />,
-    //   submenu: [
-    //     // { title: 'Danh sách sự kiện', path: '/events/EventList' },
-    //     // { title: 'Thêm sự kiện', path: '/events/EventAdd' },
-    //   ]
-    // },
-    {
-      title: 'Sponsors',
-      icon: <BusinessOutlinedIcon />,
-      submenu: [
-        { title: 'Danh sách nhà tài trợ', path: '/sponsors/SponsorList' },
-        // { title: 'Thêm nhà tài trợ', path: '/sponsors/SponsorAdd' },
-      ]
+      title: "Calendar",
+      
+      submenu: [{ title: "Xem lịch", path: "/calendar/CalendarList" , icon: <CalendarMonthOutlinedIcon />,}],
     },
     {
-      title: 'Sponsorships',
-      icon: <HandshakeOutlinedIcon />,
-      submenu: [
-        { title: 'Mức độ nhà tài trợ', path: '/sponsorships/' },
-        // { title: 'Thêm tài trợ', path: '/sponsorships/SponsorshipAdd' },
-      ]
+      title: "Sponsors",
+      
+      submenu: [{ title: "Danh sách nhà tài trợ", path: "/sponsors" , icon: <BusinessOutlinedIcon />,}],
     },
     {
-      title: 'Providers',
-      icon: <StorefrontOutlinedIcon />,
-      submenu: [
-        { title: 'Danh sách nhà cung cấp', path: '/providers/ProviderList' },
-        // { title: 'Thêm nhà cung cấp', path: '/providers/ProviderAdd' },
-      ]
-    },
-    // {
-    //   title: 'Provider Services',
-    //   icon: <HomeRepairServiceOutlinedIcon />,
-    //   submenu: [
-    //     { title: 'Danh sách dịch vụ', path: '/provider-services/ProviderServiceList' },
-    //     { title: 'Thêm dịch vụ', path: '/provider-services/ProviderServiceAdd' },
-    //   ]
-    // },
-    {
-      title: 'Speakers',
-      icon: <RecordVoiceOverOutlinedIcon />,
-      submenu: [
-        { title: 'Danh sách diễn giả', path: '/speakers' },
-        // { title: 'Thêm diễn giả', path: '/speakers/SpeakerAdd' },
-      ]
+      title: "Sponsorships",
+      
+      submenu: [{ title: "Mức độ nhà tài trợ", path: "/sponsorships/", icon: <HandshakeOutlinedIcon />, }],
     },
     {
-      title: 'MCs',
-      icon: <CampaignOutlinedIcon />,
+      title: "Providers",
+      
       submenu: [
-        { title: 'Danh sách MC', path: '/mcs' },
-        // { title: 'Thêm MC', path: '/mcs/MCAdd' },
-      ]
+        { title: "Danh sách nhà cung cấp", path: "/providers", icon: <StorefrontOutlinedIcon />, },
+      ],
     },
     {
-      title: 'Teams',
-      icon: <GroupsOutlinedIcon />,
-      submenu: [
-        { title: 'Danh sách nhóm', path: '/teams/TeamList' },
-        // { title: 'Thêm nhóm', path: '/teams/TeamAdd' },
-      ]
+      title: "Speakers",
+      
+      submenu: [{ title: "Danh sách diễn giả", path: "/speakers", icon: <RecordVoiceOverOutlinedIcon />, }],
     },
     {
-      title: 'Tasks',
-      icon: <AssignmentOutlinedIcon />,
-      submenu: [
-        { title: 'Danh sách công việc', path: '/tasks' },
-        // { title: 'Thêm công việc', path: '/tasks/add' },
-      ]
+      title: "MCs",
+      
+      submenu: [{ title: "Danh sách MC", path: "/mcs", icon: <CampaignOutlinedIcon />, }],
     },
   ];
+
+  // Các menu khi chọn một sự kiện
+  const eventMenuItems = selectedEvent
+    ? [
+      {
+        title: "<Events",
+        submenu: [
+          {
+            title: "View Event",
+            path: `/events/1`,
+            icon: <CalendarMonthOutlinedIcon />
+          },
+          {
+            title: "Session Event",
+            path: `/events/${selectedEvent.eventId}/sessionList`,
+            icon: <PendingActionsOutlinedIcon />
+          },
+          {
+            title: "Invite attendee",
+            path: `/events/${selectedEvent.eventId}/participants`,
+            icon: <ContactMailIcon />
+          },
+        ],
+      },
+      {
+        title: "Sponsor",
+        
+        submenu: [
+          {
+            title: "Add sponsor",
+            path: `/events/${selectedEvent.eventId}/sponsors`,
+            icon: <CurrencyExchangeIcon />,
+          },
+        ],
+      },
+      {
+        title: "Provider",
+        
+        submenu: [
+          {
+            title: "Add Provider",
+            path: `/events/${selectedEvent.eventId}/providers`,
+            icon: <AddBusinessOutlinedIcon />,
+          },
+        ],
+      },
+      {
+        title: "Task",
+       
+        submenu: [
+          { title: "Kanban", path: `/events/${selectedEvent.eventId}/tasks`,  icon: <AssignmentOutlinedIcon />, },
+          
+        ],
+      },
+      {
+        title: "SubTask",
+        
+        submenu: [
+          {
+            title: "Add SubTask",
+            path: `/events/${selectedEvent.eventId}/subtask`,
+            icon: <AddTaskOutlinedIcon />,
+          },
+        ],
+      },
+      {
+        title: "Team",
+        
+        submenu: [
+          {
+            title: "Team Detail",
+            path: `/events/${selectedEvent.eventId}/team-detail`,
+            icon: <GroupsOutlinedIcon />,
+          },
+          {
+            title: "Add Team",
+            path: `/events/${selectedEvent.eventId}/teams`,
+            icon: <GroupAddOutlinedIcon />,
+          },
+        ],
+      },
+    ]
+    : [];
+  const [menuItems, setMenuItems] = useState(defaultMenuItems);
+  useEffect(() => {
+    if (!selectedEvent) {
+      const savedEvent = localStorage.getItem("selectedEvent");
+      if (savedEvent) {
+        setSelectedEvent(JSON.parse(savedEvent));
+      }
+    }
+
+    if (location.pathname.includes("/events/") && selectedEvent) {
+      setMenuItems(eventMenuItems);
+    } else {
+      setMenuItems(defaultMenuItems);
+    }
+  }, [location, selectedEvent, setSelectedEvent]);
 
   return (
     <Box
       sx={{
+        display: "flex", 
+        height: "100vh",
         "& .pro-sidebar-inner": {
           background: `${colors.primary[400]} !important`,
+          height: "100%",
         },
-        "& .pro-icon-wrapper": {
-          backgroundColor: "transparent !important",
-        },
-        "& .pro-inner-item": {
-          padding: "5px 35px 5px 20px !important",
-        },
-        "& .pro-inner-item:hover": {
-          color: "#868dfb !important",
-        },
-        "& .pro-menu-item.active": {
-          color: "#6870fa !important",
-        },
+        "& .pro-icon-wrapper": { backgroundColor: "transparent !important" },
+        "& .pro-inner-item": { padding: "5px 35px 5px 20px !important" },
+        "& .pro-inner-item:hover": { color: "#868dfb !important" },
+        "& .pro-menu-item.active": { color: "#6870fa !important" },
+        overflow: "hidden"
       }}
     >
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
-          {/* LOGO AND MENU ICON */}
-          <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                ml="15px"
-              >
-                <Typography variant="h3" color={colors.grey[100]}>
-                  EVENT 
-                </Typography>
-                
-              </Box>
+          <Link to={`/dashboard`} style={{ textDecoration: "none" }}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              ml="15px"
+            >
+              <Typography variant="h3" color={colors.grey[100]}>
+                EVENT
+              </Typography>
+            </Box>
+          </Link>
 
-          
-
-          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-            {menuItems.map((item, index) => (
-              <div key={index}>
-                {!item.submenu ? (
-                  <Item
-                    title={item.title}
-                    to={item.path}
-                    icon={item.icon}
-                    selected={selected}
-                    setSelected={setSelected}
-                  />
-                ) : (
-                  <Box>
-                    <Typography
-                      variant="h6"
-                      color={colors.grey[300]}
-                      sx={{ m: "15px 0 5px 20px" }}
-                    >
-                      {item.title}
-                    </Typography>
-                    {item.submenu.map((subItem, subIndex) => (
+          {/* Các menu items */}
+          {menuItems.map((item, index) => (
+            <div key={index}>
+              {!item.submenu ? (
+                <Item
+                  title={item.title}
+                  to={item.path}
+                  icon={item.icon}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+              ) : (
+                <Box>
+                  <Typography
+                    variant="h6"
+                    color={colors.grey[300]}
+                    sx={{ m: "15px 0 5px 20px" }}
+                  >
+                    {item.title}
+                  </Typography>
+                  {item.submenu.map((subItem, subIndex) => (
                       <Item
                         key={subIndex}
                         title={subItem.title}
                         to={subItem.path}
-                        icon={item.icon}
+                        icon={subItem.icon} // Use submenu icon
                         selected={selected}
                         setSelected={setSelected}
                       />
                     ))}
-                  </Box>
-                )}
-              </div>
-            ))}
-          </Box>
+                </Box>
+              )}
+            </div>
+          ))}
         </Menu>
       </ProSidebar>
     </Box>

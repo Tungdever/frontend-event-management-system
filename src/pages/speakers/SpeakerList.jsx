@@ -1,36 +1,47 @@
 import React, { useEffect, useState } from 'react';
-import {
-    Box,
-    Card,
-    CardContent,
-    Typography,
-    Button,
-    IconButton,
-    Menu,
-    MenuItem,
-    Avatar,
-    Grid,
-} from '@mui/material';
+import { Box, Card, CardContent, Typography, Button, IconButton,  Menu, MenuItem, Avatar,Grid, TextField} from '@mui/material';
 import { Link } from "react-router-dom";
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
+import SpeakerAdd from './SpeakerAdd';
+
+const axiosInstance = axios.create({
+    baseURL: 'http://localhost:8080/man/speaker', 
+    headers: {
+        Authorization: localStorage.getItem("token"),
+    },
+  });
 const SpeakerList = () => {
     const [speakers, setSpeakers] = useState([]);
+    const [filteredSpeakers, setFilteredSpeakers] = useState([]);
+
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedSpeakerId, setSelectedSpeaker] = useState(null);
-    const [imageUrls, setImageUrls] = useState({});  // State to store image URLs
+    const [imageUrls, setImageUrls] = useState({});  
+    const [searchTerm, setSearchTerm] = useState("");
 
     const open = Boolean(anchorEl);
+    const navigate = useNavigate();
 
+    const handleSearchChange = (e) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+        const filtered = speakers.filter((speaker) =>
+            speaker.name.toLowerCase().includes(value.toLowerCase())
+        );
+        filteredSpeakers(filtered);
+    };
     // Fetch data from API
     useEffect(() => {
         fetch('http://localhost:8080/man/speaker', {
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+                Authorization: localStorage.getItem("token"),
             },
         })
             .then((response) => response.json())
@@ -57,15 +68,27 @@ const SpeakerList = () => {
         setSelectedSpeaker(null);
     };
 
-    const handleEdit = () => {
-        console.log('Edit speaker:', selectedSpeakerId);
-        handleMenuClose();
-    };
+    // const handleViewDetail = () => {
+    //     console.log('Edit speaker:', selectedSpeakerId);
+    //     handleMenuClose();
+    //     navigate(`/speakers/${selectedSpeakerId.id}`);
+    // };
 
-    const handleDelete = () => {
-        console.log('Delete speaker:', selectedSpeakerId);
-        handleMenuClose();
-    };
+    const handleDelete = async () => {
+        try {
+          await axiosInstance.delete(`/${selectedSpeakerId}`);
+          alert("Sponsor deleted successfully");
+      
+          const response = await axiosInstance.get();
+          setSpeakers(response.data.data || []);
+         
+        } catch (error) {
+          console.error("Error deleting sponsor:", error);
+          alert("Failed to delete sponsor. Please try again later.");
+        } finally {
+        }
+        handleMenuClose(); // Đóng menu khi hoàn thành thao tác
+      };
 
     // Fetch image with authentication headers
     const fetchImage = async (image) => {
@@ -74,7 +97,7 @@ const SpeakerList = () => {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtYW5hZ2VyMUBleGFtcGxlLmNvbSIsImlhdCI6MTczMjI5MTUzOCwiZXhwIjoxNzMyODk2MzM4LCJyb2xlcyI6WyJST0xFX0FETUlOIl19.nur9f7xHbpDJy_gNtwZPJ8AOINfalsIIU30oEu8s2GwDvo5UWBKtiur7tmWYnGhLVBA__e2TSpxE7b6HB9uxgw`,
+                    Authorization: localStorage.getItem("token"),
                 },
             });
             if (response.ok) {
@@ -98,12 +121,26 @@ const SpeakerList = () => {
 
     return (
         <Box sx={{ padding: 2 }}>
-            <Box display="flex" justifyContent="end" mt="20px" marginBottom="20px" marginRight="10px">
-                <Link to={`/speakers/add`} style={{ textDecoration: 'none' }}>
-                    <Button type="submit" color="secondary" variant="contained">
-                        Add Speaker
-                    </Button>
-                </Link>
+            <Typography
+                variant="h4"
+                style={{ fontWeight: "bold", color: "#333", textAlign: "left", marginBottom: "20px" }}
+            >
+                LIST SPEAKERS
+            </Typography>
+            <Box display="flex" justifyContent="space-between" marginBottom="20px">
+                <TextField
+                    label="Search Speaker"
+                    variant="outlined"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    style={{ width: "300px" }}
+                />
+                <SpeakerAdd
+                    onAdd={(newSpeaker) => {
+                        setSpeakers((prev) => [...prev, newSpeaker]);
+                        setFilteredSpeakers((prev) => [...prev, newSpeaker]);
+                    }}
+                />
             </Box>
             <Grid container spacing={2}>
                 {speakers.map((speaker) => (
@@ -122,7 +159,7 @@ const SpeakerList = () => {
                                     open={open}
                                     onClose={handleMenuClose}
                                 >
-                                    <MenuItem onClick={handleEdit}>Edit</MenuItem>
+                                    {/* <MenuItem onClick={handleViewDetail}>View detail</MenuItem> */}
                                     <MenuItem onClick={handleDelete}>Delete</MenuItem>
                                 </Menu>
                             </div>
